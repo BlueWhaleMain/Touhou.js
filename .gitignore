@@ -1,5 +1,6 @@
 HELP.md
-target/
+nwjs_run/
+nwjs/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
@@ -31,3 +32,6 @@ build/
 .vscode/
 /.idea/
 /target/
+
+# Default ignored files
+/workspace.xml

@@ -1,0 +1,36 @@
+{
+    "Images": {
+        "background": {
+            "11o26": "background/11o26.jpg",
+            "03_02": "background/03_02.png"
+        },
+        "sidebar": {
+            "bomb": "sidebar/bomb.png",
+            "life": "sidebar/life.png"
+        },
+        "error": "error.jpg",
+        "ply_border_01": "ply_border_01.png",
+        "spell_name": "spell_name.png",
+        "e_bullet_1": "ebullet_1.png",
+        "e_bullet_2": "ebullet_2.png"
+    },
+    "Sounds": {
+        "loading": "loading.flac",
+        "menu": "上海アリス幻樂団 - 永夜抄 ～ Eastern Night.flac",
+        "test": "上海アリス幻樂団 - 東方妖怪小町.flac",
+        "failure": "上海アリス幻樂団 - プレイヤーズスコア.flac",
+        "select": "select.wav",
+        "ok": "ok.wav",
+        "cancel": "cancel.wav",
+        "pause": "pause.wav",
+        "option": "option.wav",
+        "miss": "dead.wav",
+        "shoot": "shoot.wav",
+        "change_track": "change_track.wav",
+        "graze": "graze.wav",
+        "gun": "gun.wav",
+        "cat0": "cat_0.wav",
+        "slash": "slash.wav",
+        "bomb_shoot": "bomb_shoot.wav"
+    }
+}

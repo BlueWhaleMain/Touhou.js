@@ -1,0 +1,30 @@
+{
+    "name": "touhou.js",
+    "version": "1.0.0",
+    "description": "使用Canvas实现的东方二次创作",
+    "main": "index.html",
+    "window": {
+        "icon": "index.png",
+        "toolbar": false,
+        "frame": true,
+        "width": 1280,
+        "height": 960,
+        "resizable": false
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
+        "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
+    },
+    "keywords": [],
+    "author": "BlueWhaleMain <BlueWhaleMain@outlook.com>",
+    "license": "ISC",
+    "build": {
+        "nwVersion": "0.46.3"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "nw": "^0.46.4",
+        "nwjs-builder-phoenix": "^1.15.0"
+    }
+}

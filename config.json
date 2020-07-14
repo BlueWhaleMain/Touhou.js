@@ -1,0 +1,15 @@
+{
+    "FastStart": true,
+    "ECSMax": 1024,
+    "Player": 3,
+    "GrazeMax": 9999,
+    "KeyBoard": {
+        "Up": "ArrowUp",
+        "Down": "ArrowDown",
+        "Left": "ArrowLeft",
+        "Right": "ArrowRight",
+        "Shoot": "Z",
+        "Bomb": "X",
+        "Slow": "Shift"
+    }
+}
