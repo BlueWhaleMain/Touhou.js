@@ -205,7 +205,7 @@ function Jade(type, color, x, y, mx, my, rotate, spy) {
             if (self.tags.has("death")) {
                 return
             }
-            const speed = arrowTo(self.X, self.Y, player.X, player.Y, 4);
+            const speed = arrowTo(self.X, self.Y, player.X, player.Y, Math.sqrt(Math.pow(self.components["movable"].MX, 2) + Math.pow(self.components["movable"].MY, 2)));
             self.components["movable"].MX = speed[0];
             self.components["movable"].MY = speed[1];
             Sounds.change_track.currentTime = 0;
@@ -672,6 +672,8 @@ function TestStage() {
         ctx1.fillText("99", 806, 38);
         ctx1.restore();
     };
+    let frame = 0;
+    let c = 0;
     this.option.tick = function () {
         if (player.shoot_delay > 0) {
             player.shoot_delay--;
@@ -688,49 +690,34 @@ function TestStage() {
         //     Sounds.change_track.currentTime = 0;
         //     _ = Sounds.change_track.play();
         // }
-        if (frames % 60 === 0) {
-            for (let j = 0; j < 16; j++) {
-                for (let k = 0; k < 3; k++) {
-                    let speed = (0.04 + 0.04 * Math.pow(1.09, 15 - j + k * 5)) * 16;
-                    speed = transTo(speed, speed, 90.0 - 135.0 / 16.0 * j - 3);
-                    entities.push(new Jade("ring", "purple", 440, 300, speed[0], speed[1]))
-                }
+        if (0 < frame && frame < 17) {
+            let j = frame;
+            for (let k = 0; k < 3; k++) {
+                let speed = arrowTo(440, 300, player.X, player.Y, (0.08 + 0.04 * Math.pow(1.09, 15 - j + k * 5)) * 16);
+                speed = transTo(speed[0], speed[1], (90 - 90 / 16 * j - 3) * L);
+                entities.push(new Jade("ring", "water", 440, 300, speed[0], speed[1]))
             }
             Sounds.bomb_shoot.currentTime = 0;
-            _ = Sounds.bomb_shoot.play();
+            _ = Sounds.bomb_shoot.play()
         }
-        if (frames % 75 === 0) {
-            for (let j = 0; j < 16; j++) {
-                for (let k = 0; k < 3; k++) {
-                    let speed = (0.04 + 0.04 * Math.pow(1.09, 15 - j + k * 5)) * 16;
-                    speed = transTo(speed, speed, -90.0 + 135.0 / 16.0 * j);
-                    entities.push(new Jade("ring", "water", 440, 300, speed[0], speed[1], 0, 500))
-                }
+        if (17 < frame && frame < 33) {
+            let j = frame - 16;
+            for (let k = 0; k < 3; k++) {
+                let speed = arrowTo(440, 300, player.X, player.Y, (0.08 + 0.04 * Math.pow(1.09, 15 - j + k * 5)) * 16);
+                speed = transTo(speed[0], speed[1], (-90 + 90 / 16 * j) * L);
+                entities.push(new Jade("ring", "purple", 440, 300, speed[0], speed[1]))
             }
             Sounds.bomb_shoot.currentTime = 0;
-            _ = Sounds.bomb_shoot.play();
+            _ = Sounds.bomb_shoot.play()
         }
-        if (frames % 90 === 0) {
-            for (let j = 0; j < 16; j++) {
-                for (let k = 0; k < 3; k++) {
-                    let speed = (0.04 + 0.04 * Math.pow(1.09, 15 - j + k * 5)) * 16;
-                    speed = transTo(speed, speed, 90.0 - 135.0 / 16.0 * j - 2);
-                    entities.push(new Jade("ring", "purple", 440, 300, speed[0], speed[1]))
-                }
-            }
-            Sounds.bomb_shoot.currentTime = 0;
-            _ = Sounds.bomb_shoot.play();
+        frame++;
+        if (frame > 48) {
+            frame = 0;
+            c++
         }
-        if (frames % 105 === 0) {
-            for (let j = 0; j < 16; j++) {
-                for (let k = 0; k < 3; k++) {
-                    let speed = (0.04 + 0.04 * Math.pow(1.09, 15 - j + k * 5)) * 16;
-                    speed = transTo(speed, speed, -90.0 + 135.0 / 16.0 * j - 1);
-                    entities.push(new Jade("ring", "water", 440, 300, speed[0], speed[1], 0, 500))
-                }
-            }
-            Sounds.bomb_shoot.currentTime = 0;
-            _ = Sounds.bomb_shoot.play();
+        if (c === 4) {
+            c = 0;
+            frame = -60
         }
         window.score++
     }

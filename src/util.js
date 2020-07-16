@@ -72,6 +72,13 @@ export function rgbToHsl(r, g, b) {
     return [h, s, l];
 }
 
+/**
+ * L = Math.PI / 180
+ * @param x 速度
+ * @param y 速度
+ * @param angle 角度（弧度制：angle * L）
+ * @returns {number[]}
+ */
 export function transTo(x, y, angle) {
     return [x * Math.cos(angle) + y * Math.sin(angle), y * Math.cos(angle) - x * Math.sin(angle)]
 }

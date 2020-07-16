@@ -8,7 +8,7 @@ asset文件夹内部有许多未授权引用的外部文件，来源将后续在
 
 尚未设计独立关卡，可以在Test中查看弹幕演示，也可以修改index.js中的TestStage函数测试不同逻辑
 
-Test默认演示 夜符「Night Bird」（仿）
+Test默认演示 夜符「Night Bird」
 
 启动速度过慢时，设置 config.json `"FastStart": true`
 这可能导致启动音效不播放
@@ -34,6 +34,7 @@ release版本可以直接运行EXE，开发环境使用npm启动
 爆帧（帧率长时间超过60）：
 修改config.json默认配置`"FrameMax": "auto"`为`"FrameMax": 60`
 低配机使用锁帧会略微掉帧
+默认自动获取帧会受窗体覆盖限制
 
 屏幕尺寸：
 package.json中配置了window的width和height，其中width要比实际大小大两个像素，

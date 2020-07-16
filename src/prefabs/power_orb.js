@@ -5,29 +5,29 @@ import {ABox, RBox, getLayer, clear_screen, Images, Sounds, entities} from "../u
 import green_orb from "./green_orb.js";
 
 const big = document.createElement("canvas");
-big.width = 32;
-big.height = 32;
+big.width = 40;
+big.height = 40;
 const big_ctx = big.getContext("2d");
-const small = document.createElement("canvas");
-small.width = 16;
-small.height = 16;
-const small_ctx = small.getContext("2d");
+const middle = document.createElement("canvas");
+middle.width = 32;
+middle.height = 32;
+const small_ctx = middle.getContext("2d");
 Images.power_orb.addEventListener("load", function () {
-    big_ctx.drawImage(Images.power_orb, 0, 0);
-    small_ctx.drawImage(Images.power_orb, 0, 0, 16, 16);
+    big_ctx.drawImage(Images.power_orb, 0, 0, 40, 40);
+    small_ctx.drawImage(Images.power_orb, 0, 0);
 });
 
 const layer = getLayer(0);
 let _;
 
-export default function power_orb(x, y, mx, my, size = "small") {
+export default function power_orb(x, y, mx, my, size = "middle") {
     const inst = new prefabs();
     inst.X = x;
     inst.Y = y;
     if (size === "big") {
+        inst.sizeBox = new RBox(40, 40);
+    } else if (size === "middle") {
         inst.sizeBox = new RBox(32, 32);
-    } else if (size === "small") {
-        inst.sizeBox = new RBox(16, 16);
     }
     inst.pickBox = new ABox(40);
     inst.addComponent("movable", movable);
@@ -42,7 +42,7 @@ export default function power_orb(x, y, mx, my, size = "small") {
         if (size === "big") {
             window.player.power += 100;
             window.score += 100
-        } else if (size === "small") {
+        } else if (size === "middle") {
             window.player.power += 5;
             window.score += 10
         }
@@ -57,7 +57,7 @@ export default function power_orb(x, y, mx, my, size = "small") {
             // }));
             clear_screen(function (entity) {
                 if (entity.tags.has("Enemy")) {
-                    entities.push(green_orb(entity.X, entity.Y, 0, -2, "small"));
+                    entities.push(green_orb(entity.X, entity.Y, 0, -2, "middle"));
                     return true
                 }
             })
@@ -71,8 +71,8 @@ export default function power_orb(x, y, mx, my, size = "small") {
         this.draw = function (inst) {
             if (size === "big") {
                 layer.drawImage(big, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
-            } else if (size === "small") {
-                layer.drawImage(small, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
+            } else if (size === "middle") {
+                layer.drawImage(middle, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
             }
         }
     });
