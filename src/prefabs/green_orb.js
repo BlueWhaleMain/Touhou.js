@@ -21,7 +21,7 @@ Images.e_bullet_2.addEventListener("load", function () {
 const layer = getLayer(0);
 let _;
 
-export default function green_orb(x, y, mx, my, size = "middle") {
+export default function green_orb(x, y, mx, my, size = "middle", spy = false) {
     const inst = new prefabs();
     inst.X = x;
     inst.Y = y;
@@ -31,6 +31,7 @@ export default function green_orb(x, y, mx, my, size = "middle") {
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.addComponent("item", item);
+    inst.components["item"].spy = spy;
     inst.components["item"].config_movement(inst);
     inst.components["item"].pick = function () {
         Sounds.item.currentTime = 0;

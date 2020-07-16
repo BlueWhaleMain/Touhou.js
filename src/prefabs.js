@@ -29,7 +29,7 @@ prefabs.prototype.addComponent = function (component_name, fn) {
 };
 prefabs.prototype.removeComponent = function (component_name) {
     if (!this.components_shadow.has(component_name)) {
-        throw new Error("Component: " + component_name + " is not exist!")
+        return
     }
     this.components[component_name] = null;
     this.components_shadow.delete(component_name);

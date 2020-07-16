@@ -173,13 +173,13 @@ export function editImage(px, callback, ignore_color) {
     return px
 }
 
-export function Super(parent, child) {
-    const Super = function () {
-    };
-    Super.prototype = parent.prototype;
-    child.prototype = new Super();
-    child.prototype.constructor = child
-}
+// export function Super(parent, child) {
+//     const Super = function () {
+//     };
+//     Super.prototype = parent.prototype;
+//     child.prototype = new Super();
+//     child.prototype.constructor = child
+// }
 
 // export function pathEscape(s) {
 //     if (s[0] === "\\" || s[0] === "/") {
@@ -271,6 +271,26 @@ export function getLayer(layer_id) {
     return contexts[layer_id]
 }
 
+export function rendererEntity() {
+    entities.forEach(function (entity) {
+        entity.draw(entity)
+    })
+}
+
+export function updateEntity() {
+    for (let i = 0; i < entities.length; i++) {
+        if (entities.length > config["ECSMax"]) {//实体上限
+            entities.splice(i, 1)
+        } else {
+            const entity = entities[i];
+            if (!entity.tick(entity)) {
+                entities.splice(i, 1)
+            }
+            entity.draw(entity)
+        }
+    }
+}
+
 export function clear_screen(callback) {
     let count = 0;
     entities.forEach(function (entity) {
@@ -284,8 +304,20 @@ export function clear_screen(callback) {
 
 export const entities = [];
 export const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+export const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+export const save = JSON.parse(fs.readFileSync("./save.json", "utf8"));
+
+export function saveToFile(save) {
+    fs.writeFileSync('./save.json', JSON.stringify(save))
+}
+
 export const width = 1280;
 export const height = 960;
+export const L = Math.PI / 180;
+export const Tags = {
+    hostile: "Hostile",
+    player: "Player"
+};
 const resources = JSON.parse(fs.readFileSync("./resources.json", "utf8"));
 export const Images = {
     background: {
@@ -295,6 +327,9 @@ export const Images = {
     sidebar: {
         "bomb": newImage(resources["Images"]["sidebar"]["bomb"]),
         "life": newImage(resources["Images"]["sidebar"]["life"])
+    },
+    player: {
+        rumia_shot: newImage(resources["Images"]["player"]["rumia_shot"])
     },
     error: newImage(resources["Images"]["error"]),
     border_line: newImage(resources["Images"]["border_line"]),

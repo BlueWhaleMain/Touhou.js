@@ -1,7 +1,7 @@
 import prefabs from "../prefabs.js";
 import item from "../components/item.js";
 import movable from "../components/movable.js";
-import {ABox, RBox, getLayer, clear_screen, Images, Sounds, entities} from "../util.js";
+import {ABox, RBox, getLayer, clear_screen, Images, Sounds, entities, Tags} from "../util.js";
 import green_orb from "./green_orb.js";
 
 const big = document.createElement("canvas");
@@ -56,8 +56,8 @@ export default function power_orb(x, y, mx, my, size = "middle") {
             //     screen_draw.fillText("Full Power Up!", 250, 300)
             // }));
             clear_screen(function (entity) {
-                if (entity.tags.has("Enemy")) {
-                    entities.push(green_orb(entity.X, entity.Y, 0, -2, "middle"));
+                if (entity.tags.has(Tags.hostile)) {
+                    entities.push(green_orb(entity.X, entity.Y, 0, -2, "small", true));
                     return true
                 }
             })

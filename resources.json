@@ -8,6 +8,9 @@
             "bomb": "sidebar/bomb.png",
             "life": "sidebar/life.png"
         },
+        "player": {
+            "rumia_shot": "player/rumia_shot.png"
+        },
         "error": "error.jpg",
         "border_line": "border_line.png",
         "ply_border_01": "ply_border_01.png",

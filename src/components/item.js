@@ -1,7 +1,6 @@
 import {arrowTo} from "../util.js";
 
 export default function item() {
-    const player = window.player;
     this.spy = false;
     this.config_movement = function (inst) {
         inst.components["movable"].flush = false;
@@ -19,23 +18,23 @@ export default function item() {
             inst.tags.add("death");
             return
         }
-        if (player.miss) {
+        if (window.player.miss) {
             this.spy = false
         } else {
             if (inst.pickBox) {
-                if (inst.pickBox.isHit(inst.X, inst.Y, player.X, player.Y, player.pickBox)) {
+                if (inst.pickBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.pickBox)) {
                     this.spy = true
                 }
             }
-            if (player.Y - 10 < (1 - player.pickLine) * 940) {
+            if (window.player.Y - 10 < (1 - window.player.pickLine) * 940) {
                 this.spy = true
             }
-            if (player.bombTime > 0) {
+            if (window.player.bombTime > 0) {
                 this.spy = true
             }
             if (this.spy) {
                 this.inScreen(inst);
-                const speed = arrowTo(inst.X, inst.Y, player.X, player.Y, 25);
+                const speed = arrowTo(inst.X, inst.Y, window.player.X, window.player.Y, 25);
                 inst.components["movable"].MX = speed[0];
                 inst.components["movable"].MY = speed[1]
             } else {
@@ -49,7 +48,7 @@ export default function item() {
                     inst.components["movable"].MY = -3
                 }
             }
-            if (inst.sizeBox.isHit(inst.X, inst.Y, player.X, player.Y, player.grazeBox)) {
+            if (inst.sizeBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.grazeBox)) {
                 inst.tags.add("death");
                 this.pick(inst)
             }
