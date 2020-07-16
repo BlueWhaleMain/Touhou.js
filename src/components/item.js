@@ -1,0 +1,58 @@
+import {arrowTo} from "../util.js";
+
+export default function item() {
+    const player = window.player;
+    this.spy = false;
+    this.config_movement = function (inst) {
+        inst.components["movable"].flush = false;
+        inst.components["movable"].grave = 0.05
+    };
+    this.pick = function (inst) {
+    };
+    this.inScreen = function (inst) {
+        const p = inst.pickBox.inScreen(inst.X, inst.Y, 0, 0, 840, 960);
+        inst.X = p[0];
+        inst.Y = p[1]
+    };
+    this.tick = function (inst) {
+        if (inst.Y > 940) {
+            inst.tags.add("death");
+            return
+        }
+        if (player.miss) {
+            this.spy = false
+        } else {
+            if (inst.pickBox) {
+                if (inst.pickBox.isHit(inst.X, inst.Y, player.X, player.Y, player.pickBox)) {
+                    this.spy = true
+                }
+            }
+            if (player.Y - 10 < (1 - player.pickLine) * 940) {
+                this.spy = true
+            }
+            if (player.bombTime > 0) {
+                this.spy = true
+            }
+            if (this.spy) {
+                this.inScreen(inst);
+                const speed = arrowTo(inst.X, inst.Y, player.X, player.Y, 25);
+                inst.components["movable"].MX = speed[0];
+                inst.components["movable"].MY = speed[1]
+            } else {
+                if (inst.components["movable"].MX !== 0) {
+                    inst.components["movable"].MX = 0
+                }
+                if (inst.components["movable"].MY > 3) {
+                    inst.components["movable"].MY = 3
+                }
+                if (inst.components["movable"].MY < -3) {
+                    inst.components["movable"].MY = -3
+                }
+            }
+            if (inst.sizeBox.isHit(inst.X, inst.Y, player.X, player.Y, player.grazeBox)) {
+                inst.tags.add("death");
+                this.pick(inst)
+            }
+        }
+    }
+}

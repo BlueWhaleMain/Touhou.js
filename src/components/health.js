@@ -1,6 +1,11 @@
 export default function health() {
     let value = 1, max = 1, min = 0;
+    this.indestructible = false;
     this.tick = function (inst) {
+        if (this.indestructible) {
+            inst.tags.delete("death");
+            return
+        }
         if (value < 1) {
             inst.tags.add("death")
         }

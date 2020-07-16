@@ -9,10 +9,12 @@
             "life": "sidebar/life.png"
         },
         "error": "error.jpg",
+        "border_line": "border_line.png",
         "ply_border_01": "ply_border_01.png",
         "spell_name": "spell_name.png",
         "e_bullet_1": "ebullet_1.png",
-        "e_bullet_2": "ebullet_2.png"
+        "e_bullet_2": "ebullet_2.png",
+        "power_orb": "power_orb.png"
     },
     "Sounds": {
         "loading": "loading.flac",
@@ -20,12 +22,15 @@
         "test": "上海アリス幻樂団 - 東方妖怪小町.flac",
         "failure": "上海アリス幻樂団 - プレイヤーズスコア.flac",
         "select": "select.wav",
+        "invalid": "invalid.wav",
         "ok": "ok.wav",
         "cancel": "cancel.wav",
         "pause": "pause.wav",
         "option": "option.wav",
         "miss": "dead.wav",
         "shoot": "shoot.wav",
+        "power_up": "power_up.wav",
+        "item": "item.wav",
         "change_track": "change_track.wav",
         "graze": "graze.wav",
         "gun": "gun.wav",

@@ -1,8 +1,9 @@
 {
-    "FastStart": true,
+    "FastStart": false,
+    "FrameMax": "auto",
     "ECSMax": 1024,
     "Player": 3,
-    "GrazeMax": 9999,
+    "GrazeMax": 99999,
     "KeyBoard": {
         "Up": "ArrowUp",
         "Down": "ArrowDown",

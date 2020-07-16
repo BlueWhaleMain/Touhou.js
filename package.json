@@ -7,8 +7,8 @@
         "icon": "index.png",
         "toolbar": false,
         "frame": true,
-        "width": 1280,
-        "height": 960,
+        "width": 1282,
+        "height": 961,
         "resizable": false
     },
     "scripts": {

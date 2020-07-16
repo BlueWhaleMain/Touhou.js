@@ -30,6 +30,16 @@ Test默认演示 夜符「Night Bird」（仿）
 ## 如何使用
 release版本可以直接运行EXE，开发环境使用npm启动
 
+## 常见问题
+爆帧（帧率长时间超过60）：
+修改config.json默认配置`"FrameMax": "auto"`为`"FrameMax": 60`
+低配机使用锁帧会略微掉帧
+
+屏幕尺寸：
+package.json中配置了window的width和height，其中width要比实际大小大两个像素，
+height比实际大小大一个像素，这是因为浏览器边框也算窗体大小，而canvas则是内部容器，
+屏幕逻辑大小永远是1280X960，设置窗体大小可以强制缩放canvas，但不会影响运行
+
 ## License
 
 ISC.
