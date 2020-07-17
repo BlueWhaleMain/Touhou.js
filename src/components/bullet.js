@@ -1,4 +1,4 @@
-import {Sounds} from "../util.js";
+import {Sounds, Tags} from "../util.js";
 
 let _;
 export default function bullet() {
@@ -18,7 +18,7 @@ export default function bullet() {
         if (inst.atkBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.hitBox)) {
             if (window.player.indTime > 0) {
                 window.score += window.player.point * 100;
-                inst.tags.add("death")
+                inst.tags.add(Tags.death)
             } else {
                 window.player.die()
             }

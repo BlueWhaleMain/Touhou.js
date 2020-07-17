@@ -1,3 +1,5 @@
+import {Tags} from "./util.js";
+
 export default function prefabs() {
     this.X = 0;
     this.Y = 0;
@@ -9,7 +11,7 @@ export default function prefabs() {
         this.components_shadow.forEach(function (component) {
             self.components[component].tick(self)
         });
-        return !this.tags.has("death")
+        return !this.tags.has(Tags.death)
     };
     this.renderers = {};
     this.renderers_shadow = new Set();

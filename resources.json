@@ -15,8 +15,11 @@
         "border_line": "border_line.png",
         "ply_border_01": "ply_border_01.png",
         "spell_name": "spell_name.png",
+        "enemy_marker": "enemy_marker.png",
+        "boss_effect_01": "boss_effect_01.png",
         "e_bullet_1": "ebullet_1.png",
         "e_bullet_2": "ebullet_2.png",
+        "boss_all_01": "boss_all_01.png",
         "power_orb": "power_orb.png"
     },
     "Sounds": {
@@ -37,7 +40,15 @@
         "change_track": "change_track.wav",
         "graze": "graze.wav",
         "gun": "gun.wav",
+        "timeout": "timeout.wav",
+        "timeout1": "timeout_1.wav",
+        "damage": "damage.wav",
+        "damage1": "damage_1.wav",
+        "card_get": "card_get.wav",
+        "bonus": "bonus.wav",
         "cat0": "cat_0.wav",
+        "en_ep_1": "en_ep_1.wav",
+        "en_ep_2": "en_ep_2.wav",
         "slash": "slash.wav",
         "bomb_shoot": "bomb_shoot.wav"
     }

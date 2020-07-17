@@ -1,4 +1,4 @@
-import {arrowTo} from "../util.js";
+import {arrowTo, Tags} from "../util.js";
 
 export default function item() {
     this.spy = false;
@@ -15,7 +15,7 @@ export default function item() {
     };
     this.tick = function (inst) {
         if (inst.Y > 940) {
-            inst.tags.add("death");
+            inst.tags.add(Tags.death);
             return
         }
         if (window.player.miss) {
@@ -49,7 +49,7 @@ export default function item() {
                 }
             }
             if (inst.sizeBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.grazeBox)) {
-                inst.tags.add("death");
+                inst.tags.add(Tags.death);
                 this.pick(inst)
             }
         }

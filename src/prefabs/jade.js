@@ -98,7 +98,7 @@ export default function jade(type, color, x, y, mx, my, rotate) {
             throw new Error("JadeType: " + type + " is not supported.")
     }
     inst.addLayer("Jade", function () {
-        const ctx = getLayer(0);
+        const ctx = getLayer(1);
         const r90 = 90 * L;
         this.draw = function (inst) {
             if (rotate === undefined && !symmetric) {

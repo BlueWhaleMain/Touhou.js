@@ -1,6 +1,6 @@
 import prefabs from "../prefabs.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, Tags} from "../util.js";
+import {ABox, getLayer, Tags, boss} from "../util.js";
 
 const cache = document.createElement("canvas");
 cache.width = 20;
@@ -27,6 +27,18 @@ export default function rumia_ball(x, y, mx, my) {
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.sizeBox = new ABox(10);
+    inst.addComponent("RumiaBall", function () {
+        this.tick = function (inst) {
+            for (let i = 0; i < boss.length; i++){
+                let b = boss[i];
+                if (inst.sizeBox.isHit(inst.X, inst.Y, b.X, b.Y, b.atkBox)) {
+                    b.components["health"].doDelta(-2);
+                    inst.tags.add(Tags.death);
+                    return
+                }
+            }
+        }
+    });
     inst.addLayer("RumiaBall", function () {
         const ctx = getLayer(0);
         this.draw = function (inst) {

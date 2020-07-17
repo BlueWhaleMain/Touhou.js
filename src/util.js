@@ -295,7 +295,7 @@ export function clear_screen(callback) {
     let count = 0;
     entities.forEach(function (entity) {
         if (callback(entity)) {
-            entity.tags.add("death");
+            entity.tags.add(Tags.death);
             count++
         }
     });
@@ -303,6 +303,7 @@ export function clear_screen(callback) {
 }
 
 export const entities = [];
+export const boss = [];
 export const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 export const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
 export const save = JSON.parse(fs.readFileSync("./save.json", "utf8"));
@@ -316,7 +317,8 @@ export const height = 960;
 export const L = Math.PI / 180;
 export const Tags = {
     hostile: "Hostile",
-    player: "Player"
+    player: "Player",
+    death: "Death"
 };
 const resources = JSON.parse(fs.readFileSync("./resources.json", "utf8"));
 export const Images = {
@@ -335,8 +337,11 @@ export const Images = {
     border_line: newImage(resources["Images"]["border_line"]),
     ply_border_01: newImage(resources["Images"]["ply_border_01"]),
     spell_name: newImage(resources["Images"]["spell_name"]),
+    enemy_marker: newImage(resources["Images"]["enemy_marker"]),
+    boss_effect_01: newImage(resources["Images"]["boss_effect_01"]),
     e_bullet_1: newImage(resources["Images"]["e_bullet_1"]),
     e_bullet_2: newImage(resources["Images"]["e_bullet_2"]),
+    boss_all_01: newImage(resources["Images"]["boss_all_01"]),
     power_orb: newImage(resources["Images"]["power_orb"])
 };
 
@@ -609,7 +614,15 @@ export const Sounds = {
     graze: newAudio(resources["Sounds"]["graze"]),
     failure: newAudio(resources["Sounds"]["failure"]),
     gun: newAudio(resources["Sounds"]["gun"]),
+    timeout: newAudio(resources["Sounds"]["timeout"]),
+    timeout1: newAudio(resources["Sounds"]["timeout1"]),
+    damage: newAudio(resources["Sounds"]["damage"]),
+    damage1: newAudio(resources["Sounds"]["damage1"]),
+    card_get: newAudio(resources["Sounds"]["card_get"]),
+    bonus: newAudio(resources["Sounds"]["bonus"]),
     cat0: newAudio(resources["Sounds"]["cat0"]),
+    en_ep_1: newAudio(resources["Sounds"]["en_ep_1"]),
+    en_ep_2: newAudio(resources["Sounds"]["en_ep_2"]),
     slash: newAudio(resources["Sounds"]["slash"]),
     bomb_shoot: newAudio(resources["Sounds"]["bomb_shoot"])
 };
