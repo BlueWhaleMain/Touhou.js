@@ -4,6 +4,7 @@ import {getLayer, height} from "../util.js";
 
 const MenuStarCache = {};
 
+const ctx = getLayer(0);
 export default function menu_star(x = 0, y = 0, mx = 0, my = 1, size = 2, color = "white") {
     const inst = new prefabs();
     inst.addComponent("movable", movable);
@@ -29,7 +30,6 @@ export default function menu_star(x = 0, y = 0, mx = 0, my = 1, size = 2, color 
         }
     });
     inst.addLayer("Star", function () {
-        const ctx = getLayer(0);
         this.draw = function (inst) {
             if (show) {
                 if (Math.random() > 0.999) {

@@ -17,6 +17,7 @@ c.beginPath();
 c.arc(10, 10, 7, 0, 2 * Math.PI);
 c.closePath();
 c.fill();
+const ctx = getLayer(0);
 export default function rumia_ball(x, y, mx, my) {
     const inst = new prefabs();
     inst.addComponent("movable", movable);
@@ -40,7 +41,6 @@ export default function rumia_ball(x, y, mx, my) {
         }
     });
     inst.addLayer("RumiaBall", function () {
-        const ctx = getLayer(0);
         this.draw = function (inst) {
             ctx.drawImage(cache, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r);
         }

@@ -5,6 +5,7 @@ import {ABox, arrowTo, drawSticker, getLayer, Sounds, L, Tags} from "../util.js"
 
 let _;
 
+const ctx = getLayer(1);
 export default function jade(type, color, x, y, mx, my, rotate) {
     const inst = new prefabs();
     inst.addComponent("movable", movable);
@@ -98,7 +99,6 @@ export default function jade(type, color, x, y, mx, my, rotate) {
             throw new Error("JadeType: " + type + " is not supported.")
     }
     inst.addLayer("Jade", function () {
-        const ctx = getLayer(1);
         const r90 = 90 * L;
         this.draw = function (inst) {
             if (rotate === undefined && !symmetric) {

@@ -1,6 +1,7 @@
 import prefabs from "../prefabs.js";
 import {getLayer} from "../util.js";
 
+const ctx = getLayer(128);
 export default function menu_item(x = 0, y = 0, context = "", fake = 300) {
     function unselect(ctx) {
         ctx.font = "34px sans-serif";
@@ -32,7 +33,6 @@ export default function menu_item(x = 0, y = 0, context = "", fake = 300) {
         was_fake = undefined;
     };
     inst.init_draw = unselect;
-    const ctx = getLayer(128);
     inst.draw = function () {
         ctx.save();
         inst.init_draw(ctx).fillText(inst.context, inst.X + fake, inst.Y);

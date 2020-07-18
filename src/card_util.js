@@ -1,23 +1,23 @@
 import {clear_screen, Tags, Sounds, getLayer, Images, entities} from "./util.js";
 import green_orb from "./prefabs/green_orb.js";
+import prefabs from "./prefabs.js";
 
 let _;
 
+const ctx = getLayer(2);
 export default function card_util(option) {
     let slow_frame = option.slow_frame || 0;
-    let time = 0;//Frame
+    let time = 0;
     let start_frame = option.start_frame || 0;
     let isEnd = false;
     let bonus = 0;
     let noCardFrame = option.noCardFrame || 0;
-    // let dropBlueCount = option.dropBlueCount || 0;
-    // let dropPowerCount = option.dropPowerCount || 0;
     let timeStr = "";
     this.isTimeSpell = option.isTimeSpell;
     this.isStart = false;
     this.isOpen = false;
-    this.X = 440;
-    this.Y = 300;
+    this.X = option.X || 440;
+    this.Y = option.Y || 300;
     this.checkPOS = function () {
         if (this.entity.X > this.X) {
             this.entity.X -= 1
@@ -38,22 +38,6 @@ export default function card_util(option) {
             this.entity.Y = this.Y
         }
     };
-    this.drop = function () {
-        // SPAWN.BLUE_ORB(new POS(this.entity.X, this.entity.Y), new POS(0, -5));
-        // for (let i = 0; i < dropBlueCount / 4; i++) {
-        //     SPAWN.BLUE_ORB(new POS(this.entity.X + Math.random() * 80, this.entity.Y + Math.random() * 80), new POS(0, -10));
-        //     SPAWN.BLUE_ORB(new POS(this.entity.X - Math.random() * 80, this.entity.Y - Math.random() * 80), new POS(0, -10));
-        //     SPAWN.BLUE_ORB(new POS(this.entity.X + Math.random() * 80, this.entity.Y - Math.random() * 80), new POS(0, -10));
-        //     SPAWN.BLUE_ORB(new POS(this.entity.X - Math.random() * 80, this.entity.Y + Math.random() * 80), new POS(0, -10));
-        // }
-        // for (let i = 0; i < dropPowerCount / 4; i++) {
-        //     SPAWN.POWER_ORB(new POS(this.entity.X + Math.random() * 80, this.entity.Y + Math.random() * 80), new POS(0, -10), true);
-        //     SPAWN.POWER_ORB(new POS(this.entity.X - Math.random() * 80, this.entity.Y - Math.random() * 80), new POS(0, -10), true);
-        //     SPAWN.POWER_ORB(new POS(this.entity.X + Math.random() * 80, this.entity.Y - Math.random() * 80), new POS(0, -10), true);
-        //     SPAWN.POWER_ORB(new POS(this.entity.X - Math.random() * 80, this.entity.Y + Math.random() * 80), new POS(0, -10), true);
-        // }
-        // SPAWN.POWER_ORB(new POS(this.entity.X, this.entity.Y), new POS(0, -5), false);
-    };
     this.open = function () {
         if (!this.isOpen) {
             if (option.noCard) {
@@ -73,13 +57,6 @@ export default function card_util(option) {
             this.isOpen = true;
         }
     };
-    this.en_ep = function () {
-        Sounds.bonus.currentTime = 0;
-        _ = Sounds.bonus.play();
-        bonus = Math.floor(option.bonus * time / option.time);
-        time = 0
-    };
-    const ctx = getLayer(2);
     this.tick = function () {
         ctx.drawImage(Images.spell_name, 570, 28);
         ctx.save();
@@ -132,12 +109,15 @@ export default function card_util(option) {
         } else {
             if (time >= 1) {
                 time--;
-                this.checkPOS();
                 this.entity.components["health"].indestructible = false;
                 if (this.entity.components["health"].getValue() <= this.entity.components["health"].getMin()) {
-                    this.en_ep()
-                }
-                if (option.card) {
+                    bonus = Math.floor(option.bonus * time / option.time);
+                    time = 0;
+                    if (typeof option.en_ep === "function") {
+                        option.en_ep(this)
+                    }
+                } else if (option.card) {
+                    this.checkPOS();
                     option.card(this)
                 }
             } else {
@@ -163,29 +143,79 @@ export default function card_util(option) {
                         if (option.end) {
                             option.end(this)
                         }
-                        // screen_draw.save();
-                        // if (bonus > 0) {
-                        //     TOUHOU_CONFIG.RESOURCES.AUDIO.Bonus.currentTime = 0;
-                        //     t = TOUHOU_CONFIG.RESOURCES.AUDIO.Bonus.play();
-                        //     this.drop();
-                        //     if (option.bonus_callback) {
-                        //         option.bonus_callback(this)
-                        //     }
-                        //     methods.push(new DrawFont(120, function () {
-                        //         screen_draw.font = "25px sans-serif";
-                        //         screen_draw.fillStyle = "rgb(67,160,255)";
-                        //         screen_draw.fillText("Get SpellCard Bonus!!", 250, 250);
-                        //         screen_draw.font = "20px sans-serif";
-                        //         screen_draw.fillText(String(bonus), 350, 300);
-                        //     }));
-                        // } else {
-                        //     methods.push(new DrawFont(120, function () {
-                        //         screen_draw.font = "30px sans-serif";
-                        //         screen_draw.fillStyle = "rgb(98,98,98)";
-                        //         screen_draw.fillText("Bonus failed...", 250, 300);
-                        //     }));
-                        // }
-                        // screen_draw.restore();
+                        if (bonus > 0) {
+                            Sounds.bonus.currentTime = 0;
+                            _ = Sounds.bonus.play();
+                            if (typeof option.bonus_callback === "function") {
+                                option.bonus_callback(this)
+                            }
+                            entities.push(new prefabs().init(function (inst) {
+                                const cache = document.createElement("canvas");
+                                cache.width = 480;
+                                cache.height = 84;
+                                const cache_ctx = cache.getContext("2d");
+                                cache_ctx.drawImage(Images.img_bonus_01, 0, 0);
+                                cache_ctx.font = "20px sans-serif";
+                                cache_ctx.fillStyle = "white";
+                                cache_ctx.fillText(String(bonus), 200, 74, 480);
+                                let opacity = 0;
+                                inst.addComponent("tick", function () {
+                                    let frame = 0;
+                                    const self = {};
+                                    self.tick = function (inst) {
+                                        if (frame <= 60) {
+                                            opacity = frame / 60
+                                        }
+                                        if (frame >= 180 && frame <= 300) {
+                                            opacity = (300 - frame) / 120
+                                        }
+                                        if (frame > 300) {
+                                            inst.tags.add(Tags.death)
+                                        }
+                                        frame++
+                                    };
+                                    return self
+                                });
+                                inst.addLayer("draw", function () {
+                                    this.draw = function () {
+                                        ctx.save();
+                                        ctx.globalAlpha = opacity;
+                                        ctx.drawImage(cache, 220, 280);
+                                        ctx.restore()
+                                    }
+                                })
+                            }))
+                        } else {
+                            entities.push(new prefabs().init(function (inst) {
+                                const cache = Images.img_bonus_02.cloneNode(true);
+                                let opacity = 0;
+                                inst.addComponent("tick", function () {
+                                    let frame = 0;
+                                    const self = {};
+                                    self.tick = function (inst) {
+                                        if (frame <= 60) {
+                                            opacity = frame / 60
+                                        }
+                                        if (frame >= 120 && frame <= 180) {
+                                            opacity = (180 - frame) / 60
+                                        }
+                                        if (frame > 180) {
+                                            inst.tags.add(Tags.death)
+                                        }
+                                        frame++
+                                    };
+                                    return self
+                                });
+                                inst.addLayer("draw", function () {
+                                    this.draw = function () {
+                                        ctx.save();
+                                        ctx.globalAlpha = opacity;
+                                        ctx.drawImage(cache, 300, 240);
+                                        ctx.restore()
+                                    }
+                                })
+                            }))
+                        }
                         return true
                     }
                 } else {
@@ -195,7 +225,7 @@ export default function card_util(option) {
         }
     };
     this.start = function (inst) {
-        if (option.start) {
+        if (typeof option.start === "function") {
             option.start()
         }
         this.isStart = true;

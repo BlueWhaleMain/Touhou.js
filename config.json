@@ -1,7 +1,7 @@
 {
-    "FastStart": false,
+    "FastStart": true,
     "FrameMax": "auto",
-    "ECSMax": 1024,
+    "EntityCountSecMax": 1024,
     "Player": 3,
     "GrazeMax": 99999,
     "KeyBoard": {

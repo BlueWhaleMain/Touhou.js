@@ -306,6 +306,9 @@ export const entities = [];
 export const boss = [];
 export const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 export const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+if (config["Player"] > 7 || config["Player"] < 1) {
+    throw new Error("ConfigValueError: 'Player' must be an integer from 1~7.")
+}
 export const save = JSON.parse(fs.readFileSync("./save.json", "utf8"));
 
 export function saveToFile(save) {
@@ -337,8 +340,11 @@ export const Images = {
     border_line: newImage(resources["Images"]["border_line"]),
     ply_border_01: newImage(resources["Images"]["ply_border_01"]),
     spell_name: newImage(resources["Images"]["spell_name"]),
+    spell_practice: newImage(resources["Images"]["spell_practice"]),
     enemy_marker: newImage(resources["Images"]["enemy_marker"]),
     boss_effect_01: newImage(resources["Images"]["boss_effect_01"]),
+    img_bonus_01: newImage(resources["Images"]["img_bonus_01"]),
+    img_bonus_02: newImage(resources["Images"]["img_bonus_02"]),
     e_bullet_1: newImage(resources["Images"]["e_bullet_1"]),
     e_bullet_2: newImage(resources["Images"]["e_bullet_2"]),
     boss_all_01: newImage(resources["Images"]["boss_all_01"]),
@@ -653,3 +659,7 @@ export function cancelAllSound() {
         Sounds[soundsKey].currentTime = 0;
     }
 }
+
+window.score = 0;
+window.h_score = save["highScore"];
+window.slow = false;

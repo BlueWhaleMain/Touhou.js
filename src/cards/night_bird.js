@@ -3,17 +3,15 @@ import {arrowTo, entities, L, Sounds, transTo} from "../util.js";
 import jade from "../prefabs/jade.js";
 
 let _;
-export default function night_bird() {
+export default function night_bird(edit) {
     let frame = 0;
     let c = 0;
-    return new card_util({
+    const cardData = {
         name: "夜符「Night Bird」",
         slow_frame: 0,
         start_frame: 100,
         time: 6000,
-        bonus: 50000,
-        dropBlueCount: 0,
-        dropPowerCount: 0,
+        bonus: 500000,
         card: function (card) {
             if (0 < frame && frame < 17) {
                 let j = frame;
@@ -75,5 +73,9 @@ export default function night_bird() {
                 }
             }
         }
-    })
+    };
+    if (typeof edit === "function") {
+        edit(cardData)
+    }
+    return new card_util(cardData)
 }

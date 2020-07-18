@@ -1,8 +1,8 @@
 import {Tags} from "./util.js";
 
-export default function prefabs() {
-    this.X = 0;
-    this.Y = 0;
+export default function prefabs(x, y) {
+    this.X = 0 || x;
+    this.Y = 0 || y;
     this.tags = new Set();
     this.components_shadow = new Set();
     this.components = {};
@@ -44,4 +44,8 @@ prefabs.prototype.addLayer = function (layer_name, fn) {
     this.renderers[layer_name] = new fn();
     this.renderers_shadow.add(layer_name);
     console.assert(this.renderers[layer_name], "Could not load renderer " + layer_name)
+};
+prefabs.prototype.init = function (f) {
+    f(this);
+    return this
 };

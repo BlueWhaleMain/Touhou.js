@@ -4,6 +4,8 @@ import power_orb from "./power_orb.js";
 
 let _;
 
+const ctx = getLayer(0);
+const ctx2 = getLayer(2);
 export default function player_util() {
     const inst = new prefabs();
     inst.X = 440;
@@ -60,6 +62,9 @@ export default function player_util() {
                 if (inst.indTime === 0) {
                     inst.indTime = 300;
                     if (inst.player_count > 0) {
+                        if (typeof inst.missCallBack === "function") {
+                            inst.missCallBack()
+                        }
                         inst.player_count--
                     } else {
                         inst.tags.add(Tags.death)
@@ -121,50 +126,48 @@ export default function player_util() {
     inst.addLayer("PlayerPoint", function () {
         // let ro = 0;
         let frame = 0;
-        const ctx = getLayer(0);
-        const layer = getLayer(2);
         this.draw = function () {
             if (inst.hide_time > 0) {
                 return
             }
             if (window.slow) {
-                layer.save();
-                layer.translate(inst.X, inst.Y);
-                layer.fillStyle = "red";
-                layer.shadowColor = "red";
-                layer.shadowBlur = 3;
-                layer.beginPath();
-                layer.arc(0, 0, inst.hitBox.r + 1, 0, 2 * Math.PI);
-                layer.closePath();
-                layer.fill();
-                layer.strokeStyle = "rgba(255,255,255,0.05)";
-                layer.lineWidth = 1;
-                layer.shadowColor = "white";
-                layer.shadowBlur = 4;
-                layer.beginPath();
-                layer.arc(0, 0, inst.pickBox.r, 0, 2 * Math.PI);
-                layer.stroke();
-                layer.beginPath();
-                layer.arc(0, 0, inst.pickBox.r - 2, 0, 2 * Math.PI);
-                layer.stroke();
-                // layer.save();
+                ctx2.save();
+                ctx2.translate(inst.X, inst.Y);
+                ctx2.fillStyle = "red";
+                ctx2.shadowColor = "red";
+                ctx2.shadowBlur = 3;
+                ctx2.beginPath();
+                ctx2.arc(0, 0, inst.hitBox.r + 1, 0, 2 * Math.PI);
+                ctx2.closePath();
+                ctx2.fill();
+                ctx2.strokeStyle = "rgba(255,255,255,0.05)";
+                ctx2.lineWidth = 1;
+                ctx2.shadowColor = "white";
+                ctx2.shadowBlur = 4;
+                ctx2.beginPath();
+                ctx2.arc(0, 0, inst.pickBox.r, 0, 2 * Math.PI);
+                ctx2.stroke();
+                ctx2.beginPath();
+                ctx2.arc(0, 0, inst.pickBox.r - 2, 0, 2 * Math.PI);
+                ctx2.stroke();
+                // ctx2.save();
                 // ro += L;
                 // if (ro > 90 * L) {
                 //     ro = 0
                 // }
-                // layer.rotate(ro);
-                // layer.globalCompositeOperation = "lighter";
-                // layer.drawImage(Images.ply_border_01, -32, -32);
-                // layer.restore();
-                layer.fillStyle = "white";
-                layer.shadowColor = "white";
-                layer.rotate(L * frame * 6);
+                // ctx2.rotate(ro);
+                // ctx2.globalCompositeOperation = "lighter";
+                // ctx2.drawImage(Images.ply_border_01, -32, -32);
+                // ctx2.restore();
+                ctx2.fillStyle = "white";
+                ctx2.shadowColor = "white";
+                ctx2.rotate(L * frame * 6);
                 frame++;
                 if (frame > 60) {
                     frame = 0
                 }
-                layer.fillRect(-inst.hitBox.r, -inst.hitBox.r, inst.hitBox.r * 2, inst.hitBox.r * 2);
-                layer.restore();
+                ctx2.fillRect(-inst.hitBox.r, -inst.hitBox.r, inst.hitBox.r * 2, inst.hitBox.r * 2);
+                ctx2.restore();
             }
             if (inst.miss && inst.indTime < 0) {
                 ctx.save();

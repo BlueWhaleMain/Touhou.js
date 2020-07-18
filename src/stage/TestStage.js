@@ -27,7 +27,6 @@ export default function TestStage() {
         if (Sounds.test.currentTime >= 145.1) {
             Sounds.test.currentTime = 0
         }
-        window.score++;
         timestamp++
     };
     inst.draw = function (force) {

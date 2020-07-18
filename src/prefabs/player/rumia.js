@@ -5,6 +5,7 @@ import green_orb from "../green_orb.js";
 
 let _;
 
+const ctx = getLayer(0);
 const rumia_normal = [];
 const rumia_left = [];
 const rumia_right = [];
@@ -28,7 +29,7 @@ Images.player.rumia_shot.addEventListener("load", function () {
     }
 });
 
-export default function rumia() {
+export default function rumia(practice) {
     const inst = player_util();
     let normal_frame = 0;
     let move_frame = 0;
@@ -36,29 +37,46 @@ export default function rumia() {
     inst.grazeBox = new ABox(16);
     inst.pickBox = new ABox(60);
     inst.pickLine = 3 / 4;
-    inst.addLayer("Rumia", function () {
-        const ctx = getLayer(0);
-        this.draw = function () {
+    if (practice) {
+        inst.missCallBack = function () {
+            inst.tags.add(Tags.death)
+        }
+    }
+    inst.addComponent("Rumia", function () {
+        this.tick = function () {
             if (inst.hide_time > 0) {
                 return
             }
             if (move_frame) {
                 if (move_frame > 0) {
-                    ctx.drawImage(rumia_right[Math.floor(move_frame)], inst.X - 16, inst.Y - 24);
                     move_frame -= 0.5
                 } else {
-                    ctx.drawImage(rumia_left[Math.floor(-move_frame)], inst.X - 16, inst.Y - 24);
                     move_frame += 0.5
                 }
                 if (move_frame > 7 || move_frame < -7) {
                     move_frame = 0
                 }
             } else {
-                ctx.drawImage(rumia_normal[Math.floor(normal_frame)], inst.X - 16, inst.Y - 24);
                 normal_frame += 0.1;
                 if (normal_frame > 7) {
                     normal_frame = 0
                 }
+            }
+        }
+    });
+    inst.addLayer("Rumia", function () {
+        this.draw = function () {
+            if (inst.hide_time > 0) {
+                return
+            }
+            if (move_frame) {
+                if (move_frame > 0) {
+                    ctx.drawImage(rumia_right[Math.floor(move_frame)], inst.X - 16, inst.Y - 24)
+                } else {
+                    ctx.drawImage(rumia_left[Math.floor(-move_frame)], inst.X - 16, inst.Y - 24)
+                }
+            } else {
+                ctx.drawImage(rumia_normal[Math.floor(normal_frame)], inst.X - 16, inst.Y - 24)
             }
             ctx.save();
             ctx.fillStyle = "black";
@@ -69,7 +87,7 @@ export default function rumia() {
             ctx.closePath();
             ctx.fill();
             ctx.restore()
-        };
+        }
     });
     inst.div = document.createElement("div");
     inst.div.addEventListener("left", function () {
@@ -177,7 +195,7 @@ export default function rumia() {
     });
     inst.bomb_used = false;
     inst.div.addEventListener("bomb", function () {
-        if (inst.hide_time > 0 || inst.bomb_used) {
+        if (inst.hide_time > 0 || inst.bomb_used || practice) {
             return
         }
         if (inst.bomb_count > 0 && inst.bombTime < 0) {

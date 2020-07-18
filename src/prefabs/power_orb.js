@@ -17,7 +17,7 @@ Images.power_orb.addEventListener("load", function () {
     small_ctx.drawImage(Images.power_orb, 0, 0);
 });
 
-const layer = getLayer(0);
+const ctx = getLayer(0);
 let _;
 
 export default function power_orb(x, y, mx, my, size = "middle") {
@@ -50,11 +50,36 @@ export default function power_orb(x, y, mx, my, size = "middle") {
             window.player.power = window.player.power_max;
             window.score += Math.floor(51200 * Math.abs(window.player.indTime) / 512)
         } else if (window.player.power === window.player.power_max) {
-            // methods.push(new DrawFont(120, function () {
-            //     screen_draw.font = "30px sans-serif";
-            //     screen_draw.fillStyle = "rgb(133,133,133)";
-            //     screen_draw.fillText("Full Power Up!", 250, 300)
-            // }));
+            entities.push(new prefabs().init(function (inst) {
+                let opacity = 0;
+                inst.addComponent("tick", function () {
+                    let frame = 0;
+                    const self = {};
+                    self.tick = function (inst) {
+                        if (frame <= 30) {
+                            opacity = frame / 30
+                        }
+                        if (frame >= 120 && frame <= 180) {
+                            opacity = (180 - frame) / 60
+                        }
+                        if (frame > 180) {
+                            inst.tags.add(Tags.death)
+                        }
+                        frame++
+                    };
+                    return self
+                });
+                inst.addLayer("draw", function () {
+                    this.draw = function () {
+                        ctx.save();
+                        ctx.globalAlpha = opacity;
+                        ctx.font = "30px sans-serif";
+                        ctx.fillStyle = "rgb(133,133,133)";
+                        ctx.fillText("Full Power Up!", 330, 400);
+                        ctx.restore()
+                    }
+                })
+            }));
             clear_screen(function (entity) {
                 if (entity.tags.has(Tags.hostile)) {
                     entities.push(green_orb(entity.X, entity.Y, 0, -2, "small", true));
@@ -70,9 +95,9 @@ export default function power_orb(x, y, mx, my, size = "middle") {
     inst.addLayer("power_orb", function () {
         this.draw = function (inst) {
             if (size === "big") {
-                layer.drawImage(big, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
+                ctx.drawImage(big, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
             } else if (size === "middle") {
-                layer.drawImage(middle, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
+                ctx.drawImage(middle, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
             }
         }
     });

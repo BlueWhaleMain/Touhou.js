@@ -6,11 +6,12 @@ let _;
 const cache = document.createElement("canvas");
 cache.width = 128;
 cache.height = 128;
-const ctx = cache.getContext("2d");
+const cache_ctx = cache.getContext("2d");
 Images.boss_all_01.addEventListener("load", function () {
-    ctx.drawImage(Images.boss_all_01, 0, 0, 128, 128, 0, 0, 128, 128)
+    cache_ctx.drawImage(Images.boss_all_01, 0, 0, 128, 128, 0, 0, 128, 128)
 });
 
+const ctx = getLayer(1);
 export default function boss_rumia(x, y, blood, cards) {
     const inst = boss_util();
     inst.X = x;
@@ -47,7 +48,6 @@ export default function boss_rumia(x, y, blood, cards) {
             }
         }
     });
-    const ctx = getLayer(1);
     inst.addLayer("RumiaD", function () {
         this.draw = function (inst) {
             ctx.drawImage(cache, inst.X - 64, inst.Y - 64)

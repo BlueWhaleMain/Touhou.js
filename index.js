@@ -10,9 +10,9 @@ import {
     continueAllSound,
     width,
     config,
-    save,
     Tags,
     boss,
+    pkg,
     updateEntity,
     rendererEntity
 } from "./src/util.js";
@@ -22,11 +22,6 @@ import rumia from "./src/prefabs/player/rumia.js";
 import TestStage from "./src/stage/TestStage.js";
 import boss_rumia from "./src/prefabs/boss/rumia.js";
 import night_bird from "./src/cards/night_bird.js";
-
-const gui = require("nw" + ".gui");
-//idea划线
-const win = gui["Window"].get();
-let _;
 
 CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
     if (w < 2 * r) r = w / 2;
@@ -41,55 +36,214 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
     return this;
 };
 
-function transitions(f) {
-    cancelAllSound();
-    if (typeof f === "function") {
-        img.style.display = "block";
-        handler = function () {
-            loading(f)
-        };
-        _ = Sounds.loading.play();
-    }
-    selectIndex = 0;
-    pause = false;
-    entities.splice(0, entities.length);
-    boss.splice(0, boss.length);
-    main_menu.splice(0, main_menu.length);
-    keys.splice(0, keys.length);
+const customEventLeft = new CustomEvent("left", {
+    bubbles: 'true',
+    cancelable: 'true'
+});
+const customEventRight = new CustomEvent("right", {
+    bubbles: 'true',
+    cancelable: 'true'
+});
+const customEventUp = new CustomEvent("up", {
+    bubbles: 'true',
+    cancelable: 'true'
+});
+const customEventDown = new CustomEvent("down", {
+    bubbles: 'true',
+    cancelable: 'true'
+});
+const customEventShoot = new CustomEvent("shoot", {
+    bubbles: 'true',
+    cancelable: 'true'
+});
+const customEventBomb = new CustomEvent("bomb", {
+    bubbles: 'true',
+    cancelable: 'true'
+});
+const ctx2 = getLayer(2);
+let stage, pause = false, end = false, failure = false;
+
+function runSpellPractice() {
     if (stage) {
-        stage.end();
-        stage = null
+        if (end) {
+            stage.tick();
+            stage.draw();
+            player.draw();
+            ctx2.save();
+            ctx2.font = "38px sans-serif";
+            ctx2.fillStyle = "rgb(255,255,255)";
+            ctx2.fillText("Result", 380, 300);
+            ctx2.fillStyle = "rgb(255,228,84)";
+            ctx2.font = "25px sans-serif";
+            ctx2.fillText(window.score, 400, 340);
+            ctx2.restore();
+            if (keys.has("z")) {
+                end = false;
+                loadMainMenu()
+            }
+            keys.clear();
+            rendererGUI(true);
+            return
+        } else if (boss.length === 0) {
+            stage.clear();
+            end = true;
+            keys.clear();
+            return
+        }
+    } else {
+        window.player = rumia(true);
+        player.power = 400;
+        stage = TestStage();
+        boss.push(boss_rumia(440, 300, 8000, {
+            60: night_bird(),
+            length: 1
+        }))
     }
-    read_key_timeout = 60;
+    if (player.tags.has(Tags.death)) {
+        // if (Sounds.failure.paused) {
+        //     cancelAllSound();
+        //     keys.clear();
+        //     Sounds.failure.currentTime = 0;
+        //     _ = Sounds.failure.play()
+        // }
+        stage.draw();
+        for (let i = 0; i < boss.length; i++) {
+            boss[i].draw();
+            ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
+        }
+        rendererEntity();
+        ctx2.save();
+        ctx2.fillStyle = "rgba(255,255,255,0.5)";
+        ctx2.fillRect(0, 0, width, height);
+        ctx2.font = "30px sans-serif";
+        ctx2.fillStyle = "rgb(255,255,255)";
+        ctx2.fillText("Spell Card Practice Failure...", 220, 200);
+        ctx2.restore();
+        if (!failure) {
+            keys.clear();
+            failure = true
+        }
+        if (keys.has("z")) {
+            loadMainMenu();
+            failure = false;
+            Sounds.ok.currentTime = 0;
+            _ = Sounds.ok.play()
+        }
+        keys.clear();
+        rendererGUI(true);
+        return
+    }
+    if (pause) {
+        ctx2.drawImage(Images.border_line, 46, (1 - window.player.pickLine) * 940 - 68.6, 786, 157.2);
+        ctx2.save();
+        ctx2.fillStyle = "rgba(255,0,10,0.4)";
+        ctx2.fillRect(0, 0, width, height);
+        ctx2.font = "30px sans-serif";
+        ctx2.fillStyle = "rgb(255,255,255)";
+        ctx2.fillText("游戏暂停", 80, 400);
+        ctx2.restore();
+        stage.draw(true);
+        player.draw();
+        for (let i = 0; i < boss.length; i++) {
+            boss[i].draw();
+            ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
+        }
+        rendererEntity();
+        stageMenuEntities.forEach(function (g) {
+            g.draw(g)
+        });
+        if (keys.has("ArrowUp".toLowerCase())) {
+            stageMenuEntities[selectIndex].leave();
+            if (selectIndex > 0) {
+                selectIndex--
+            } else {
+                selectIndex = 2
+            }
+            stageMenuEntities[selectIndex].select();
+            Sounds.select.currentTime = 0;
+            _ = Sounds.select.play()
+        } else if (keys.has("ArrowDown".toLowerCase())) {
+            stageMenuEntities[selectIndex].leave();
+            if (selectIndex < 2) {
+                selectIndex++
+            } else {
+                selectIndex = 0
+            }
+            stageMenuEntities[selectIndex].select();
+            Sounds.select.currentTime = 0;
+            _ = Sounds.select.play()
+        } else if (keys.has("z")) {
+            switch (selectIndex) {
+                case 0:
+                    continueAllSound();
+                    pause = false;
+                    break;
+                case 1:
+                    loadMainMenu();
+                    Sounds.ok.currentTime = 0;
+                    _ = Sounds.ok.play();
+                    return;
+                case 2:
+                    transitions(runSpellPractice);
+                    return;
+                default:
+                    Sounds.invalid.currentTime = 0;
+                    _ = Sounds.invalid.play()
+            }
+        }
+        keys.clear();
+        updateMenu()
+    } else {
+        stage.tick();
+        stage.draw();
+        player.tick();
+        player.draw();
+        for (let i = 0; i < boss.length; i++) {
+            boss[i].tick();
+            if (boss[i].dead) {
+                boss.splice(i, 1)
+            } else {
+                boss[i].draw();
+                ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
+            }
+        }
+        const kb = config["KeyBoard"];
+        if (keys.has("escape")) {
+            loadStageMenu();
+            stopAllSound();
+            _ = Sounds.pause.play();
+            keys.delete("escape");
+            pause = true
+        }
+        if (keys.has(kb["Up"].toLowerCase())) {
+            player.div.dispatchEvent(customEventUp)
+        }
+        if (keys.has(kb["Down"].toLowerCase())) {
+            player.div.dispatchEvent(customEventDown)
+        }
+        if (keys.has(kb["Left"].toLowerCase())) {
+            player.div.dispatchEvent(customEventLeft)
+        }
+        if (keys.has(kb["Right"].toLowerCase())) {
+            player.div.dispatchEvent(customEventRight)
+        }
+        if (keys.has(kb["Shoot"].toLowerCase())) {
+            player.div.dispatchEvent(customEventShoot)
+        }
+        if (keys.has(kb["Bomb"].toLowerCase())) {
+            player.div.dispatchEvent(customEventBomb)
+        }
+        updateEntity()
+    }
+    rendererGUI(true)
 }
 
-function loadStageMenu() {
-    stage_menu.splice(0, stage_menu.length);
-    stage_menu.push(menu_item(100, 550, "解除暂停"));
-    stage_menu.push(menu_item(100, 590, "返回至主菜单"));
-    stage_menu.push(menu_item(100, 630, "从头开始"));
-    stage_menu[0].select();
-}
-
-function loadMainMenu() {
-    transitions(menu);
-    main_menu.push(menu_item(960, 550, "Game Start"));
-    main_menu.push(menu_item(960, 590, "Extra Start"));
-    main_menu.push(menu_item(960, 630, "Test"));
-    main_menu.push(menu_item(960, 670, "Replay"));
-    main_menu.push(menu_item(960, 710, "Play Data"));
-    main_menu.push(menu_item(960, 750, "Music Room"));
-    main_menu.push(menu_item(960, 790, "Option"));
-    main_menu.push(menu_item(960, 830, "Quit"));
-    main_menu[0].select();
-}
-
-let gui_bg_cache;
+let guiBackground;
 
 const ctx = getLayer(0);
 const ctx1 = getLayer(1);
 
-function renderer_gui() {
+function rendererGUI(practice) {
     if (window.player.graze > config["GrazeMax"]) {
         window.player.graze = config["GrazeMax"]
     }
@@ -97,31 +251,31 @@ function renderer_gui() {
         window.h_score = window.score
     }
     ctx1.save();
-    if (!gui_bg_cache) {
-        gui_bg_cache = document.createElement("canvas");
-        gui_bg_cache.width = width;
-        gui_bg_cache.height = height;
-        const cache_draw = gui_bg_cache.getContext("2d");
-        cache_draw.fillStyle = ctx1.createPattern(Images.background["11o26"], "repeat");
-        cache_draw.fillRect(0, 0, width, height);
-        cache_draw.shadowBlur = 10;
-        cache_draw.globalCompositeOperation = "destination-out";
-        cache_draw.fillStyle = "black";
-        cache_draw.shadowColor = "black";
-        cache_draw.roundRect(50, 20, 780, 922, 10).fill();
+    if (!guiBackground) {
+        guiBackground = document.createElement("canvas");
+        guiBackground.width = width;
+        guiBackground.height = height;
+        const guiBackgroundCtx = guiBackground.getContext("2d");
+        guiBackgroundCtx.fillStyle = ctx1.createPattern(Images.background["11o26"], "repeat");
+        guiBackgroundCtx.fillRect(0, 0, width, height);
+        guiBackgroundCtx.shadowBlur = 10;
+        guiBackgroundCtx.globalCompositeOperation = "destination-out";
+        guiBackgroundCtx.fillStyle = "black";
+        guiBackgroundCtx.shadowColor = "black";
+        guiBackgroundCtx.roundRect(50, 20, 780, 922, 10).fill();
     }
-    ctx1.drawImage(gui_bg_cache, 0, 0);
+    ctx1.drawImage(guiBackground, 0, 0);
     ctx1.font = "34px Comic Sans MS";
     ctx1.fillStyle = "white";
     ctx1.shadowColor = "black";
     ctx1.shadowBlur = 5;
     let s = h_score.toString();
-    while (s.length < 9) {
+    while (s.length < 10) {
         s = "0" + s
     }
     ctx1.fillText("HiScore    " + s, 858, 120);
     s = window.score.toString();
-    while (s.length < 9) {
+    while (s.length < 10) {
         s = "0" + s
     }
     ctx1.fillText("Score    " + s, 893, 160);
@@ -129,9 +283,12 @@ function renderer_gui() {
     for (let i = 0; i < window.player.player_count; i++) {
         ctx1.drawImage(Images.sidebar.life, 1024 + i * 32, 172, 32, 32)
     }
-    ctx1.fillText("Bomb", 890, 236);
+    ctx1.fillText("Spell", 890, 236);
     for (let i = 0; i < window.player.bomb_count; i++) {
         ctx1.drawImage(Images.sidebar.bomb, 1024 + i * 32, 206, 32, 32)
+    }
+    if (practice) {
+        ctx1.drawImage(Images.spell_practice, 1024, 172, 240, 64)
     }
     ctx1.fillText("Power", 888, 274);
     s = window.player.power.toString();
@@ -163,203 +320,32 @@ function renderer_gui() {
     ctx1.restore();
 }
 
-let stage, pause = false;
+const gui = require("nw" + ".gui");
+//idea划线
+const win = gui["Window"].get();
 
-const ev_left = new CustomEvent("left", {
-    bubbles: 'true',
-    cancelable: 'true'
-});
-const ev_right = new CustomEvent("right", {
-    bubbles: 'true',
-    cancelable: 'true'
-});
-const ev_up = new CustomEvent("up", {
-    bubbles: 'true',
-    cancelable: 'true'
-});
-const ev_down = new CustomEvent("down", {
-    bubbles: 'true',
-    cancelable: 'true'
-});
-const ev_shoot = new CustomEvent("shoot", {
-    bubbles: 'true',
-    cancelable: 'true'
-});
-const ev_bomb = new CustomEvent("bomb", {
-    bubbles: 'true',
-    cancelable: 'true'
-});
-const ctx2 = getLayer(2);
-
-function test() {
-    if (!stage) {
-        window.player = rumia();
-        player.power = 400;
-        stage = TestStage();
-        boss.push(boss_rumia(440, 300, 8000, {
-            60: night_bird(),
-            length: 1
-        }));
-    }
-    if (player.tags.has(Tags.death)) {
-        if (Sounds.failure.paused) {
-            cancelAllSound();
-            Sounds.failure.currentTime = 0;
-            _ = Sounds.failure.play()
-        }
-        stage.draw();
-        rendererEntity();
-        ctx2.save();
-        ctx2.fillStyle = "rgba(255,0,10,0.4)";
-        ctx2.fillRect(0, 0, width, height);
-        ctx2.font = "25px sans-serif";
-        ctx2.fillStyle = "rgb(255,255,255)";
-        ctx2.fillText("满身疮痍", 180, 300);
-        ctx2.restore();
-        for (let i = 0; i < keys.length; i++) {
-            switch (keys[i]) {
-                case "z":
-                case "Z":
-                    loadMainMenu();
-                    Sounds.ok.currentTime = 0;
-                    _ = Sounds.ok.play();
-                    break;
-                case "Escape":
-                    loadMainMenu();
-                    Sounds.option.currentTime = 0;
-                    _ = Sounds.option.play();
-            }
-        }
-        keys.splice(0, keys.length);
-        renderer_gui();
-        return
-    }
-    if (pause) {
-        ctx2.drawImage(Images.border_line, 46, (1 - window.player.pickLine) * 940 - 68.6, 786, 157.2);
-        ctx2.save();
-        ctx2.fillStyle = "rgba(255,0,10,0.4)";
-        ctx2.fillRect(0, 0, width, height);
-        ctx2.font = "30px sans-serif";
-        ctx2.fillStyle = "rgb(255,255,255)";
-        ctx2.fillText("游戏暂停", 80, 400);
-        ctx2.restore();
-        stage.draw(true);
-        player.draw();
-        for (let i = 0; i < boss.length; i++) {
-            boss[i].draw();
-            ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
-        }
-        rendererEntity();
-        stage_menu.forEach(function (g) {
-            g.draw(g);
-        });
-        for (let i = 0; i < keys.length; i++) {
-            switch (keys[i]) {
-                case "ArrowUp":
-                    stage_menu[selectIndex].leave();
-                    if (selectIndex > 0) {
-                        selectIndex--
-                    } else {
-                        selectIndex = 2
-                    }
-                    stage_menu[selectIndex].select();
-                    read_key_timeout = 6;
-                    Sounds.select.currentTime = 0;
-                    _ = Sounds.select.play();
-                    break;
-                case "ArrowDown":
-                    stage_menu[selectIndex].leave();
-                    if (selectIndex < 2) {
-                        selectIndex++
-                    } else {
-                        selectIndex = 0
-                    }
-                    stage_menu[selectIndex].select();
-                    read_key_timeout = 6;
-                    Sounds.select.currentTime = 0;
-                    _ = Sounds.select.play();
-                    break;
-                case "z":
-                case "Z":
-                    switch (selectIndex) {
-                        case 0:
-                            continueAllSound();
-                            pause = false;
-                            break;
-                        case 1:
-                            loadMainMenu();
-                            Sounds.ok.currentTime = 0;
-                            _ = Sounds.ok.play();
-                            return;
-                        case 2:
-                            transitions(test);
-                            return;
-                        default:
-                            Sounds.invalid.currentTime = 0;
-                            _ = Sounds.invalid.play()
-                    }
-                    break;
-                case "Escape":
-                    continueAllSound();
-                    _ = Sounds.option.play();
-                    pause = false
-            }
-        }
-        keys.splice(0, keys.length);
-        updateMenu()
-    } else {
-        stage.tick();
-        stage.draw();
-        player.tick();
-        player.draw();
-        for (let i = 0; i < boss.length; i++) {
-            boss[i].tick();
-            if (boss[i].dead) {
-                boss.splice(i, 1)
-            } else {
-                boss[i].draw();
-                ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
-            }
-        }
-        const kb = config["KeyBoard"];
-        for (let i = 0; i < keys.length; i++) {
-            switch (keys[i].toLowerCase()) {
-                case "escape":
-                    loadStageMenu();
-                    stopAllSound();
-                    read_key_timeout = 360;
-                    Sounds.pause.play().then(function () {
-                        read_key_timeout = 6
-                    });
-                    keys.splice(i, 1);
-                    pause = true;
-                    break;
-                case kb["Up"].toLowerCase() :
-                    player.div.dispatchEvent(ev_up);
-                    break;
-                case kb["Down"].toLowerCase() :
-                    player.div.dispatchEvent(ev_down);
-                    break;
-                case kb["Left"].toLowerCase() :
-                    player.div.dispatchEvent(ev_left);
-                    break;
-                case kb["Right"].toLowerCase() :
-                    player.div.dispatchEvent(ev_right);
-                    break;
-                case kb["Shoot"].toLowerCase() :
-                    player.div.dispatchEvent(ev_shoot);
-                    break;
-                case kb["Bomb"].toLowerCase() :
-                    player.div.dispatchEvent(ev_bomb);
-                    break;
-            }
-        }
-        updateEntity()
-    }
-    renderer_gui()
+function loadMainMenu() {
+    transitions(runMenu);
+    mainMenuEntities.push(menu_item(960, 550, "Game Start"));
+    mainMenuEntities.push(menu_item(960, 590, "Extra Start"));
+    mainMenuEntities.push(menu_item(960, 630, "Spell Practice"));
+    mainMenuEntities.push(menu_item(960, 670, "Replay"));
+    mainMenuEntities.push(menu_item(960, 710, "Play Data"));
+    mainMenuEntities.push(menu_item(960, 750, "Music Room"));
+    mainMenuEntities.push(menu_item(960, 790, "Option"));
+    mainMenuEntities.push(menu_item(960, 830, "Quit"));
+    mainMenuEntities[0].select();
 }
 
-function menu() {
+function loadStageMenu() {
+    stageMenuEntities.splice(0, stageMenuEntities.length);
+    stageMenuEntities.push(menu_item(100, 550, "解除暂停"));
+    stageMenuEntities.push(menu_item(100, 590, "返回至主菜单"));
+    stageMenuEntities.push(menu_item(100, 630, "从头开始"));
+    stageMenuEntities[0].select();
+}
+
+function runMenu() {
     while (entities.length < 256) {
         entities.push(menu_star(Math.random() * width, Math.random() * height, 0, 0.5, Math.random() * 2));
     }
@@ -369,70 +355,58 @@ function menu() {
     if (Sounds.menu.currentTime > 132.5) {
         Sounds.menu.currentTime = 1
     }
-    for (let i = 0; i < keys.length; i++) {
-        switch (keys[i]) {
-            case "ArrowUp":
-                main_menu[selectIndex].leave();
-                if (selectIndex > 0) {
-                    selectIndex--
-                } else {
-                    selectIndex = 7
-                }
-                main_menu[selectIndex].select();
-                read_key_timeout = 6;
-                Sounds.select.currentTime = 0;
-                _ = Sounds.select.play();
-                break;
-            case "ArrowDown":
-                main_menu[selectIndex].leave();
-                if (selectIndex < 7) {
-                    selectIndex++
-                } else {
-                    selectIndex = 0
-                }
-                main_menu[selectIndex].select();
-                read_key_timeout = 6;
-                Sounds.select.currentTime = 0;
-                _ = Sounds.select.play();
-                break;
-            case "z":
-            case "Z":
-                switch (selectIndex) {
-                    case 2:
-                        transitions(test);
-                        Sounds.ok.currentTime = 0;
-                        _ = Sounds.ok.play();
-                        return;
-                    case 7:
-                        win.close();
-                        break;
-                    default:
-                        Sounds.invalid.currentTime = 0;
-                        _ = Sounds.invalid.play()
-                }
-                break;
-            case "Escape":
-            case "x":
-            case "X":
-                main_menu[selectIndex].leave();
-                if (selectIndex === 7) {
-                    win.close();
-                } else {
-                    selectIndex = 7
-                }
-                main_menu[selectIndex].select();
-                read_key_timeout = 6;
-                Sounds.cancel.currentTime = 0;
-                _ = Sounds.cancel.play();
+    if (keys.has("ArrowUp".toLowerCase())) {
+        mainMenuEntities[selectIndex].leave();
+        if (selectIndex > 0) {
+            selectIndex--
+        } else {
+            selectIndex = 7
         }
+        mainMenuEntities[selectIndex].select();
+        Sounds.select.currentTime = 0;
+        _ = Sounds.select.play();
+    } else if (keys.has("ArrowDown".toLowerCase())) {
+        mainMenuEntities[selectIndex].leave();
+        if (selectIndex < 7) {
+            selectIndex++
+        } else {
+            selectIndex = 0
+        }
+        mainMenuEntities[selectIndex].select();
+        Sounds.select.currentTime = 0;
+        _ = Sounds.select.play();
+    } else if (keys.has("z")) {
+        switch (selectIndex) {
+            case 2:
+                transitions(runSpellPractice);
+                Sounds.ok.currentTime = 0;
+                _ = Sounds.ok.play();
+                return;
+            case 7:
+                win.close();
+                break;
+            default:
+                Sounds.invalid.currentTime = 0;
+                _ = Sounds.invalid.play()
+        }
+    } else if (keys.has("x")) {
+        mainMenuEntities[selectIndex].leave();
+        if (selectIndex === 7) {
+            win.close();
+        } else {
+            selectIndex = 7
+        }
+        mainMenuEntities[selectIndex].select();
+        Sounds.cancel.currentTime = 0;
+        _ = Sounds.cancel.play();
     }
-    keys.splice(0, keys.length);
+    keys.clear();
     updateMenu();
     updateEntity()
 }
 
 function updateMenu() {
-    main_menu.forEach(function (g) {
+    mainMenuEntities.forEach(function (g) {
         g.draw(g)
     });
 }
@@ -463,17 +437,46 @@ function error(e, fatal = false) {
         ctx.fillText(s, 4, y)
     });
     ctx.restore();
-    keys.splice(0, keys.length);
+    keys.clear();
     Sounds.failure.currentTime = 0;
-    _ = Sounds.failure.play();
-    read_key_timeout = 0
+    _ = Sounds.failure.play()
 }
+
+const img = document.createElement("img");
+img.src = "./assets/images/loading.gif";
+img.style.position = "absolute";
+img.style.zIndex = "1";
+img.style.top = pkg.window.width / 6 + "px";
+img.style.left = pkg.window.height / 3 + "px";
+img.style.width = pkg.window.width * 0.375 + "px";
+img.style.height = pkg.window.height * 11 / 24 + "px";
+document.body.appendChild(img);
+
+function transitions(f) {
+    cancelAllSound();
+    if (typeof f === "function") {
+        img.style.display = "block";
+        handler = function () {
+            loading(f)
+        };
+        _ = Sounds.loading.play();
+    }
+    selectIndex = 0;
+    pause = false;
+    entities.splice(0, entities.length);
+    boss.splice(0, boss.length);
+    mainMenuEntities.splice(0, mainMenuEntities.length);
+    keys.clear();
+    if (stage) {
+        stage.end();
+        stage = null
+    }
+}
+
+let handler, frames = 0;
 
 function run() {
     try {
-        if (read_key_timeout > 0) {
-            read_key_timeout--
-        }
         clearScreen();
         handler();
         frames++;
@@ -535,83 +538,67 @@ function nextFrame(f) {
     }
 }
 
-window.score = 0;
-window.h_score = save["highScore"];
 let selectIndex = 0;
-const requireECS = 768;
-const status = document.createElement("div");
-status.style.position = "absolute";
-status.style.bottom = "0";
-status.style.right = "0";
-status.style.fontSize = "large";
-status.style.zIndex = "65535";
-document.body.append(status);
-const keys = [], main_menu = [], stage_menu = [];
-let timestamp = 0, frames = 0, read_key_timeout = 0;
-let handler;
-const img = document.createElement("img");
-img.src = "./assets/images/loading.gif";
-img.style.position = "absolute";
-img.style.zIndex = "1";
-img.style.top = "200px";
-img.style.left = "300px";
-document.body.appendChild(img);
-window.slow = false;
+const keys = new Set(), mainMenuEntities = [], stageMenuEntities = [], ignoreKeys = new Set();
+let _;
 
 try {
-    const ECSMax = config["ECSMax"];
-    if (ECSMax && ECSMax >= requireECS) {
+    const requireECS = 768;
+    const status = document.createElement("div");
+    status.style.position = "absolute";
+    status.style.bottom = "0";
+    status.style.right = "0";
+    status.style.fontSize = "large";
+    status.style.zIndex = "65535";
+    document.body.append(status);
+    const entityCountSecMax = config["EntityCountSecMax"];
+    let timestamp = 0;
+    if (entityCountSecMax && entityCountSecMax >= requireECS) {
         setInterval(function () {
-            const new_timestamp = new Date().getTime();
-            let fps = Math.floor(frames / ((new_timestamp - timestamp) / 1000)), fps_color = "green",
-                bcs = entities.length, bcs_color = "green";
+            const time = new Date().getTime();
+            let fps = Math.floor(frames / ((time - timestamp) / 1000)), fpsColor = "green",
+                bcs = entities.length, bcsColor = "green";
             if (fps < 20) {
-                fps_color = "red"
+                fpsColor = "red"
             } else if (fps < 40) {
-                fps_color = "orange"
+                fpsColor = "orange"
             }
-            if (bcs > config["ECSMax"] * 3 / 4) {
-                bcs_color = "red"
-            } else if (bcs > config["ECSMax"] / 2) {
-                bcs_color = "orange"
+            if (bcs > entityCountSecMax * 3 / 4) {
+                bcsColor = "red"
+            } else if (bcs > entityCountSecMax / 2) {
+                bcsColor = "orange"
             }
             status.innerHTML =
-                "<span style='color:" + fps_color + "'>" + fps + "FPS</span>" +
+                "<span style='color:" + fpsColor + "'>" + fps + "FPS</span>" +
                 "<span style='color:white'>/</span>" +
-                "<span style='color:" + bcs_color + "'>" + bcs + "ECS</span>";
-            timestamp = new_timestamp;
+                "<span style='color:" + bcsColor + "'>" + bcs + "ECS</span>";
+            timestamp = time;
             if (config["FrameMax"] !== frames) {
                 n = 1000 * frames / config["FrameMax"]
             }
             frames = 0;
         }, 1000);
         document.addEventListener("keydown", function (e) {
-            if (read_key_timeout > 0) {
-                return
-            }
             e = e || window["event"];
-            let check = 0;
-            for (let i = 0; i < keys.length; i++) {
-                if (keys[i] === e.key) {
-                    check = 1;
-                    break;
-                }
+            const key = e.key.toLowerCase();
+            if (ignoreKeys.has(key)) {
+                return
+            } else {
+                ignoreKeys.add(key)
             }
-            if (check === 0) {
-                keys.push(e.key);
-            }
-            if (e.key === config["KeyBoard"]["Slow"]) {
+            keys.add(key);
+            if (key === config["KeyBoard"]["Slow"].toLowerCase()) {
                 window.slow = true
             }
             if (restore) {
-                if (e.key.toLowerCase() === "z") {
+                if (key === "z") {
                     restore = false;
                     loadMainMenu();
                     Sounds.ok.currentTime = 0;
                     _ = Sounds.ok.play();
                     nextFrame(run)
                 } else {
-                    if (e.key === "Escape") {
+                    if (key === "escape") {
                         win.close()
                     }
                 }
@@ -619,20 +606,19 @@ try {
         });
         document.addEventListener("keyup", function (e) {
             e = e || window["event"];
-            for (let i = 0; i < keys.length; i++) {
-                if (keys[i] === e.key || keys[i] === e.key.toLowerCase()) {
-                    keys.splice(i, 1);
-                    break;
-                }
+            const key = e.key.toLowerCase();
+            if (ignoreKeys.has(key)) {
+                ignoreKeys.delete(key)
             }
-            if (e.key === config["KeyBoard"]["Slow"]) {
+            keys.delete(key);
+            if (key === config["KeyBoard"]["Slow"].toLowerCase()) {
                 window.slow = false
             }
         });
         loadMainMenu();
         nextFrame(run)
     } else {
-        error(new Error("配置达不到最低要求：ECSMax = " + ECSMax + "，至少需要" + requireECS), true)
+        error(new Error("配置达不到最低要求：ECSMax(EntityCountSecMax) = " + entityCountSecMax + "，至少需要" + requireECS), true)
     }
 } catch (e) {
     console.log(e);
