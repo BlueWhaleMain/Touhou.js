@@ -111,14 +111,27 @@ export function RBox(xs, ys) {
             return flag;
         }
     };
-    this.isOut = function (x, y, x_max, y_max, mx, my) {
+    this.isOut = function (x, y, xMax, yMax, mx, my) {
         return x + xs * 2 < 0 && mx <= 0 || y + ys * 2 < 0 && my <= 0
-            || x > x_max && mx > 0 || y > y_max && my > 0
+            || x > xMax && mx > 0 || y > yMax && my > 0
     };
-    this.isOutScreen = function (x, y, x_max, y_max, mx, my) {
+    this.isOutScreen = function (x, y, xMax, yMax, mx, my) {
         return x + xs * 2 < -2 * xs - 10 && mx <= 0 || y + ys * 2 < -2 * ys - 10 && my <= 0
-            || x > x_max + 2 * xs + 10 && mx > 0 || y > y_max + 2 * ys + 10 && my > 0
+            || x > xMax + 2 * xs + 10 && mx > 0 || y > yMax + 2 * ys + 10 && my > 0
     };
+    this.inScreen = function (x, y, xMin, yMin, xMax, yMax) {
+        if (x - xs / 2 < xMin) {
+            x = xs / 2 + xMin;
+        } else if (x + xs / 2 > xMax) {
+            x = xMax - xs / 2;
+        }
+        if (y - ys / 2 < yMin) {
+            y = ys / 2 + yMin;
+        } else if (y + ys / 2 > yMax) {
+            y = yMax - ys / 2;
+        }
+        return [x, y]
+    }
 }
 
 export function ABox(r) {
@@ -134,35 +147,35 @@ export function ABox(r) {
             return (maxX - xx) * (maxX - xx) + (maxY - yy) * (maxY - yy) <= r * r;
         }
     };
-    this.isOut = function (x, y, x_max, y_max, mx, my) {
-        return x - this.r < 0 && mx <= 0 || x + this.r > x_max && mx > 0
-            || y - this.r < 0 && my <= 0 || y + this.r > y_max && my > 0
+    this.isOut = function (x, y, xMax, yMax, mx, my) {
+        return x - this.r < 0 && mx <= 0 || x + this.r > xMax && mx > 0
+            || y - this.r < 0 && my <= 0 || y + this.r > yMax && my > 0
     };
-    this.isOutScreen = function (x, y, x_max, y_max, mx, my) {
-        return x - this.r < -2 * this.r - 10 && mx <= 0 || x + this.r > x_max + 2 * this.r + 10 && mx > 0
-            || y - this.r < -2 * this.r - 10 && my <= 0 || y + this.r > y_max + 2 * this.r + 10 && my > 0
+    this.isOutScreen = function (x, y, xMax, yMax, mx, my) {
+        return x - this.r < -2 * this.r - 10 && mx <= 0 || x + this.r > xMax + 2 * this.r + 10 && mx > 0
+            || y - this.r < -2 * this.r - 10 && my <= 0 || y + this.r > yMax + 2 * this.r + 10 && my > 0
     };
-    this.inScreen = function (x, y, x_min, y_min, x_max, y_max) {
-        if (x - r < x_min) {
-            x = r + x_min;
-        } else if (x + r > x_max) {
-            x = x_max - r;
+    this.inScreen = function (x, y, xMin, yMin, xMax, yMax) {
+        if (x - r < xMin) {
+            x = r + xMin;
+        } else if (x + r > xMax) {
+            x = xMax - r;
         }
-        if (y - r < y_min) {
-            y = r + y_min;
-        } else if (y + r > y_max) {
-            y = y_max - r;
+        if (y - r < yMin) {
+            y = r + yMin;
+        } else if (y + r > yMax) {
+            y = yMax - r;
         }
         return [x, y]
     }
 }
 
-export function editImage(px, callback, ignore_color) {
-    if (!ignore_color) {
-        ignore_color = [255, 255, 255]
+export function editImage(px, callback, ignoreColor) {
+    if (!ignoreColor) {
+        ignoreColor = [255, 255, 255]
     }
     for (let i = 0; i < px.data.length; i += 4) {
-        if (px.data[i] === ignore_color[0] && px.data[i + 1] === ignore_color[1] && px.data[i + 2] === ignore_color[2]) {
+        if (px.data[i] === ignoreColor[0] && px.data[i + 1] === ignoreColor[1] && px.data[i + 2] === ignoreColor[2]) {
             continue;
         }
         const rgb = callback(px.data[i], px.data[i + 1], px.data[i + 2]);
@@ -200,8 +213,8 @@ export function editImage(px, callback, ignore_color) {
 //     return pathEscape(l) + pathEscape(r)
 // }
 
-window.loading_count = 0;
-window.loading_total = 0;
+window.loadingCount = 0;
+window.loadingTotal = 0;
 
 export function newImage(src, width, height) {
     const img = new Image();
@@ -209,20 +222,20 @@ export function newImage(src, width, height) {
     img.style.width = width;
     img.style.height = height;
     img.addEventListener("load", function () {
-        window.loading_count++
+        window.loadingCount++
     });
-    window.loading_total++;
+    window.loadingTotal++;
     return img
 }
 
 export function newAudio(name) {
     const audio = new Audio("./assets/sounds/" + name);
     audio.addEventListener("canplay", function () {
-        if (window.loading_count < window.loading_total) {
-            window.loading_count++
+        if (window.loadingCount < window.loadingTotal) {
+            window.loadingCount++
         }
     });
-    window.loading_total++;
+    window.loadingTotal++;
     return audio
 }
 
@@ -236,39 +249,39 @@ export function clearScreen() {
     });
 }
 
-function initScreen(screen, layer_id) {
-    screens[layer_id] = screen;
-    contexts[layer_id] = screen.getContext("2d");
-    contexts[layer_id].clearRect(0, 0, screen.width, screen.height);
-    layers.add(layer_id)
+function initScreen(screen, layerId) {
+    screens[layerId] = screen;
+    contexts[layerId] = screen.getContext("2d");
+    contexts[layerId].clearRect(0, 0, screen.width, screen.height);
+    layers.add(layerId)
 }
 
-function newLayer(layer_id) {
+function newLayer(layerId) {
     let layer = undefined;
     try {
-        layer = document.getElementById("screen_" + layer_id)
+        layer = document.getElementById("screen" + layerId)
     } catch (e) {
     }
     if (!layer) {
         layer = document.createElement("canvas");
-        layer.id = "screen_" + layer_id;
+        layer.id = "screen" + layerId;
         layer.width = width;
         layer.height = height;
         layer.style.position = "absolute";
-        layer.style.zIndex = layer_id;
+        layer.style.zIndex = layerId;
         layer.style.width = pkg.window.width - 2 + "px";
         layer.style.height = pkg.window.height - 1 + "px";
         layer.innerHTML = "<span style='font-size:large;color:red' title='浏览器可能不支持canvas'>图层加载失败</span>";
         document.body.append(layer);
-        initScreen(layer, layer_id)
+        initScreen(layer, layerId)
     }
 }
 
-export function getLayer(layer_id) {
-    if (!contexts[layer_id]) {
-        newLayer(layer_id)
+export function getLayer(layerId) {
+    if (!contexts[layerId]) {
+        newLayer(layerId)
     }
-    return contexts[layer_id]
+    return contexts[layerId]
 }
 
 export function rendererEntity() {
@@ -291,17 +304,34 @@ export function updateEntity() {
     }
 }
 
-export function clear_screen(callback) {
+export function clearEntity(callback, max = 1) {
     let count = 0;
     entities.forEach(function (entity) {
         if (callback(entity)) {
             entity.tags.add(Tags.death);
             count++
         }
+        if (count >= max) {
+            return count
+        }
     });
     return count
 }
 
+export function modifyEntity(callback, max = 1) {
+    let count = 0;
+    entities.forEach(function (entity) {
+        if (callback(entity)) {
+            count++
+        }
+        if (count >= max) {
+            return count
+        }
+    });
+    return count
+}
+
+export const eventListenerObject = document.createElement("div");
 export const entities = [];
 export const boss = [];
 export const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
@@ -320,6 +350,7 @@ export const height = 960;
 export const L = Math.PI / 180;
 export const Tags = {
     hostile: "Hostile",
+    enemy: "Enemy",
     player: "Player",
     death: "Death"
 };
@@ -330,37 +361,39 @@ export const Images = {
         "03_02": newImage(resources["Images"]["background"]["03_02"])
     },
     sidebar: {
-        "bomb": newImage(resources["Images"]["sidebar"]["bomb"]),
-        "life": newImage(resources["Images"]["sidebar"]["life"])
+        bomb: newImage(resources["Images"]["sidebar"]["bomb"]),
+        life: newImage(resources["Images"]["sidebar"]["life"])
     },
     player: {
-        rumia_shot: newImage(resources["Images"]["player"]["rumia_shot"])
+        rumiaShot: newImage(resources["Images"]["player"]["rumiaShot"])
     },
     error: newImage(resources["Images"]["error"]),
-    border_line: newImage(resources["Images"]["border_line"]),
-    ply_border_01: newImage(resources["Images"]["ply_border_01"]),
-    spell_name: newImage(resources["Images"]["spell_name"]),
-    spell_practice: newImage(resources["Images"]["spell_practice"]),
-    enemy_marker: newImage(resources["Images"]["enemy_marker"]),
-    boss_effect_01: newImage(resources["Images"]["boss_effect_01"]),
-    img_bonus_01: newImage(resources["Images"]["img_bonus_01"]),
-    img_bonus_02: newImage(resources["Images"]["img_bonus_02"]),
-    e_bullet_1: newImage(resources["Images"]["e_bullet_1"]),
-    e_bullet_2: newImage(resources["Images"]["e_bullet_2"]),
-    boss_all_01: newImage(resources["Images"]["boss_all_01"]),
-    power_orb: newImage(resources["Images"]["power_orb"])
+    borderLine: newImage(resources["Images"]["borderLine"]),
+    playerBorder: newImage(resources["Images"]["playerBorder"]),
+    spellName: newImage(resources["Images"]["spellName"]),
+    spellPractice: newImage(resources["Images"]["spellPractice"]),
+    enemyMarker: newImage(resources["Images"]["enemyMarker"]),
+    enemyCircle: newImage(resources["Images"]["enemyCircle"]),
+    bossEffect: newImage(resources["Images"]["bossEffect"]),
+    getSpellCardBonus: newImage(resources["Images"]["getSpellCardBonus"]),
+    BonusFailure: newImage(resources["Images"]["BonusFailure"]),
+    eBullet: newImage(resources["Images"]["eBullet"]),
+    eBullet2: newImage(resources["Images"]["eBullet2"]),
+    bossAll: newImage(resources["Images"]["bossAll"]),
+    bossRumia: newImage(resources["Images"]["bossRumia"]),
+    powerOrb: newImage(resources["Images"]["powerOrb"])
 };
 
 const jade = {};
 
 export function drawSticker(type, color) {
-    let x = 0, y = 0, w = 16, h = 16, can_hue = true, image = Images.e_bullet_1;
+    let x = 0, y = 0, w = 16, h = 16, canHue = true, image = Images.eBullet;
     switch (type) {
         case "laser":
             break;
         case "scale":
             y = 16;
-            can_hue = false;
+            canHue = false;
             break;
         case "ring":
             y = 32;
@@ -411,42 +444,42 @@ export function drawSticker(type, color) {
             h = 32;
             break;
         case "orb":
-            image = Images.e_bullet_2;
+            image = Images.eBullet2;
             w = 32;
             h = 32;
             break;
-        case "big_star":
-            image = Images.e_bullet_2;
+        case "bigStar":
+            image = Images.eBullet2;
             y = 32;
             w = 32;
             h = 32;
             break;
         case "knife":
-            image = Images.e_bullet_2;
+            image = Images.eBullet2;
             y = 64;
             w = 32;
             h = 32;
             break;
         case "heart":
-            image = Images.e_bullet_2;
+            image = Images.eBullet2;
             y = 96;
             w = 32;
             h = 32;
             break;
         case "butterfly":
-            image = Images.e_bullet_2;
+            image = Images.eBullet2;
             y = 128;
             w = 32;
             h = 32;
             break;
         case "oval":
-            image = Images.e_bullet_2;
+            image = Images.eBullet2;
             y = 160;
             w = 32;
             h = 32;
             break;
         case "big":
-            image = Images.e_bullet_2;
+            image = Images.eBullet2;
             y = 192;
             w = 64;
             h = 64;
@@ -457,7 +490,7 @@ export function drawSticker(type, color) {
     if (isNaN(color)) {
         switch (color) {
             case "dimgray":
-                if (type === "coin" || type === "scale" || type === "big_star") {
+                if (type === "coin" || type === "scale" || type === "bigStar") {
                     throw new Error("dimgray " + type + " is not supported.")
                 }
                 break;
@@ -468,7 +501,7 @@ export function drawSticker(type, color) {
                 x += w;
                 break;
             case "crimson":
-                if (type === "coin" || type === "scale" || type === "big_star") {
+                if (type === "coin" || type === "scale" || type === "bigStar") {
                     throw new Error("crimson " + type + " is not supported.")
                 }
                 x += 2 * w;
@@ -506,13 +539,13 @@ export function drawSticker(type, color) {
                 }
                 break;
             case "khaki":
-                if (type === "coin" || type === "scale" || type === "big_star") {
+                if (type === "coin" || type === "scale" || type === "bigStar") {
                     throw new Error("darkorange " + type + " is not supported.")
                 }
                 x += 6 * w;
                 break;
             case "yellowgreen":
-                if (type === "coin" || type === "scale" || type === "big_star") {
+                if (type === "coin" || type === "scale" || type === "bigStar") {
                     throw new Error("yellowgreen " + type + " is not supported.")
                 }
                 x += 7 * w;
@@ -524,7 +557,7 @@ export function drawSticker(type, color) {
                 x += 8 * w;
                 break;
             case "aqua":
-                if (type === "coin" || type === "scale" || type === "big_star") {
+                if (type === "coin" || type === "scale" || type === "bigStar") {
                     throw new Error("aqua " + type + " is not supported.")
                 }
                 x += 9 * w;
@@ -542,7 +575,7 @@ export function drawSticker(type, color) {
                 x += 11 * w;
                 break;
             case "darkblue":
-                if (type === "coin" || type === "scale" || type === "big_star") {
+                if (type === "coin" || type === "scale" || type === "bigStar") {
                     throw new Error("darkblue " + type + " is not supported.")
                 }
                 x += 12 * w;
@@ -580,7 +613,7 @@ export function drawSticker(type, color) {
         const ctx = layer0.getContext("2d");
         ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
         if (!isNaN(color)) {
-            if (!can_hue) {
+            if (!canHue) {
                 throw new Error(type + " Color: " + color + " is not supported.")
             }
             ctx.putImageData(editImage(ctx.getImageData(0, 0, w, h), function (r, g, b) {
@@ -614,9 +647,9 @@ export const Sounds = {
     option: newAudio(resources["Sounds"]["option"]),
     miss: newAudio(resources["Sounds"]["miss"]),
     shoot: newAudio(resources["Sounds"]["shoot"]),
-    power_up: newAudio(resources["Sounds"]["power_up"]),
+    powerUp: newAudio(resources["Sounds"]["powerUp"]),
     item: newAudio(resources["Sounds"]["item"]),
-    change_track: newAudio(resources["Sounds"]["change_track"]),
+    changeTrack: newAudio(resources["Sounds"]["changeTrack"]),
     graze: newAudio(resources["Sounds"]["graze"]),
     failure: newAudio(resources["Sounds"]["failure"]),
     gun: newAudio(resources["Sounds"]["gun"]),
@@ -624,13 +657,13 @@ export const Sounds = {
     timeout1: newAudio(resources["Sounds"]["timeout1"]),
     damage: newAudio(resources["Sounds"]["damage"]),
     damage1: newAudio(resources["Sounds"]["damage1"]),
-    card_get: newAudio(resources["Sounds"]["card_get"]),
+    cardGet: newAudio(resources["Sounds"]["cardGet"]),
     bonus: newAudio(resources["Sounds"]["bonus"]),
     cat0: newAudio(resources["Sounds"]["cat0"]),
     en_ep_1: newAudio(resources["Sounds"]["en_ep_1"]),
     en_ep_2: newAudio(resources["Sounds"]["en_ep_2"]),
     slash: newAudio(resources["Sounds"]["slash"]),
-    bomb_shoot: newAudio(resources["Sounds"]["bomb_shoot"])
+    bombShoot: newAudio(resources["Sounds"]["bombShoot"])
 };
 
 const stopSounds = [];
@@ -661,5 +694,5 @@ export function cancelAllSound() {
 }
 
 window.score = 0;
-window.h_score = save["highScore"];
+window.highScore = save["highScore"];
 window.slow = false;

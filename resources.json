@@ -9,21 +9,23 @@
             "life": "sidebar/life.png"
         },
         "player": {
-            "rumia_shot": "player/rumia_shot.png"
+            "rumiaShot": "player/rumia_shot.png"
         },
         "error": "error.jpg",
-        "border_line": "border_line.png",
-        "ply_border_01": "ply_border_01.png",
-        "spell_name": "spell_name.png",
-        "spell_practice": "spell_practice.png",
-        "enemy_marker": "enemy_marker.png",
-        "boss_effect_01": "boss_effect_01.png",
-        "img_bonus_01": "img_bonus_01.png",
-        "img_bonus_02": "img_bonus_02.png",
-        "e_bullet_1": "ebullet_1.png",
-        "e_bullet_2": "ebullet_2.png",
-        "boss_all_01": "boss_all_01.png",
-        "power_orb": "power_orb.png"
+        "borderLine": "border_line.png",
+        "playerBorder": "ply_border_01.png",
+        "spellName": "spell_name.png",
+        "spellPractice": "spell_practice.png",
+        "enemyMarker": "enemy_marker.png",
+        "enemyCircle": "enemy_circle_06.png",
+        "bossEffect": "boss_effect_01.png",
+        "getSpellCardBonus": "img_bonus_01.png",
+        "BonusFailure": "img_bonus_02.png",
+        "eBullet": "ebullet_1.png",
+        "eBullet2": "ebullet_2.png",
+        "bossAll": "boss_all_01.png",
+        "bossRumia": "boss_01_11.png",
+        "powerOrb": "power_orb.png"
     },
     "Sounds": {
         "loading": "loading.flac",
@@ -38,21 +40,21 @@
         "option": "option.wav",
         "miss": "dead.wav",
         "shoot": "shoot.wav",
-        "power_up": "power_up.wav",
+        "powerUp": "power_up.wav",
         "item": "item.wav",
-        "change_track": "change_track.wav",
+        "changeTrack": "change_track.wav",
         "graze": "graze.wav",
         "gun": "gun.wav",
         "timeout": "timeout.wav",
         "timeout1": "timeout_1.wav",
         "damage": "damage.wav",
         "damage1": "damage_1.wav",
-        "card_get": "card_get.wav",
+        "cardGet": "card_get.wav",
         "bonus": "bonus.wav",
         "cat0": "cat_0.wav",
         "en_ep_1": "en_ep_1.wav",
         "en_ep_2": "en_ep_2.wav",
         "slash": "slash.wav",
-        "bomb_shoot": "bomb_shoot.wav"
+        "bombShoot": "bomb_shoot.wav"
     }
 }

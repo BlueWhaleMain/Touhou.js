@@ -1,4 +1,4 @@
-import prefabs from "../prefabs.js";
+import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
 import bullet from "../components/bullet.js";
 import {ABox, arrowTo, drawSticker, getLayer, Sounds, L, Tags} from "../util.js";
@@ -7,12 +7,11 @@ let _;
 
 const ctx = getLayer(1);
 export default function jade(type, color, x, y, mx, my, rotate) {
-    const inst = new prefabs();
+    const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
     inst.addComponent("bullet", bullet);
     inst.tags.add(Tags.hostile);
-    inst.X = x;
-    inst.Y = y;
+
     inst.DX = 0;
     inst.DY = 0;
     inst.type = type;
@@ -71,7 +70,7 @@ export default function jade(type, color, x, y, mx, my, rotate) {
             inst.atkBox = new ABox(8);
             symmetric = true;
             break;
-        case "big_star":
+        case "bigStar":
             inst.sizeBox = new ABox(16);
             inst.atkBox = new ABox(8);
             break;
@@ -105,7 +104,7 @@ export default function jade(type, color, x, y, mx, my, rotate) {
                 rotate = Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90
             }
             let draw;
-            if (inst.components["bullet"].graze_state) {
+            if (inst.components["bullet"].grazeState) {
                 draw = image.graze
             } else {
                 draw = image.layer0
@@ -122,7 +121,7 @@ export default function jade(type, color, x, y, mx, my, rotate) {
         }
     });
     inst.spy = function (delay, target, speed) {
-        inst.addComponent("spy_" + delay, function () {
+        inst.addComponent("spy" + delay, function () {
             this.delay = delay;
             this.tick = function (inst) {
                 inst.delay--;
@@ -132,9 +131,9 @@ export default function jade(type, color, x, y, mx, my, rotate) {
                     }
                     inst.components["movable"].MX = speed[0];
                     inst.components["movable"].MY = speed[1];
-                    Sounds.change_track.currentTime = 0;
-                    _ = Sounds.change_track.play();
-                    inst.removeComponent("spy_" + delay)
+                    Sounds.changeTrack.currentTime = 0;
+                    _ = Sounds.changeTrack.play();
+                    inst.removeComponent("spy" + delay)
                 }
             }
         });

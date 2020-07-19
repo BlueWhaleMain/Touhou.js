@@ -1,18 +1,26 @@
-import card_util from "../card_util.js";
+import CardUtil from "../card_util.js";
 import {arrowTo, entities, L, Sounds, transTo} from "../util.js";
 import jade from "../prefabs/jade.js";
 
 let _;
-export default function night_bird(edit) {
+export default function nightBird(edit) {
     let frame = 0;
     let c = 0;
+    let delay = 120;
     const cardData = {
         name: "夜符「Night Bird」",
-        slow_frame: 0,
-        start_frame: 100,
+        slowFrame: 0,
+        startFrame: 120,
         time: 6000,
         bonus: 500000,
         card: function (card) {
+            if (delay > 0) {
+                if (card.entity.components["health"]) {
+                    card.entity.components["health"].indestructible = true
+                }
+                delay--;
+                return
+            }
             if (0 < frame && frame < 17) {
                 let j = frame;
                 for (let k = 0; k < 3; k++) {
@@ -20,8 +28,8 @@ export default function night_bird(edit) {
                     speed = transTo(speed[0], speed[1], (90 - 90 / 16 * j - 3) * L);
                     entities.push(jade("ring", "water", card.entity.X, card.entity.Y, speed[0], speed[1]))
                 }
-                Sounds.bomb_shoot.currentTime = 0;
-                _ = Sounds.bomb_shoot.play()
+                Sounds.bombShoot.currentTime = 0;
+                _ = Sounds.bombShoot.play()
             }
             if (17 < frame && frame < 33) {
                 let j = frame - 16;
@@ -30,8 +38,8 @@ export default function night_bird(edit) {
                     speed = transTo(speed[0], speed[1], (-90 + 90 / 16 * j) * L);
                     entities.push(jade("ring", "purple", card.entity.X, card.entity.Y, speed[0], speed[1]))
                 }
-                Sounds.bomb_shoot.currentTime = 0;
-                _ = Sounds.bomb_shoot.play()
+                Sounds.bombShoot.currentTime = 0;
+                _ = Sounds.bombShoot.play()
             }
             frame++;
             if (frame > 48) {
@@ -51,7 +59,7 @@ export default function night_bird(edit) {
                     }
                 }
                 if (Math.random() > 0.5) {
-                    if (card.entity.Y < 332) {
+                    if (card.entity.Y < 280) {
                         card.Y += 40
                     }
                 } else {
@@ -65,7 +73,7 @@ export default function night_bird(edit) {
                 if (card.entity.X < 200) {
                     card.X += 0.2
                 }
-                if (card.entity.Y > 332) {
+                if (card.entity.Y > 280) {
                     card.Y -= 0.2
                 }
                 if (card.entity.Y < 200) {
@@ -77,5 +85,5 @@ export default function night_bird(edit) {
     if (typeof edit === "function") {
         edit(cardData)
     }
-    return new card_util(cardData)
+    return new CardUtil(cardData)
 }

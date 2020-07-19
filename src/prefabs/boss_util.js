@@ -1,37 +1,55 @@
-import prefabs from "../prefabs.js";
+import Prefab from "../prefab.js";
 import health from "../components/health.js";
-import {getLayer, Tags, Images, Sounds, L, entities} from "../util.js";
-import en_ep_ball from "./en_ep_ball.js";
+import {getLayer, Tags, Images, Sounds, L, entities, eventListenerObject} from "../util.js";
+import en_epBall from "./en_ep_ball.js";
 
 let _;
 
 const ctx = getLayer(1);
-export default function boss_util() {
-    const inst = new prefabs();
-    inst.die_frame = 0;
+export default function BossUtil(x, y, cards) {
+    const inst = new Prefab(x, y);
+    inst.dieFrame = 0;
     inst.dead = false;
+    let step = 0;
+    let used = 0;
+    eventListenerObject.addEventListener("bomb", function () {
+        if (inst.card) {
+            inst.card.cancelBonus()
+        }
+    });
     inst.addComponent("BossTick", function () {
         this.tick = function (inst) {
+            if (inst.card) {
+                if (inst.card.tick()) {
+                    inst.card = null;
+                    used++
+                }
+            } else {
+                step++;
+                if (cards[step]) {
+                    inst.card = cards[step].start(inst)
+                }
+            }
             if (inst.tags.has(Tags.death)) {
                 if (inst.components["health"].getValue() <= inst.components["health"].getMin()) {
-                    if (inst.die_frame > 0) {
-                        if (inst.die_frame > 60) {
-                            if (inst.die_frame % 6 === 0) {
-                                Sounds.bomb_shoot.currentTime = 0;
-                                _ = Sounds.bomb_shoot.play()
+                    if (inst.dieFrame > 0) {
+                        if (inst.dieFrame > 60) {
+                            if (inst.dieFrame % 6 === 0) {
+                                Sounds.bombShoot.currentTime = 0;
+                                _ = Sounds.bombShoot.play()
                             }
-                            if (inst.die_frame > 180) {
+                            if (inst.dieFrame > 180) {
                                 Sounds.en_ep_1.currentTime = 0;
                                 _ = Sounds.en_ep_1.play();
                                 inst.dead = true
                             }
-                            entities.push(en_ep_ball(inst.X, inst.Y, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20))
+                            entities.push(en_epBall(inst.X, inst.Y, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20))
                         }
-                    } else if (inst.die_frame === 0) {
+                    } else if (inst.dieFrame === 0) {
                         Sounds.en_ep_2.currentTime = 0;
                         _ = Sounds.en_ep_2.play();
                     }
-                    inst.die_frame++
+                    inst.dieFrame++
                 } else {
                     if (inst.Y < -64) {
                         inst.dead = true
@@ -39,11 +57,14 @@ export default function boss_util() {
                     inst.Y -= 4
                 }
             } else {
-                inst.die_frame = 0;
+                inst.dieFrame = 0;
                 if (inst.atkBox.isHit(inst.X, inst.Y, player.X, player.Y, player.hitBox)) {
                     if (player.indTime <= 0) {
                         player.die()
                     }
+                }
+                if (used === cards.length) {
+                    inst.tags.add(Tags.death)
                 }
             }
         }
@@ -65,11 +86,14 @@ export default function boss_util() {
             ctx.arc(0, 0, 100, Math.PI * 2, Math.PI * 2 * (1 - (inst.components["health"].getValue() / inst.components["health"].getMax())), true);
             ctx.stroke();
             ctx.restore();
-            if (inst.die_frame > 0 && inst.die_frame < 60) {
-                ctx.drawImage(Images.boss_effect_01, inst.X - inst.die_frame * 8, inst.Y - inst.die_frame * 8, inst.die_frame * 16, inst.die_frame * 16)
+            if (inst.dieFrame > 0 && inst.dieFrame < 60) {
+                ctx.drawImage(Images.bossEffect, inst.X - inst.dieFrame * 8, inst.Y - inst.dieFrame * 8, inst.dieFrame * 16, inst.dieFrame * 16)
             }
-            if (inst.die_frame > 120 && inst.die_frame < 180) {
-                ctx.drawImage(Images.boss_effect_01, inst.X - (inst.die_frame - 120) * 8, inst.Y - (inst.die_frame - 120) * 8, (inst.die_frame - 120) * 16, (inst.die_frame - 120) * 16)
+            if (inst.dieFrame > 120 && inst.dieFrame < 180) {
+                ctx.drawImage(Images.bossEffect, inst.X - (inst.dieFrame - 120) * 8, inst.Y - (inst.dieFrame - 120) * 8, (inst.dieFrame - 120) * 16, (inst.dieFrame - 120) * 16)
+            }
+            if (inst.card) {
+                inst.card.draw()
             }
         }
     });

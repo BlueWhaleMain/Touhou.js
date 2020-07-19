@@ -6,14 +6,14 @@ let _;
 const cache = document.createElement("canvas");
 cache.width = 832;
 cache.height = 1056;
-const cache_draw = cache.getContext("2d");
+const cacheDraw = cache.getContext("2d");
 Images.background["03_02"].addEventListener("load", function () {
-    cache_draw.fillStyle = cache_draw.createPattern(Images.background["03_02"], "repeat");
-    cache_draw.fillRect(0, 0, cache.width, cache.height);
+    cacheDraw.fillStyle = cacheDraw.createPattern(Images.background["03_02"], "repeat");
+    cacheDraw.fillRect(0, 0, cache.width, cache.height);
 });
 const ctx = getLayer(0);
 const ctx2 = getLayer(2);
-export default function TestStage() {
+export default function SpellPractice() {
     const inst = {};
     let timestamp = 0;
     inst.tick = function () {
@@ -42,7 +42,7 @@ export default function TestStage() {
             } else {
                 ctx2.fillStyle = "white"
             }
-            ctx2.fillText("TestStage", 358, 288);
+            ctx2.fillText("SpellPractice", 358, 288);
             ctx2.font = "16px Comic Sans MS";
             ctx2.fillText("BGM - 東方妖怪小町", 678, 940);
             ctx2.restore();
@@ -50,7 +50,7 @@ export default function TestStage() {
         ctx.restore()
     };
     inst.clear = function () {
-        save["highScore"] = h_score;
+        save["highScore"] = highScore;
         saveToFile(save)
     };
     inst.end = function () {

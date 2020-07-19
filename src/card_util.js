@@ -1,14 +1,15 @@
-import {clear_screen, Tags, Sounds, getLayer, Images, entities} from "./util.js";
-import green_orb from "./prefabs/green_orb.js";
-import prefabs from "./prefabs.js";
+import {clearEntity, Tags, Sounds, getLayer, Images, entities} from "./util.js";
+import greenOrb from "./prefabs/green_orb.js";
+import Prefab from "./prefab.js";
 
 let _;
 
-const ctx = getLayer(2);
-export default function card_util(option) {
-    let slow_frame = option.slow_frame || 0;
+const ctx = getLayer(0);
+const ctx2 = getLayer(2);
+export default function CardUtil(option) {
+    let slowFrame = option.slowFrame || 0;
     let time = 0;
-    let start_frame = option.start_frame || 0;
+    let startFrame = option.startFrame || 0;
     let isEnd = false;
     let bonus = 0;
     let noCardFrame = option.noCardFrame || 0;
@@ -17,7 +18,7 @@ export default function card_util(option) {
     this.isStart = false;
     this.isOpen = false;
     this.X = option.X || 440;
-    this.Y = option.Y || 300;
+    this.Y = option.Y || 250;
     this.checkPOS = function () {
         if (this.entity.X > this.X) {
             this.entity.X -= 1
@@ -38,57 +39,51 @@ export default function card_util(option) {
             this.entity.Y = this.Y
         }
     };
+    this.cancelBonus = function () {
+        option.bonus = 0
+    };
     this.open = function () {
         if (!this.isOpen) {
             if (option.noCard) {
                 noCardFrame = 0;
-                clear_screen(function (entity) {
+                clearEntity(function (entity) {
                     if (entity.tags.has(Tags.hostile)) {
-                        entities.push(green_orb(entity.X, entity.Y, 0, -2, "small", true));
+                        entities.push(greenOrb(entity.X, entity.Y, 0, -2, "small", true));
                         return true
                     }
-                });
-                this.drop()
+                })
             }
+            if (typeof option.open === "function") {
+                option.open(this)
+            }
+            this.entity.showTexture = true;
             Sounds.cat0.currentTime = 0;
             _ = Sounds.cat0.play();
-            start_frame = option.start_frame || 0;
+            startFrame = option.startFrame || 0;
             time = option.time;
             this.isOpen = true;
         }
     };
     this.tick = function () {
-        ctx.drawImage(Images.spell_name, 570, 28);
-        ctx.save();
-        ctx.font = "16px Comic Sans MS";
-        ctx.fillStyle = "white";
-        ctx.shadowColor = "black";
-        ctx.shadowBlur = 5;
-        ctx.fillText(option.name, 678, 58);
-        ctx.restore();
-        if (start_frame > 0) {
+        if (startFrame > 0) {
             this.checkPOS();
             if (this.entity.components["health"]) {
                 this.entity.components["health"].indestructible = true
             }
-            start_frame--;
+            startFrame--;
             return
         }
         timeStr = Math.min(Math.floor(time / 60), 99);
         if (timeStr.toString().length < 2) {
             timeStr = "0" + timeStr
         }
-        ctx.save();
-        ctx.fillStyle = "white";
         if (time !== 0 && time % 60 === 0) {
             if (time <= 180) {
-                ctx.fillStyle = "red";
                 Sounds.timeout1.currentTime = 0;
                 _ = Sounds.timeout1.play()
             } else {
                 if (time <= 600) {
                     this.entity.defendTime = false;
-                    ctx.fillStyle = "orange";
                     Sounds.timeout.currentTime = 0;
                     _ = Sounds.timeout.play()
                 } else {
@@ -96,9 +91,6 @@ export default function card_util(option) {
                 }
             }
         }
-        ctx.font = "20px Comic Sans MS";
-        ctx.fillText(timeStr, 806, 38);
-        ctx.restore();
         if (noCardFrame > 0) {
             this.entity.defendTime = true;
             noCardFrame--;
@@ -127,16 +119,16 @@ export default function card_util(option) {
                     }
                     if (!isEnd) {
                         window.score += bonus;
-                        Sounds.card_get.currentTime = 0;
-                        _ = Sounds.card_get.play();
+                        Sounds.cardGet.currentTime = 0;
+                        _ = Sounds.cardGet.play();
                         isEnd = true
                     }
-                    if (slow_frame > 0) {
-                        slow_frame--
+                    if (slowFrame > 0) {
+                        slowFrame--
                     } else {
-                        clear_screen(function (entity) {
+                        clearEntity(function (entity) {
                             if (entity.tags.has(Tags.hostile)) {
-                                entities.push(green_orb(entity.X, entity.Y, 0, -2, "small", true));
+                                entities.push(greenOrb(entity.X, entity.Y, 0, -2, "small", true));
                                 return true
                             }
                         });
@@ -146,18 +138,18 @@ export default function card_util(option) {
                         if (bonus > 0) {
                             Sounds.bonus.currentTime = 0;
                             _ = Sounds.bonus.play();
-                            if (typeof option.bonus_callback === "function") {
-                                option.bonus_callback(this)
-                            }
-                            entities.push(new prefabs().init(function (inst) {
+                            // if (typeof option.bonusCallback === "function") {
+                            //     option.bonusCallback(this)
+                            // }
+                            entities.push(new Prefab().init(function (inst) {
                                 const cache = document.createElement("canvas");
                                 cache.width = 480;
                                 cache.height = 84;
-                                const cache_ctx = cache.getContext("2d");
-                                cache_ctx.drawImage(Images.img_bonus_01, 0, 0);
-                                cache_ctx.font = "20px sans-serif";
-                                cache_ctx.fillStyle = "white";
-                                cache_ctx.fillText(String(bonus), 200, 74, 480);
+                                const cacheCtx = cache.getContext("2d");
+                                cacheCtx.drawImage(Images.getSpellCardBonus, 0, 0);
+                                cacheCtx.font = "20px sans-serif";
+                                cacheCtx.fillStyle = "white";
+                                cacheCtx.fillText(String(bonus), 200, 74, 480);
                                 let opacity = 0;
                                 inst.addComponent("tick", function () {
                                     let frame = 0;
@@ -177,17 +169,19 @@ export default function card_util(option) {
                                     return self
                                 });
                                 inst.addLayer("draw", function () {
-                                    this.draw = function () {
-                                        ctx.save();
-                                        ctx.globalAlpha = opacity;
-                                        ctx.drawImage(cache, 220, 280);
-                                        ctx.restore()
-                                    }
+                                    const self = {};
+                                    self.draw = function () {
+                                        ctx2.save();
+                                        ctx2.globalAlpha = opacity;
+                                        ctx2.drawImage(cache, 220, 280);
+                                        ctx2.restore()
+                                    };
+                                    return self
                                 })
                             }))
                         } else {
-                            entities.push(new prefabs().init(function (inst) {
-                                const cache = Images.img_bonus_02.cloneNode(true);
+                            entities.push(new Prefab().init(function (inst) {
+                                const cache = Images.BonusFailure.cloneNode(true);
                                 let opacity = 0;
                                 inst.addComponent("tick", function () {
                                     let frame = 0;
@@ -207,12 +201,14 @@ export default function card_util(option) {
                                     return self
                                 });
                                 inst.addLayer("draw", function () {
-                                    this.draw = function () {
-                                        ctx.save();
-                                        ctx.globalAlpha = opacity;
-                                        ctx.drawImage(cache, 300, 240);
-                                        ctx.restore()
-                                    }
+                                    const self = {};
+                                    self.draw = function () {
+                                        ctx2.save();
+                                        ctx2.globalAlpha = opacity;
+                                        ctx2.drawImage(cache, 300, 240);
+                                        ctx2.restore()
+                                    };
+                                    return self
                                 })
                             }))
                         }
@@ -222,6 +218,51 @@ export default function card_util(option) {
                     this.open()
                 }
             }
+        }
+    };
+    this.draw = function () {
+        if (startFrame <= 0) {
+            ctx.save();
+            ctx.translate(this.entity.X, this.entity.Y);
+            ctx.rotate(time / 24);
+            ctx.scale(time / option.time * 4, time / option.time * 4);
+            ctx.drawImage(Images.enemyCircle, -128, -128);
+            ctx.restore();
+            ctx2.save();
+            ctx2.fillStyle = "white";
+            if (time !== 0 && time % 60 === 0) {
+                if (time <= 180) {
+                    ctx2.fillStyle = "red"
+                } else {
+                    if (time <= 600) {
+                        ctx2.fillStyle = "orange"
+                    }
+                }
+            }
+            ctx2.font = "20px Comic Sans MS";
+            ctx2.fillText(timeStr, 806, 38);
+            ctx2.restore();
+        }
+        if (this.isOpen) {
+            let layout = startFrame * 8;
+            if (layout > 200) {
+                layout = 200
+            }
+            ctx2.drawImage(Images.spellName, 570, 28 + layout * 3);
+            ctx2.save();
+            ctx2.font = "16px Comic Sans MS";
+            ctx2.fillStyle = "white";
+            ctx2.shadowColor = "black";
+            ctx2.shadowBlur = 5;
+            ctx2.fillText(option.name, 678, 58 + layout * 3);
+            ctx2.font = "12px Comic Sans MS";
+            let temp = Math.floor(option.bonus * time / option.time);
+            if (temp > 0) {
+                ctx2.fillText("Bonus " + temp, 650, 70 + layout * 3);
+            } else {
+                ctx2.fillText("Bonus failure", 650, 70 + layout * 3);
+            }
+            ctx2.restore();
         }
     };
     this.start = function (inst) {

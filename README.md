@@ -6,12 +6,7 @@
 
 asset文件夹内部有许多未授权引用的外部文件，来源将后续在wiki中补充
 
-尚未设计独立关卡，可以在Test中查看弹幕演示，也可以修改index.js中的TestStage函数测试不同逻辑
-
-Test默认演示 夜符「Night Bird」
-
-启动速度过慢时，设置 config.json `"FastStart": true`
-这可能导致启动音效不播放
+需要慢速切换场景时，设置 config.json `"FastStart": false`
 
 ## 重构说明
 1、作为离线直接运行的网页项目，将渲染与弹幕引擎封装，脱离LayUi依赖，全部采用Canvas绘制（WebGL也可）

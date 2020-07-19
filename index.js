@@ -13,15 +13,16 @@ import {
     Tags,
     boss,
     pkg,
+    eventListenerObject,
     updateEntity,
     rendererEntity
 } from "./src/util.js";
-import menu_item from "./src/prefabs/menu_item.js";
-import menu_star from "./src/prefabs/menu_star.js";
-import rumia from "./src/prefabs/player/rumia.js";
-import TestStage from "./src/stage/TestStage.js";
-import boss_rumia from "./src/prefabs/boss/rumia.js";
-import night_bird from "./src/cards/night_bird.js";
+import menuItem from "./src/prefabs/menu_item.js";
+import menuStar from "./src/prefabs/menu_star.js";
+import Rumia from "./src/prefabs/player/rumia.js";
+import SpellPractice from "./src/stage/spell_practice.js";
+import bossRumia from "./src/prefabs/boss/rumia.js";
+import nightBird from "./src/cards/night_bird.js";
 
 CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
     if (w < 2 * r) r = w / 2;
@@ -56,12 +57,12 @@ const customEventShoot = new CustomEvent("shoot", {
     bubbles: 'true',
     cancelable: 'true'
 });
-const customEventBomb = new CustomEvent("bomb", {
-    bubbles: 'true',
-    cancelable: 'true'
-});
+// const customEventBomb = new CustomEvent("bomb", {
+//     bubbles: 'true',
+//     cancelable: 'true'
+// });
 const ctx2 = getLayer(2);
-let stage, pause = false, end = false, failure = false;
+let stage, pause = false, end = false, failure = false, canMove = false;
 
 function runSpellPractice() {
     if (stage) {
@@ -77,12 +78,15 @@ function runSpellPractice() {
             ctx2.font = "25px sans-serif";
             ctx2.fillText(window.score, 400, 340);
             ctx2.restore();
-            if (keys.has("z")) {
-                end = false;
-                loadMainMenu()
+            if (Sounds.en_ep_2.paused && Sounds.en_ep_1.paused) {
+                if (keys.has("z")) {
+                    end = false;
+                    window.practice = false;
+                    loadMainMenu()
+                }
             }
             keys.clear();
-            rendererGUI(true);
+            rendererGUI();
             return
         } else if (boss.length === 0) {
             stage.clear();
@@ -91,11 +95,21 @@ function runSpellPractice() {
             return
         }
     } else {
-        window.player = rumia(true);
+        window.player = Rumia();
         player.power = 400;
-        stage = TestStage();
-        boss.push(boss_rumia(440, 300, 8000, {
-            60: night_bird(),
+        window.practice = false;
+        stage = SpellPractice();
+        canMove = false;
+        boss.push(bossRumia(440, 250, 8000, {
+            30: nightBird(function (cd) {
+                cd.open = function () {
+                    canMove = true;
+                    window.practice = true
+                };
+                cd.en_ep = function () {
+                    window.practice = false
+                }
+            }),
             length: 1
         }))
     }
@@ -109,7 +123,7 @@ function runSpellPractice() {
         stage.draw();
         for (let i = 0; i < boss.length; i++) {
             boss[i].draw();
-            ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
+            ctx2.drawImage(Images.enemyMarker, boss[i].X - 36, 942)
         }
         rendererEntity();
         ctx2.save();
@@ -117,24 +131,26 @@ function runSpellPractice() {
         ctx2.fillRect(0, 0, width, height);
         ctx2.font = "30px sans-serif";
         ctx2.fillStyle = "rgb(255,255,255)";
-        ctx2.fillText("Spell Card Practice Failure...", 220, 200);
+        ctx2.fillText("Spell Card Practice Failure...", 220, 450);
         ctx2.restore();
         if (!failure) {
             keys.clear();
             failure = true
         }
-        if (keys.has("z")) {
-            loadMainMenu();
-            failure = false;
-            Sounds.ok.currentTime = 0;
-            _ = Sounds.ok.play()
+        if (Sounds.miss.paused) {
+            if (keys.has("z")) {
+                loadMainMenu();
+                failure = false;
+                Sounds.ok.currentTime = 0;
+                _ = Sounds.ok.play()
+            }
         }
         keys.clear();
-        rendererGUI(true);
+        rendererGUI();
         return
     }
     if (pause) {
-        ctx2.drawImage(Images.border_line, 46, (1 - window.player.pickLine) * 940 - 68.6, 786, 157.2);
+        ctx2.drawImage(Images.borderLine, 46, (1 - window.player.pickLine) * 940 - 68.6, 786, 157.2);
         ctx2.save();
         ctx2.fillStyle = "rgba(255,0,10,0.4)";
         ctx2.fillRect(0, 0, width, height);
@@ -146,7 +162,7 @@ function runSpellPractice() {
         player.draw();
         for (let i = 0; i < boss.length; i++) {
             boss[i].draw();
-            ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
+            ctx2.drawImage(Images.enemyMarker, boss[i].X - 36, 942)
         }
         rendererEntity();
         stageMenuEntities.forEach(function (g) {
@@ -204,7 +220,7 @@ function runSpellPractice() {
                 boss.splice(i, 1)
             } else {
                 boss[i].draw();
-                ctx2.drawImage(Images.enemy_marker, boss[i].X - 36, 942)
+                ctx2.drawImage(Images.enemyMarker, boss[i].X - 36, 942)
             }
         }
         const kb = config["KeyBoard"];
@@ -215,27 +231,29 @@ function runSpellPractice() {
             keys.delete("escape");
             pause = true
         }
-        if (keys.has(kb["Up"].toLowerCase())) {
-            player.div.dispatchEvent(customEventUp)
-        }
-        if (keys.has(kb["Down"].toLowerCase())) {
-            player.div.dispatchEvent(customEventDown)
-        }
-        if (keys.has(kb["Left"].toLowerCase())) {
-            player.div.dispatchEvent(customEventLeft)
-        }
-        if (keys.has(kb["Right"].toLowerCase())) {
-            player.div.dispatchEvent(customEventRight)
-        }
-        if (keys.has(kb["Shoot"].toLowerCase())) {
-            player.div.dispatchEvent(customEventShoot)
-        }
-        if (keys.has(kb["Bomb"].toLowerCase())) {
-            player.div.dispatchEvent(customEventBomb)
+        if(canMove) {
+            if (keys.has(kb["Up"].toLowerCase())) {
+                eventListenerObject.dispatchEvent(customEventUp)
+            }
+            if (keys.has(kb["Down"].toLowerCase())) {
+                eventListenerObject.dispatchEvent(customEventDown)
+            }
+            if (keys.has(kb["Left"].toLowerCase())) {
+                eventListenerObject.dispatchEvent(customEventLeft)
+            }
+            if (keys.has(kb["Right"].toLowerCase())) {
+                eventListenerObject.dispatchEvent(customEventRight)
+            }
+            if (keys.has(kb["Shoot"].toLowerCase())) {
+                eventListenerObject.dispatchEvent(customEventShoot)
+            }
+            // if (keys.has(kb["Bomb"].toLowerCase())) {
+            //     eventListenerObject.dispatchEvent(customEventBomb)
+            // }
         }
         updateEntity()
     }
-    rendererGUI(true)
+    rendererGUI()
 }
 
 let guiBackground;
@@ -243,12 +261,12 @@ let guiBackground;
 const ctx = getLayer(0);
 const ctx1 = getLayer(1);
 
-function rendererGUI(practice) {
+function rendererGUI() {
     if (window.player.graze > config["GrazeMax"]) {
         window.player.graze = config["GrazeMax"]
     }
-    if (window.score > h_score) {
-        window.h_score = window.score
+    if (window.score > highScore) {
+        window.highScore = window.score
     }
     ctx1.save();
     if (!guiBackground) {
@@ -269,7 +287,7 @@ function rendererGUI(practice) {
     ctx1.fillStyle = "white";
     ctx1.shadowColor = "black";
     ctx1.shadowBlur = 5;
-    let s = h_score.toString();
+    let s = highScore.toString();
     while (s.length < 10) {
         s = "0" + s
     }
@@ -280,15 +298,15 @@ function rendererGUI(practice) {
     }
     ctx1.fillText("Score    " + s, 893, 160);
     ctx1.fillText("Player", 884, 198);
-    for (let i = 0; i < window.player.player_count; i++) {
+    for (let i = 0; i < window.player.playerCount; i++) {
         ctx1.drawImage(Images.sidebar.life, 1024 + i * 32, 172, 32, 32)
     }
     ctx1.fillText("Spell", 890, 236);
-    for (let i = 0; i < window.player.bomb_count; i++) {
+    for (let i = 0; i < window.player.bombCount; i++) {
         ctx1.drawImage(Images.sidebar.bomb, 1024 + i * 32, 206, 32, 32)
     }
-    if (practice) {
-        ctx1.drawImage(Images.spell_practice, 1024, 172, 240, 64)
+    if (window.practice) {
+        ctx1.drawImage(Images.spellPractice, 1024, 172, 240, 64)
     }
     ctx1.fillText("Power", 888, 274);
     s = window.player.power.toString();
@@ -305,7 +323,7 @@ function rendererGUI(practice) {
     ctx1.fillText("/", 1082, 274);
     ctx1.font = "20px Comic Sans MS";
     ctx1.fillText(s.substr(1, 2), 1052, 274);
-    s = window.player.power_max.toString();
+    s = window.player.powerMax.toString();
     while (true) {
         if (s.length < 3) {
             s = "0" + s
@@ -326,28 +344,28 @@ const win = gui["Window"].get();
 
 function loadMainMenu() {
     transitions(runMenu);
-    mainMenuEntities.push(menu_item(960, 550, "Game Start"));
-    mainMenuEntities.push(menu_item(960, 590, "Extra Start"));
-    mainMenuEntities.push(menu_item(960, 630, "Spell Practice"));
-    mainMenuEntities.push(menu_item(960, 670, "Replay"));
-    mainMenuEntities.push(menu_item(960, 710, "Play Data"));
-    mainMenuEntities.push(menu_item(960, 750, "Music Room"));
-    mainMenuEntities.push(menu_item(960, 790, "Option"));
-    mainMenuEntities.push(menu_item(960, 830, "Quit"));
+    mainMenuEntities.push(menuItem(960, 550, "Game Start"));
+    mainMenuEntities.push(menuItem(960, 590, "Extra Start"));
+    mainMenuEntities.push(menuItem(960, 630, "Spell Practice"));
+    mainMenuEntities.push(menuItem(960, 670, "Replay"));
+    mainMenuEntities.push(menuItem(960, 710, "Play Data"));
+    mainMenuEntities.push(menuItem(960, 750, "Music Room"));
+    mainMenuEntities.push(menuItem(960, 790, "Option"));
+    mainMenuEntities.push(menuItem(960, 830, "Quit"));
     mainMenuEntities[0].select();
 }
 
 function loadStageMenu() {
     stageMenuEntities.splice(0, stageMenuEntities.length);
-    stageMenuEntities.push(menu_item(100, 550, "解除暂停"));
-    stageMenuEntities.push(menu_item(100, 590, "返回至主菜单"));
-    stageMenuEntities.push(menu_item(100, 630, "从头开始"));
+    stageMenuEntities.push(menuItem(100, 550, "解除暂停"));
+    stageMenuEntities.push(menuItem(100, 590, "返回至主菜单"));
+    stageMenuEntities.push(menuItem(100, 630, "从头开始"));
     stageMenuEntities[0].select();
 }
 
 function runMenu() {
     while (entities.length < 256) {
-        entities.push(menu_star(Math.random() * width, Math.random() * height, 0, 0.5, Math.random() * 2));
+        entities.push(menuStar(Math.random() * width, Math.random() * height, 0, 0.5, Math.random() * 2));
     }
     if (Sounds.menu.paused) {
         _ = Sounds.menu.play()
@@ -513,9 +531,9 @@ function loading(f) {
         ctx.shadowColor = "black";
         ctx.shadowBlur = 2;
         ctx.fillStyle = "white";
-        ctx.fillText((window.loading_count / window.loading_total * 100).toFixed() + "%", 0, 958);
+        ctx.fillText((window.loadingCount / window.loadingTotal * 100).toFixed() + "%", 0, 958);
         ctx.restore();
-        if (window.loading_count === window.loading_total && (Sounds.loading.paused || config["FastStart"])) {
+        if (window.loadingCount === window.loadingTotal && (Sounds.loading.paused || config["FastStart"])) {
             if (!Sounds.loading.paused) {
                 Sounds.loading.pause();
                 Sounds.loading.currentTime = 0;

@@ -2,7 +2,7 @@ import {arrowTo, Tags} from "../util.js";
 
 export default function item() {
     this.spy = false;
-    this.config_movement = function (inst) {
+    this.configMovement = function (inst) {
         inst.components["movable"].flush = false;
         inst.components["movable"].grave = 0.05
     };

@@ -1,12 +1,12 @@
-import prefabs from "../prefabs.js";
+import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
 import {getLayer, height} from "../util.js";
 
 const MenuStarCache = {};
 
 const ctx = getLayer(0);
-export default function menu_star(x = 0, y = 0, mx = 0, my = 1, size = 2, color = "white") {
-    const inst = new prefabs();
+export default function menuStar(x = 0, y = 0, mx = 0, my = 1, size = 2, color = "white") {
+    const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
     if (size < 0) {
         size = -size
@@ -15,8 +15,7 @@ export default function menu_star(x = 0, y = 0, mx = 0, my = 1, size = 2, color 
         size++
     }
     let show = false;
-    inst.X = x;
-    inst.Y = y;
+
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.components["movable"].flush = false;
@@ -44,12 +43,12 @@ export default function menu_star(x = 0, y = 0, mx = 0, my = 1, size = 2, color 
                     cache.normalCanvas = document.createElement("canvas");
                     cache.normalCanvas.width = 2 * inst.size;
                     cache.normalCanvas.height = 2 * inst.size;
-                    const cache_draw = cache.normalCanvas.getContext("2d");
-                    cache_draw.fillStyle = inst.color;
-                    cache_draw.shadowColor = inst.color;
-                    cache_draw.shadowBlur = 1;
-                    cache_draw.arc(inst.size, inst.size, inst.size - 1, 0, 2 * Math.PI);
-                    cache_draw.fill();
+                    const cacheDraw = cache.normalCanvas.getContext("2d");
+                    cacheDraw.fillStyle = inst.color;
+                    cacheDraw.shadowColor = inst.color;
+                    cacheDraw.shadowBlur = 1;
+                    cacheDraw.arc(inst.size, inst.size, inst.size - 1, 0, 2 * Math.PI);
+                    cacheDraw.fill();
                 }
                 ctx.drawImage(cache.normalCanvas, inst.X - inst.size, inst.Y - inst.size)
             } else {

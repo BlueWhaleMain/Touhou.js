@@ -1,97 +1,120 @@
-import player_util from "../player_util.js";
-import {ABox, clear_screen, entities, getLayer, L, Images, Sounds, Tags, transTo, boss} from "../../util.js";
-import rumia_ball from "../rumia_ball.js";
-import green_orb from "../green_orb.js";
+import PlayerUtil from "../player_util.js";
+import {
+    ABox,
+    RBox,
+    clearEntity,
+    entities,
+    getLayer,
+    L,
+    Images,
+    Sounds,
+    Tags,
+    transTo,
+    boss,
+    eventListenerObject
+} from "../../util.js";
+import rumiaBall from "../rumia_ball.js";
+import greenOrb from "../green_orb.js";
 
 let _;
 
 const ctx = getLayer(0);
-const rumia_normal = [];
-const rumia_left = [];
-const rumia_right = [];
-Images.player.rumia_shot.addEventListener("load", function () {
+const ctx1 = getLayer(1);
+const rumiaNormal = [];
+const rumiaLeft = [];
+const rumiaRight = [];
+Images.player.rumiaShot.addEventListener("load", function () {
     for (let i = 0; i < 8; i++) {
-        rumia_normal[i] = document.createElement("canvas");
-        rumia_normal[i].width = 32;
-        rumia_normal[i].height = 48;
-        let ctx = rumia_normal[i].getContext("2d");
-        ctx.drawImage(Images.player.rumia_shot, i * 32, 0, 32, 48, 0, 0, 32, 48);
-        rumia_left[i] = document.createElement("canvas");
-        rumia_left[i].width = 32;
-        rumia_left[i].height = 48;
-        ctx = rumia_left[i].getContext("2d");
-        ctx.drawImage(Images.player.rumia_shot, i * 32, 48, 32, 48, 0, 0, 32, 48);
-        rumia_right[i] = document.createElement("canvas");
-        rumia_right[i].width = 32;
-        rumia_right[i].height = 48;
-        ctx = rumia_right[i].getContext("2d");
-        ctx.drawImage(Images.player.rumia_shot, i * 32, 96, 32, 48, 0, 0, 32, 48);
+        rumiaNormal[i] = document.createElement("canvas");
+        rumiaNormal[i].width = 32;
+        rumiaNormal[i].height = 48;
+        let ctx = rumiaNormal[i].getContext("2d");
+        ctx.drawImage(Images.player.rumiaShot, i * 32, 0, 32, 48, 0, 0, 32, 48);
+        rumiaLeft[i] = document.createElement("canvas");
+        rumiaLeft[i].width = 32;
+        rumiaLeft[i].height = 48;
+        ctx = rumiaLeft[i].getContext("2d");
+        ctx.drawImage(Images.player.rumiaShot, i * 32, 48, 32, 48, 0, 0, 32, 48);
+        rumiaRight[i] = document.createElement("canvas");
+        rumiaRight[i].width = 32;
+        rumiaRight[i].height = 48;
+        ctx = rumiaRight[i].getContext("2d");
+        ctx.drawImage(Images.player.rumiaShot, i * 32, 96, 32, 48, 0, 0, 32, 48);
     }
 });
 
-export default function rumia(practice) {
-    const inst = player_util();
-    let normal_frame = 0;
-    let move_frame = 0;
-    inst.hitBox = new ABox(3);
-    inst.grazeBox = new ABox(16);
-    inst.pickBox = new ABox(60);
+export default function Rumia() {
+    const inst = PlayerUtil();
+    let normalFrame = 0;
+    let moveFrame = 0;
+    inst.hitBox = new ABox(2);
+    inst.grazeBox = new ABox(8);
+    inst.pickBox = new ABox(40);
+    inst.sizeBox = new RBox(32, 48);
     inst.pickLine = 3 / 4;
-    if (practice) {
-        inst.missCallBack = function () {
-            inst.tags.add(Tags.death)
-        }
-    }
+    inst.inScreen();
     inst.addComponent("Rumia", function () {
         this.tick = function () {
-            if (inst.hide_time > 0) {
+            if (textureOpacity > 0) {
+                textureLayout -= 2.5;
+                textureOpacity += layout;
+                if (textureOpacity > 1 && textureLayout < 840) {
+                    textureOpacity = 1;
+                    layout = -0.01
+                }
+            }
+            if (inst.hideTime > 0) {
                 return
             }
-            if (move_frame) {
-                if (move_frame > 0) {
-                    move_frame -= 0.5
+            if (moveFrame) {
+                if (moveFrame > 0) {
+                    moveFrame -= 0.5
                 } else {
-                    move_frame += 0.5
+                    moveFrame += 0.5
                 }
-                if (move_frame > 7 || move_frame < -7) {
-                    move_frame = 0
+                if (moveFrame > 7 || moveFrame < -7) {
+                    moveFrame = 0
                 }
             } else {
-                normal_frame += 0.1;
-                if (normal_frame > 7) {
-                    normal_frame = 0
+                normalFrame += 0.1;
+                if (normalFrame > 7) {
+                    normalFrame = 0
                 }
             }
         }
     });
     inst.addLayer("Rumia", function () {
         this.draw = function () {
-            if (inst.hide_time > 0) {
-                return
+            if (textureOpacity > 0) {
+                ctx1.save();
+                ctx1.globalAlpha = textureOpacity;
+                ctx1.drawImage(Images.bossRumia, 50, textureLayout, 572, 746);
+                ctx1.restore()
             }
-            if (move_frame) {
-                if (move_frame > 0) {
-                    ctx.drawImage(rumia_right[Math.floor(move_frame)], inst.X - 16, inst.Y - 24)
+            if (moveFrame) {
+                if (moveFrame > 0) {
+                    ctx.drawImage(rumiaRight[Math.floor(moveFrame)], inst.X - 16, inst.Y - 24 + inst.hideTime * 0.5)
                 } else {
-                    ctx.drawImage(rumia_left[Math.floor(-move_frame)], inst.X - 16, inst.Y - 24)
+                    ctx.drawImage(rumiaLeft[Math.floor(-moveFrame)], inst.X - 16, inst.Y - 24 + inst.hideTime * 0.5)
                 }
             } else {
-                ctx.drawImage(rumia_normal[Math.floor(normal_frame)], inst.X - 16, inst.Y - 24)
+                ctx.drawImage(rumiaNormal[Math.floor(normalFrame)], inst.X - 16, inst.Y - 24 + inst.hideTime * 0.5)
             }
-            ctx.save();
-            ctx.fillStyle = "black";
-            ctx.shadowColor = "white";
-            ctx.shadowBlur = 10;
-            ctx.beginPath();
-            ctx.arc(inst.X, inst.Y, inst.bombTime + 1, 0, 2 * Math.PI);
-            ctx.closePath();
-            ctx.fill();
-            ctx.restore()
+            if (inst.bombTime) {
+                ctx.save();
+                ctx.fillStyle = "black";
+                ctx.shadowColor = "white";
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(inst.X, inst.Y, inst.bombTime + 1, 0, 2 * Math.PI);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore()
+            }
         }
     });
-    inst.div = document.createElement("div");
-    inst.div.addEventListener("left", function () {
-        if (inst.hide_time > 0) {
+    eventListenerObject.addEventListener("left", function () {
+        if (inst.hideTime > 0) {
             return
         }
         if (inst.miss) {
@@ -102,13 +125,13 @@ export default function rumia(practice) {
         } else {
             inst.X -= 8
         }
-        if (move_frame > -7) {
-            move_frame--;
+        if (moveFrame > -7) {
+            moveFrame--;
         }
         inst.inScreen()
     });
-    inst.div.addEventListener("right", function () {
-        if (inst.hide_time > 0) {
+    eventListenerObject.addEventListener("right", function () {
+        if (inst.hideTime > 0) {
             return
         }
         if (inst.miss) {
@@ -119,13 +142,13 @@ export default function rumia(practice) {
         } else {
             inst.X += 8
         }
-        if (move_frame < 7) {
-            move_frame++;
+        if (moveFrame < 7) {
+            moveFrame++;
         }
         inst.inScreen()
     });
-    inst.div.addEventListener("up", function () {
-        if (inst.hide_time > 0) {
+    eventListenerObject.addEventListener("up", function () {
+        if (inst.hideTime > 0) {
             return
         }
         if (inst.miss) {
@@ -138,8 +161,8 @@ export default function rumia(practice) {
         }
         inst.inScreen()
     });
-    inst.div.addEventListener("down", function () {
-        if (inst.hide_time > 0) {
+    eventListenerObject.addEventListener("down", function () {
+        if (inst.hideTime > 0) {
             return
         }
         if (inst.miss) {
@@ -152,77 +175,84 @@ export default function rumia(practice) {
         }
         inst.inScreen()
     });
-    inst.div.addEventListener("shoot", function () {
-        if (inst.hide_time > 0) {
+    eventListenerObject.addEventListener("shoot", function () {
+        if (inst.hideTime > 0) {
             return
         }
-        if (inst.shoot_delay === 0) {
+        if (inst.shootDelay === 0) {
             let th = 45, tx = 15;
             if (window.slow) {
                 th = 1;
                 tx = 2
             }
-            inst.shoot_count++;
-            if (inst.shoot_count > 10) {
-                inst.shoot_count = 0
+            inst.shootCount++;
+            if (inst.shootCount > 10) {
+                inst.shootCount = 0
             }
             if (inst.power < 99) {
-                entities.push(rumia_ball(inst.X, inst.Y, 0, -40));
+                entities.push(rumiaBall(inst.X, inst.Y, 0, -40));
             }
             if (inst.power >= 100) {
-                entities.push(rumia_ball(inst.X + 10, inst.Y, 0, -40));
-                entities.push(rumia_ball(inst.X - 10, inst.Y, 0, -40));
+                entities.push(rumiaBall(inst.X + 10, inst.Y, 0, -40));
+                entities.push(rumiaBall(inst.X - 10, inst.Y, 0, -40));
             }
             let temp;
-            if (inst.power >= 200 && inst.shoot_count % 2 === 0 || inst.power >= 300) {
+            if (inst.power >= 200 && inst.shootCount % 2 === 0 || inst.power >= 300) {
                 temp = transTo(0, -40, tx * L);
-                entities.push(rumia_ball(inst.X - 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X - 20, inst.Y, temp[0], temp[1]));
                 temp = transTo(0, -40, -tx * L);
-                entities.push(rumia_ball(inst.X + 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X + 20, inst.Y, temp[0], temp[1]));
             }
             if (inst.power >= 400) {
                 temp = transTo(0, -40, th * L);
-                entities.push(rumia_ball(inst.X + 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X + 20, inst.Y, temp[0], temp[1]));
                 temp = transTo(0, -40, -th * L);
-                entities.push(rumia_ball(inst.X - 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X - 20, inst.Y, temp[0], temp[1]));
             }
-            inst.shoot_delay = 3;
+            inst.shootDelay = 3;
             window.score += 100;
             window.score += inst.power;
             Sounds.shoot.currentTime = 0;
             _ = Sounds.shoot.play()
         }
     });
-    inst.bomb_used = false;
-    inst.div.addEventListener("bomb", function () {
-        if (inst.hide_time > 0 || inst.bomb_used || practice) {
+    inst.bombUsed = false;
+    let textureLayout = 400;
+    let textureOpacity = 0;
+    let layout = 0.02;
+    eventListenerObject.addEventListener("bomb", function () {
+        if (inst.hideTime > 0 || inst.bombUsed) {
             return
         }
-        if (inst.bomb_count > 0 && inst.bombTime < 0) {
-            inst.bomb_used = true
+        if (inst.bombCount > 0 && inst.bombTime < 0) {
+            textureOpacity = 0.6;
+            inst.bombUsed = true
         }
     });
-    inst.shoot_count = 0;
-    inst.power_max = 400;
+    inst.shootCount = 0;
+    inst.powerMax = 400;
     inst.bombLay = function () {
         const box = new ABox(inst.bombTime);
-        clear_screen(function (entity) {
+        clearEntity(function (entity) {
             if (entity.tags.has(Tags.hostile) && entity.atkBox.isHit(entity.X, entity.Y, inst.X, inst.Y, box)) {
-                entities.push(green_orb(entity.X, entity.Y, 0, -2, "small"));
+                entities.push(greenOrb(entity.X, entity.Y, 0, -2, "small"));
                 return true
             }
         });
         for (let i = 0; i < boss.length; i++) {
             let b = boss[i];
             if (box.isHit(inst.X, inst.Y, b.X, b.Y, b.atkBox)) {
-                b.components["health"].doDelta(-1)
+                b.components["health"].doDelta(-Math.floor(inst.bombTime / 100))
             }
         }
     };
     inst.bombOut = function () {
-        clear_screen(function (entity) {
+        textureOpacity = 0;
+        textureLayout = 400;
+        layout = 0.02;
+        clearEntity(function (entity) {
             if (entity.tags.has(Tags.hostile)) {
-                entities.push(green_orb(entity.X, entity.Y, 0, -2, "small", true));
+                entities.push(greenOrb(entity.X, entity.Y, 0, -2, "small", true));
                 return true
             }
         });

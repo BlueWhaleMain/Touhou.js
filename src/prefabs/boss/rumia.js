@@ -1,21 +1,19 @@
-import boss_util from "../boss_util.js";
+import BossUtil from "../boss_util.js";
 import health from "../../components/health.js";
-import {getLayer, Images, RBox, Sounds, Tags} from "../../util.js";
+import {getLayer, Images, RBox, Sounds} from "../../util.js";
 
 let _;
 const cache = document.createElement("canvas");
 cache.width = 128;
 cache.height = 128;
-const cache_ctx = cache.getContext("2d");
-Images.boss_all_01.addEventListener("load", function () {
-    cache_ctx.drawImage(Images.boss_all_01, 0, 0, 128, 128, 0, 0, 128, 128)
+const cacheCtx = cache.getContext("2d");
+Images.bossAll.addEventListener("load", function () {
+    cacheCtx.drawImage(Images.bossAll, 0, 0, 128, 128, 0, 0, 128, 128)
 });
 
-const ctx = getLayer(1);
-export default function boss_rumia(x, y, blood, cards) {
-    const inst = boss_util();
-    inst.X = x;
-    inst.Y = y;
+const ctx1 = getLayer(1);
+export default function bossRumia(x, y, blood, cards) {
+    const inst = BossUtil(x, y, cards);
     inst.addComponent("health", health);
     inst.components["health"].init(blood, blood, 1);
     inst.components["health"].callback.doDelta = function (value, max) {
@@ -27,30 +25,36 @@ export default function boss_rumia(x, y, blood, cards) {
             _ = Sounds.damage.play()
         }
     };
-    let step = 0;
-    let used = 0;
     inst.atkBox = new RBox(128, 128);
-    inst.addComponent("RumiaTick", function () {
+    let textureLayout = -100;
+    let textureOpacity = 0.6;
+    let layout = 0.02;
+    inst.addComponent("Rumia", function () {
         this.tick = function (inst) {
-            if (inst.card) {
-                if (inst.card.tick()) {
-                    inst.card = null;
-                    used++
+            if (inst.showTexture) {
+                textureLayout += 2.5;
+                textureOpacity += layout;
+                if (textureOpacity > 1 && textureLayout > 120) {
+                    textureOpacity = 1;
+                    layout = -0.01
+                } else if (textureOpacity <= 0) {
+                    textureOpacity = 0.6;
+                    textureLayout = -100;
+                    layout = 0.02;
+                    inst.showTexture = null
                 }
-            } else {
-                step++;
-                if (cards[step]) {
-                    inst.card = cards[step].start(inst)
-                }
-            }
-            if (used === cards.length && !inst.tags.has(Tags.death)) {
-                inst.tags.add(Tags.death)
             }
         }
     });
-    inst.addLayer("RumiaD", function () {
+    inst.addLayer("Rumia", function () {
         this.draw = function (inst) {
-            ctx.drawImage(cache, inst.X - 64, inst.Y - 64)
+            ctx1.drawImage(cache, inst.X - 64, inst.Y - 64);
+            if (inst.showTexture) {
+                ctx1.save();
+                ctx1.globalAlpha = textureOpacity;
+                ctx1.drawImage(Images.bossRumia, 250, textureLayout, 572, 746);
+                ctx1.restore()
+            }
         }
     });
     return inst

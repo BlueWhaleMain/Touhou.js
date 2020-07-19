@@ -1,4 +1,4 @@
-import prefabs from "../prefabs.js";
+import Prefab from "../prefab.js";
 import item from "../components/item.js";
 import movable from "../components/movable.js";
 import {ABox, getLayer, hslToRgb, rgbToHsl, editImage, Images, Sounds} from "../util.js";
@@ -6,13 +6,13 @@ import {ABox, getLayer, hslToRgb, rgbToHsl, editImage, Images, Sounds} from "../
 const middle = document.createElement("canvas");
 middle.width = 12;
 middle.height = 12;
-const middle_ctx = middle.getContext("2d");
+const middleCtx = middle.getContext("2d");
 const small = document.createElement("canvas");
-Images.e_bullet_2.addEventListener("load", function () {
-    middle_ctx.drawImage(Images.e_bullet_2, 112, 416, 12, 12, 0, 0, 12, 12);
-    const small_ctx = small.getContext("2d");
-    small_ctx.drawImage(middle, 0, 0);
-    small_ctx.putImageData(editImage(small_ctx.getImageData(0, 0, 12, 12), function (r, g, b) {
+Images.eBullet2.addEventListener("load", function () {
+    middleCtx.drawImage(Images.eBullet2, 112, 416, 12, 12, 0, 0, 12, 12);
+    const smallCtx = small.getContext("2d");
+    smallCtx.drawImage(middle, 0, 0);
+    smallCtx.putImageData(editImage(smallCtx.getImageData(0, 0, 12, 12), function (r, g, b) {
         const hsl = rgbToHsl(r, g, b);
         return hslToRgb(hsl[0], hsl[1], 1);
     }), 0, 0);
@@ -21,10 +21,9 @@ Images.e_bullet_2.addEventListener("load", function () {
 const layer = getLayer(0);
 let _;
 
-export default function green_orb(x, y, mx, my, size = "middle", spy = false) {
-    const inst = new prefabs();
-    inst.X = x;
-    inst.Y = y;
+export default function greenOrb(x, y, mx, my, size = "middle", spy = false) {
+    const inst = new Prefab(x, y);
+
     inst.sizeBox = new ABox(6);
     inst.pickBox = new ABox(14);
     inst.addComponent("movable", movable);
@@ -32,7 +31,7 @@ export default function green_orb(x, y, mx, my, size = "middle", spy = false) {
     inst.components["movable"].MY = my;
     inst.addComponent("item", item);
     inst.components["item"].spy = spy;
-    inst.components["item"].config_movement(inst);
+    inst.components["item"].configMovement(inst);
     inst.components["item"].pick = function () {
         Sounds.item.currentTime = 0;
         _ = Sounds.item.play();
@@ -42,7 +41,7 @@ export default function green_orb(x, y, mx, my, size = "middle", spy = false) {
             window.score += 10
         }
     };
-    inst.addLayer("green_orb", function () {
+    inst.addLayer("greenOrb", function () {
         this.draw = function (inst) {
             if (size === "middle") {
                 layer.drawImage(middle, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r)

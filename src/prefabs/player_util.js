@@ -1,32 +1,30 @@
-import prefabs from "../prefabs.js";
-import {clear_screen, entities, getLayer, height, L, Sounds, Tags, width, config, boss} from "../util.js";
-import power_orb from "./power_orb.js";
+import Prefab from "../prefab.js";
+import {clearEntity, entities, getLayer, height, L, Sounds, Tags, width, config, boss} from "../util.js";
+import powerOrb from "./power_orb.js";
 
 let _;
 
 const ctx = getLayer(0);
 const ctx2 = getLayer(2);
-export default function player_util() {
-    const inst = new prefabs();
-    inst.X = 440;
-    inst.Y = 760;
-    inst.shoot_delay = 0;
+export default function PlayerUtil() {
+    const inst = new Prefab(440, 940);
+    inst.shootDelay = 0;
     inst.bombTime = -1;
     inst.indTime = -10;
     inst.miss = false;
-    inst.player_count = config["Player"];
-    inst.bomb_count = 3;
+    inst.playerCount = config["Player"];
+    inst.bombCount = 3;
     inst.power = 0;
     inst.point = 0;
     inst.graze = 0;
-    inst.hide_time = 0;
+    inst.hideTime = 0;
     inst.inScreen = function () {
-        const p = inst.grazeBox.inScreen(inst.X, inst.Y, 46, 14, 832, 940);
+        const p = inst.sizeBox.inScreen(inst.X, inst.Y, 46, 14, 832, 940);
         inst.X = p[0];
         inst.Y = p[1]
     };
     inst.die = function () {
-        if (inst.miss || inst.hide_time) {
+        if (inst.miss || inst.hideTime) {
             return
         }
         if (inst.indTime < 0) {
@@ -36,23 +34,27 @@ export default function player_util() {
     };
     inst.addComponent("PlayerTick", function () {
         this.tick = function () {
-            if (inst.hide_time > 0) {
-                inst.hide_time--;
-                inst.bomb_used = false;
+            if (inst.hideTime > 0) {
+                inst.hideTime--;
+                inst.bombUsed = false;
                 return
             }
-            if (inst.shoot_delay > 0) {
-                inst.shoot_delay--;
+            if (inst.deadPOS) {
+                inst.deadPOS = null
             }
-            if (inst.bomb_used) {
+            if (inst.shootDelay > 0) {
+                inst.shootDelay--;
+            }
+            if (inst.bombUsed) {
                 if (inst.miss) {
                     inst.bombTime = 500;
                     inst.miss = false
                 } else {
                     inst.bombTime = 300
                 }
-                inst.bomb_used = false;
-                inst.bomb_count--;
+                inst.bombUsed = false;
+                inst.bombCount--;
+                Sounds.cat0.currentTime = 0;
                 _ = Sounds.cat0.play();
             }
             if (inst.miss) {
@@ -60,41 +62,46 @@ export default function player_util() {
                     inst.indTime++
                 }
                 if (inst.indTime === 0) {
-                    inst.indTime = 300;
-                    if (inst.player_count > 0) {
-                        if (typeof inst.missCallBack === "function") {
-                            inst.missCallBack()
+                    if (inst.playerCount > 0) {
+                        if (window.practice) {
+                            inst.tags.add(Tags.death)
+                        } else {
+                            inst.playerCount--
                         }
-                        inst.player_count--
                     } else {
                         inst.tags.add(Tags.death)
                     }
-                    inst.bomb_count = 3;
+                    inst.bombCount = 3;
                     inst.power = 0;
-                    if (inst.player_count > 0) {
-                        entities.push(power_orb(inst.X, inst.Y, 0, Math.min(28 - inst.Y * inst.pickLine, 0), "big"));
-                        entities.push(power_orb(inst.X, inst.Y, -26, Math.min(20 - inst.Y * inst.pickLine, 0), "big"));
-                        entities.push(power_orb(inst.X, inst.Y, 26, Math.min(20 - inst.Y * inst.pickLine, 0), "big"));
-                        entities.push(power_orb(inst.X, inst.Y, -44, Math.min(18 - inst.Y * inst.pickLine, 0)));
-                        entities.push(power_orb(inst.X, inst.Y, 44, Math.min(18 - inst.Y * inst.pickLine, 0)));
-                        entities.push(power_orb(inst.X, inst.Y, -56, -inst.Y * inst.pickLine));
-                        entities.push(power_orb(inst.X, inst.Y, 56, -inst.Y * inst.pickLine));
+                    if (inst.playerCount > 0) {
+                        entities.push(powerOrb(inst.X, inst.Y, 0, Math.min(28 - inst.Y * inst.pickLine, 0), "big"));
+                        entities.push(powerOrb(inst.X, inst.Y, -26, Math.min(20 - inst.Y * inst.pickLine, 0), "big"));
+                        entities.push(powerOrb(inst.X, inst.Y, 26, Math.min(20 - inst.Y * inst.pickLine, 0), "big"));
+                        entities.push(powerOrb(inst.X, inst.Y, -44, Math.min(18 - inst.Y * inst.pickLine, 0)));
+                        entities.push(powerOrb(inst.X, inst.Y, 44, Math.min(18 - inst.Y * inst.pickLine, 0)));
+                        entities.push(powerOrb(inst.X, inst.Y, -56, -inst.Y * inst.pickLine));
+                        entities.push(powerOrb(inst.X, inst.Y, 56, -inst.Y * inst.pickLine));
                     } else {
-                        entities.push(power_orb(inst.X, inst.Y, -20, Math.min(4 - inst.Y * inst.pickLine, 0), "big"));
-                        entities.push(power_orb(inst.X, inst.Y, 20, Math.min(4 - inst.Y * inst.pickLine, 0), "big"));
-                        entities.push(power_orb(inst.X, inst.Y, -32, -inst.Y * inst.pickLine, "big"));
-                        entities.push(power_orb(inst.X, inst.Y, 32, -inst.Y * inst.pickLine, "big"));
+                        entities.push(powerOrb(inst.X, inst.Y, -20, Math.min(4 - inst.Y * inst.pickLine, 0), "big"));
+                        entities.push(powerOrb(inst.X, inst.Y, 20, Math.min(4 - inst.Y * inst.pickLine, 0), "big"));
+                        entities.push(powerOrb(inst.X, inst.Y, -32, -inst.Y * inst.pickLine, "big"));
+                        entities.push(powerOrb(inst.X, inst.Y, 32, -inst.Y * inst.pickLine, "big"));
                     }
-                    inst.hide_time = 30;
+                    inst.hideTime = 120;
+                    inst.deadPOS = {
+                        X: inst.X, Y: inst.Y
+                    };
                     inst.X = 440;
-                    inst.Y = 760;
-                    clear_screen(function (entity) {
+                    inst.Y = 940;
+                    inst.inScreen();
+                    inst.indTime = 300;
+                    inst.miss = false;
+                    clearEntity(function (entity) {
                         return entity.tags.has(Tags.hostile)
                     });
                     for (let i = 0; i < boss.length; i++) {
                         boss[i].components["health"].doDelta(-100);
                     }
-                    inst.miss = false
                 }
             } else {
                 if (inst.bombTime > 0) {
@@ -127,12 +134,13 @@ export default function player_util() {
         // let ro = 0;
         let frame = 0;
         this.draw = function () {
-            if (inst.hide_time > 0) {
-                return
-            }
             if (window.slow) {
                 ctx2.save();
-                ctx2.translate(inst.X, inst.Y);
+                if (inst.deadPOS) {
+                    ctx2.translate(inst.deadPOS.X, inst.deadPOS.Y)
+                } else {
+                    ctx2.translate(inst.X, inst.Y)
+                }
                 ctx2.fillStyle = "red";
                 ctx2.shadowColor = "red";
                 ctx2.shadowBlur = 3;
@@ -157,7 +165,7 @@ export default function player_util() {
                 // }
                 // ctx2.rotate(ro);
                 // ctx2.globalCompositeOperation = "lighter";
-                // ctx2.drawImage(Images.ply_border_01, -32, -32);
+                // ctx2.drawImage(Images.playerBorder, -32, -32);
                 // ctx2.restore();
                 ctx2.fillStyle = "white";
                 ctx2.shadowColor = "white";
@@ -168,6 +176,9 @@ export default function player_util() {
                 }
                 ctx2.fillRect(-inst.hitBox.r, -inst.hitBox.r, inst.hitBox.r * 2, inst.hitBox.r * 2);
                 ctx2.restore();
+            }
+            if (inst.hideTime > 0) {
+                return
             }
             if (inst.miss && inst.indTime < 0) {
                 ctx.save();
