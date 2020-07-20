@@ -1,10 +1,11 @@
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, modifyEntity, Tags, boss} from "../util.js";
+import {ABox, getLayer, modifyEntity, Tags, boss, L} from "../util.js";
 
+const r90 = 90 * L;
 const cache = document.createElement("canvas");
 cache.width = 20;
-cache.height = 20;
+cache.height = 60;
 const c = cache.getContext("2d");
 c.fillStyle = "black";
 c.shadowColor = "white";
@@ -15,6 +16,24 @@ c.closePath();
 c.fill();
 c.beginPath();
 c.arc(10, 10, 7, 0, 2 * Math.PI);
+c.closePath();
+c.fill();
+c.beginPath();
+c.shadowColor = "black";
+c.globalAlpha = 0.8;
+c.arc(10, 30, 9, 0, 2 * Math.PI);
+c.closePath();
+c.fill();
+c.beginPath();
+c.arc(10, 30, 7, 0, 2 * Math.PI);
+c.closePath();
+c.fill();
+c.globalAlpha = 0.5;
+c.arc(10, 50, 9, 0, 2 * Math.PI);
+c.closePath();
+c.fill();
+c.beginPath();
+c.arc(10, 50, 7, 0, 2 * Math.PI);
 c.closePath();
 c.fill();
 const ctx = getLayer(0);
@@ -31,7 +50,7 @@ export default function rumiaBall(x, y, mx, my) {
                 if (entity.tags.has(Tags.enemy) && entity.atkBox) {
                     if (inst.sizeBox.isHit(inst.X, inst.Y, entity.X, entity.Y, entity.atkBox)) {
                         if (entity.components["health"] && !entity.components["health"].indestructible) {
-                            entity.components["health"].doDelta(-4)
+                            entity.components["health"].doDelta(-1)
                         }
                         inst.tags.add(Tags.death);
                         return true
@@ -46,7 +65,7 @@ export default function rumiaBall(x, y, mx, my) {
                 if (b.atkBox) {
                     if (inst.sizeBox.isHit(inst.X, inst.Y, b.X, b.Y, b.atkBox)) {
                         if (b.components["health"] && !b.components["health"].indestructible) {
-                            b.components["health"].doDelta(-5)
+                            b.components["health"].doDelta(-1)
                         }
                         inst.tags.add(Tags.death);
                         return
@@ -57,7 +76,11 @@ export default function rumiaBall(x, y, mx, my) {
     });
     inst.addLayer("RumiaBall", function () {
         this.draw = function (inst) {
-            ctx.drawImage(cache, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r);
+            ctx.save();
+            ctx.translate(inst.X, inst.Y);
+            ctx.rotate(Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90);
+            ctx.drawImage(cache, -inst.sizeBox.r, -inst.sizeBox.r);
+            ctx.restore()
         }
     });
     return inst

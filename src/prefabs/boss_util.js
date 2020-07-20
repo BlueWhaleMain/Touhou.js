@@ -6,8 +6,24 @@ import en_epBall from "./en_ep_ball.js";
 let _;
 
 const ctx = getLayer(1);
-export default function BossUtil(x, y, cards) {
+export default function BossUtil(x, y, blood, cards) {
     const inst = new Prefab(x, y);
+    let healthDeltaMax = 80;
+    inst.addComponent("health", health);
+    inst.components["health"].init(blood, blood, 1);
+    inst.components["health"].callback.doDelta = function (val, value) {
+        healthDeltaMax -= val;
+        if (healthDeltaMax < 0 || inst.tags.has(Tags.death)) {
+            return false
+        }
+        if (value / blood < 0.05) {
+            Sounds.damage1.currentTime = 0;
+            _ = Sounds.damage1.play()
+        } else if (value / blood < 0.1) {
+            Sounds.damage.currentTime = 0;
+            _ = Sounds.damage.play()
+        }
+    };
     inst.dieFrame = 0;
     inst.dead = false;
     let step = 0;
@@ -58,6 +74,7 @@ export default function BossUtil(x, y, cards) {
                 }
             } else {
                 inst.dieFrame = 0;
+                healthDeltaMax = 80;
                 if (inst.atkBox.isHit(inst.X, inst.Y, player.X, player.Y, player.hitBox)) {
                     if (player.indTime <= 0) {
                         player.die()

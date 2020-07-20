@@ -48,7 +48,7 @@ export default function Rumia() {
     let normalFrame = 0;
     let moveFrame = 0;
     inst.hitBox = new ABox(2);
-    inst.grazeBox = new ABox(8);
+    inst.grazeBox = new RBox(32, 48);
     inst.pickBox = new ABox(40);
     inst.sizeBox = new RBox(32, 48);
     inst.pickLine = 3 / 4;
@@ -121,9 +121,9 @@ export default function Rumia() {
             return
         }
         if (window.slow) {
-            inst.X -= 4
+            inst.X -= 2
         } else {
-            inst.X -= 8
+            inst.X -= 4.5
         }
         if (moveFrame > -7) {
             moveFrame--;
@@ -138,9 +138,9 @@ export default function Rumia() {
             return
         }
         if (window.slow) {
-            inst.X += 4
+            inst.X += 2
         } else {
-            inst.X += 8
+            inst.X += 4.5
         }
         if (moveFrame < 7) {
             moveFrame++;
@@ -155,9 +155,9 @@ export default function Rumia() {
             return
         }
         if (window.slow) {
-            inst.Y -= 4
+            inst.Y -= 2
         } else {
-            inst.Y -= 8
+            inst.Y -= 4.5
         }
         inst.inScreen()
     });
@@ -169,9 +169,9 @@ export default function Rumia() {
             return
         }
         if (window.slow) {
-            inst.Y += 4
+            inst.Y += 2
         } else {
-            inst.Y += 8
+            inst.Y += 4.5
         }
         inst.inScreen()
     });
@@ -186,7 +186,7 @@ export default function Rumia() {
                 tx = 2
             }
             inst.shootCount++;
-            if (inst.shootCount > 10) {
+            if (inst.shootCount > 1) {
                 inst.shootCount = 0
             }
             if (inst.power < 99) {
@@ -199,19 +199,18 @@ export default function Rumia() {
             let temp;
             if (inst.power >= 200 && inst.shootCount % 2 === 0 || inst.power >= 300) {
                 temp = transTo(0, -40, tx * L);
-                entities.push(rumiaBall(inst.X - 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X - 15, inst.Y + 5, temp[0], temp[1]));
                 temp = transTo(0, -40, -tx * L);
-                entities.push(rumiaBall(inst.X + 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X + 15, inst.Y + 5, temp[0], temp[1]));
             }
             if (inst.power >= 400) {
                 temp = transTo(0, -40, th * L);
-                entities.push(rumiaBall(inst.X + 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X + 20, inst.Y + 10, temp[0], temp[1]));
                 temp = transTo(0, -40, -th * L);
-                entities.push(rumiaBall(inst.X - 20, inst.Y, temp[0], temp[1]));
+                entities.push(rumiaBall(inst.X - 20, inst.Y + 10, temp[0], temp[1]));
             }
-            inst.shootDelay = 3;
+            inst.shootDelay = 6;
             window.score += 100;
-            window.score += inst.power;
             Sounds.shoot.currentTime = 0;
             _ = Sounds.shoot.play()
         }
@@ -225,13 +224,24 @@ export default function Rumia() {
             return
         }
         if (inst.bombCount > 0 && inst.bombTime < 0) {
-            textureOpacity = 0.6;
             inst.bombUsed = true
         }
     });
     inst.shootCount = 0;
     inst.powerMax = 400;
-    inst.bombLay = function () {
+    inst.callback.bomb = function () {
+        textureOpacity = 0.6;
+        Sounds.cat0.currentTime = 0;
+        _ = Sounds.cat0.play();
+    };
+    inst.callback.normalBomb = function () {
+        inst.bombTime = 210
+    };
+    inst.callback.missBomb = function () {
+        inst.bombTime = 400
+    };
+    inst.callback.bombLay = function () {
+        inst.indTime = 250;
         const box = new ABox(inst.bombTime);
         clearEntity(function (entity) {
             if (entity.tags.has(Tags.hostile) && entity.atkBox.isHit(entity.X, entity.Y, inst.X, inst.Y, box)) {
@@ -246,7 +256,7 @@ export default function Rumia() {
             }
         }
     };
-    inst.bombOut = function () {
+    inst.callback.bombOut = function () {
         textureOpacity = 0;
         textureLayout = 400;
         layout = 0.02;

@@ -57,10 +57,10 @@ const customEventShoot = new CustomEvent("shoot", {
     bubbles: 'true',
     cancelable: 'true'
 });
-// const customEventBomb = new CustomEvent("bomb", {
-//     bubbles: 'true',
-//     cancelable: 'true'
-// });
+const customEventBomb = new CustomEvent("bomb", {
+    bubbles: 'true',
+    cancelable: 'true'
+});
 const ctx2 = getLayer(2);
 let stage, pause = false, end = false, failure = false, canMove = false;
 
@@ -100,7 +100,7 @@ function runSpellPractice() {
         window.practice = false;
         stage = SpellPractice();
         canMove = false;
-        boss.push(bossRumia(440, 250, 8000, {
+        boss.push(bossRumia(440, 250, 900, {
             30: nightBird(function (cd) {
                 cd.open = function () {
                     canMove = true;
@@ -247,9 +247,9 @@ function runSpellPractice() {
             if (keys.has(kb["Shoot"].toLowerCase())) {
                 eventListenerObject.dispatchEvent(customEventShoot)
             }
-            // if (keys.has(kb["Bomb"].toLowerCase())) {
-            //     eventListenerObject.dispatchEvent(customEventBomb)
-            // }
+            if (keys.has(kb["Bomb"].toLowerCase())) {
+                eventListenerObject.dispatchEvent(customEventBomb)
+            }
         }
         updateEntity()
     }

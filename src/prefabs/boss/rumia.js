@@ -1,8 +1,5 @@
 import BossUtil from "../boss_util.js";
-import health from "../../components/health.js";
-import {getLayer, Images, RBox, Sounds} from "../../util.js";
-
-let _;
+import {getLayer, Images, RBox} from "../../util.js";
 const cache = document.createElement("canvas");
 cache.width = 128;
 cache.height = 128;
@@ -13,18 +10,7 @@ Images.bossAll.addEventListener("load", function () {
 
 const ctx1 = getLayer(1);
 export default function bossRumia(x, y, blood, cards) {
-    const inst = BossUtil(x, y, cards);
-    inst.addComponent("health", health);
-    inst.components["health"].init(blood, blood, 1);
-    inst.components["health"].callback.doDelta = function (value, max) {
-        if (value / max < 0.05) {
-            Sounds.damage1.currentTime = 0;
-            _ = Sounds.damage1.play()
-        } else if (value / max < 0.1) {
-            Sounds.damage.currentTime = 0;
-            _ = Sounds.damage.play()
-        }
-    };
+    const inst = BossUtil(x, y, blood, cards);
     inst.atkBox = new RBox(128, 128);
     let textureLayout = -100;
     let textureOpacity = 0.6;

@@ -31,14 +31,16 @@ export default function health() {
         if (this.indestructible) {
             return
         }
+        if (this.callback.doDelta) {
+            if (this.callback.doDelta(val, value) === false) {
+                return
+            }
+        }
         value += val;
         if (value < min) {
             value = min
         } else if (value > max) {
             value = max
-        }
-        if (this.callback.doDelta) {
-            this.callback.doDelta(value, max)
         }
     };
     this.die = function () {

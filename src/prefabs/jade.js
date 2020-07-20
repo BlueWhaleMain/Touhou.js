@@ -6,12 +6,12 @@ import {ABox, arrowTo, drawSticker, getLayer, Sounds, L, Tags} from "../util.js"
 let _;
 
 const ctx = getLayer(1);
+const r90 = 90 * L;
 export default function jade(type, color, x, y, mx, my, rotate) {
     const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
     inst.addComponent("bullet", bullet);
     inst.tags.add(Tags.hostile);
-
     inst.DX = 0;
     inst.DY = 0;
     inst.type = type;
@@ -98,7 +98,6 @@ export default function jade(type, color, x, y, mx, my, rotate) {
             throw new Error("JadeType: " + type + " is not supported.")
     }
     inst.addLayer("Jade", function () {
-        const r90 = 90 * L;
         this.draw = function (inst) {
             if (rotate === undefined && !symmetric) {
                 rotate = Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90
