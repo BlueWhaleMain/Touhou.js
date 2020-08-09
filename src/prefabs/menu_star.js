@@ -1,11 +1,11 @@
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
-import {getLayer, height} from "../util.js";
-
-const MenuStarCache = {};
-
-const ctx = getLayer(0);
-export default function menuStar(x = 0, y = 0, mx = 0, my = 1, size = 2, color = "white") {
+import {getLayer, HEIGHT, LAYER_MAPPING} from "../util.js";
+const MenuStarCache = {
+    len: 0
+};
+const layerStage = getLayer(LAYER_MAPPING.STAGE);
+export default function MenuStar(x = 0, y = 0, mx = 0, my = 1, size = 2, color = "white") {
     const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
     if (size < 0) {
@@ -15,7 +15,6 @@ export default function menuStar(x = 0, y = 0, mx = 0, my = 1, size = 2, color =
         size++
     }
     let show = false;
-
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.components["movable"].flush = false;
@@ -23,7 +22,7 @@ export default function menuStar(x = 0, y = 0, mx = 0, my = 1, size = 2, color =
     inst.color = color;
     inst.addComponent("MenuStarLoop", function () {
         this.tick = function (inst) {
-            if (inst.Y > height + inst.size) {
+            if (inst.Y > HEIGHT + inst.size) {
                 inst.Y = 0
             }
         }
@@ -47,10 +46,12 @@ export default function menuStar(x = 0, y = 0, mx = 0, my = 1, size = 2, color =
                     cacheDraw.fillStyle = inst.color;
                     cacheDraw.shadowColor = inst.color;
                     cacheDraw.shadowBlur = 1;
+                    cacheDraw.beginPath();
                     cacheDraw.arc(inst.size, inst.size, inst.size - 1, 0, 2 * Math.PI);
+                    cacheDraw.closePath();
                     cacheDraw.fill();
                 }
-                ctx.drawImage(cache.normalCanvas, inst.X - inst.size, inst.Y - inst.size)
+                layerStage.drawImage(cache.normalCanvas, inst.X - inst.size, inst.Y - inst.size)
             } else {
                 if (Math.random() > 0.9) {
                     show = true

@@ -1,57 +1,56 @@
-import {arrowTo, Tags} from "../util.js";
-
+import {arrowTo, TAGS, session, GUI_SCREEN} from "../util.js";
 export default function item() {
     this.spy = false;
     this.configMovement = function (inst) {
         inst.components["movable"].flush = false;
-        inst.components["movable"].grave = 0.05
+        inst.components["movable"].grave = 0.03
     };
     this.pick = function (inst) {
     };
     this.inScreen = function (inst) {
-        const p = inst.pickBox.inScreen(inst.X, inst.Y, 0, 0, 840, 960);
+        const p = inst.pickBox.inScreen(inst.X, inst.Y);
         inst.X = p[0];
         inst.Y = p[1]
     };
     this.tick = function (inst) {
-        if (inst.Y > 940) {
-            inst.tags.add(Tags.death);
+        if (inst.Y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT) {
+            inst.tags.add(TAGS.death);
             return
         }
-        if (window.player.miss) {
+        if (session.player.hideTime > 0 || session.player.tags.has(TAGS.death)) {
             this.spy = false
         } else {
             if (inst.pickBox) {
-                if (inst.pickBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.pickBox)) {
+                if (inst.pickBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.pickBox)) {
                     this.spy = true
                 }
             }
-            if (window.player.Y - 10 < (1 - window.player.pickLine) * 940) {
+            if (session.player.Y < (1 - session.player.pickLine) * GUI_SCREEN.HEIGHT + GUI_SCREEN.Y) {
                 this.spy = true
             }
-            if (window.player.bombTime > 0) {
+            if (session.player.bombTime > 0) {
                 this.spy = true
+            }
+            if (inst.sizeBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
+                inst.tags.add(TAGS.death);
+                this.pick(inst)
             }
             if (this.spy) {
                 this.inScreen(inst);
-                const speed = arrowTo(inst.X, inst.Y, window.player.X, window.player.Y, 25);
+                const speed = arrowTo(inst.X, inst.Y, session.player.X, session.player.Y, 8);
                 inst.components["movable"].MX = speed[0];
-                inst.components["movable"].MY = speed[1]
-            } else {
-                if (inst.components["movable"].MX !== 0) {
-                    inst.components["movable"].MX = 0
-                }
-                if (inst.components["movable"].MY > 3) {
-                    inst.components["movable"].MY = 3
-                }
-                if (inst.components["movable"].MY < -3) {
-                    inst.components["movable"].MY = -3
-                }
+                inst.components["movable"].MY = speed[1];
+                return
             }
-            if (inst.sizeBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.grazeBox)) {
-                inst.tags.add(Tags.death);
-                this.pick(inst)
-            }
+        }
+        if (inst.components["movable"].MX !== 0) {
+            inst.components["movable"].MX = 0
+        }
+        if (inst.components["movable"].MY > 3) {
+            inst.components["movable"].MY = 3
+        }
+        if (inst.components["movable"].MY < -3) {
+            inst.components["movable"].MY = -3
         }
     }
 }

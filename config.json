@@ -1,9 +1,15 @@
 {
-    "FastStart": true,
+    "DeveloperMode": false,
+    "FastStart": false,
     "FrameMax": "auto",
+    "FullScreen": false,
     "EntityCountSecMax": 1024,
     "Player": 3,
     "GrazeMax": 99999,
+    "Volume": {
+        "BGM": 100,
+        "SE": 80
+    },
     "KeyBoard": {
         "Up": "ArrowUp",
         "Down": "ArrowDown",
@@ -12,5 +18,6 @@
         "Shoot": "Z",
         "Bomb": "X",
         "Slow": "Shift"
-    }
+    },
+    "ScreenShot": "F:/Sync"
 }

@@ -1,27 +1,30 @@
-import {Sounds, Tags} from "../util.js";
-
+import {TAGS, session, newAudio, resources} from "../util.js";
 let _;
+const soundOfGraze = newAudio(resources.Sounds["graze"]);
 export default function bullet() {
     this.grazeState = undefined;
     this.tick = function (inst) {
-        if (inst.atkBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.grazeBox)) {
+        if (inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
             if (this.grazeState === false) {
-                window.player.graze++;
-                window.score += 500 + window.player.point * 10;
+                session.player.graze++;
+                session.score += 500 + session.player.point * 10;
                 this.grazeState = true;
-                Sounds.graze.currentTime = 0;
-                _ = Sounds.graze.play()
+                soundOfGraze.currentTime = 0;
+                _ = soundOfGraze.play()
             }
         } else {
-            this.grazeState = false;
+            this.grazeState = false
         }
-        if (inst.atkBox.isHit(inst.X, inst.Y, window.player.X, window.player.Y, window.player.hitBox)) {
-            if (window.player.indTime > 0) {
-                window.score += window.player.point * 100;
-                inst.tags.add(Tags.death)
+        if (inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.hitBox)) {
+            if (session.player.indTime > 0) {
+                session.score += session.player.point * 100;
+                inst.tags.add(TAGS.death)
             } else {
-                window.player.die()
+                this.hitState = true;
+                session.player.die()
             }
+        } else {
+            this.hitState = false
         }
     }
 }

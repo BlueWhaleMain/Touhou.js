@@ -1,4 +1,19 @@
+import Observer from "./observer.js";
+
 const fs = require("fs");
+
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    this.beginPath();
+    this.moveTo(x + r, y);
+    this.arcTo(x + w, y, x + w, y + h, r);
+    this.arcTo(x + w, y + h, x, y + h, r);
+    this.arcTo(x, y + h, x, y, r);
+    this.arcTo(x, y, x + w, y, r);
+    this.closePath();
+    return this;
+};
 
 /**
  * HSL颜色值转换为RGB.
@@ -88,47 +103,47 @@ export function arrowTo(x, y, x1, y1, speed) {
     return [(x1 - x) / s * speed, (y1 - y) / s * speed]
 }
 
-export function RBox(xs, ys) {
+export function RBox(xs, ys, angle) {
     this.name = "RBox";
     this.xs = xs;
     this.ys = ys;
+    this.angle = angle;
     this.isHit = function (x1, y1, x2, y2, hitBox) {
+        if (!isNaN(this.angle)) {
+            x2 = x1 + (x2 - x1) * Math.cos(-this.angle) - (y2 - y1) * Math.sin(-this.angle);
+            y2 = y1 + (x2 - x1) * Math.sin(-this.angle) + (y2 - y1) * Math.cos(-this.angle)
+        }
         if (hitBox.name === "ABox") {
             const xx = x2 - x1, yy = y2 - y1, minX = Math.min(xx, xs / 2),
                 maxX = Math.max(minX, -xs / 2),
                 minY = Math.min(yy, ys / 2), maxY = Math.max(minY, -ys / 2);
             return (maxX - xx) * (maxX - xx) + (maxY - yy) * (maxY - yy) <= hitBox.r * hitBox.r;
         } else if (hitBox.name === "RBox") {
-            const width1 = xs, height1 = ys, width2 = hitBox.xs, height2 = hitBox.ys;
-            let flag;
-            if (xs >= hitBox.xs && hitBox.xs <= xs - width1 / 2 - width2 / 2) {
-                flag = false;
-            } else if (xs <= hitBox.xs && hitBox.xs >= xs + width1 / 2 + width2 / 2) {
-                flag = false;
-            } else if (ys >= hitBox.ys && hitBox.ys <= ys - height1 / 2 - height2 / 2) {
-                flag = false;
-            } else flag = !(ys <= hitBox.ys && hitBox.ys >= ys + height1 / 2 + height2 / 2);
-            return flag;
+            const maxX = x1 + this.xs >= x2 + hitBox.xs ? x1 + this.xs : x2 + hitBox.xs;
+            const maxY = y1 + this.ys >= y2 + hitBox.ys ? y1 + this.ys : y2 + hitBox.ys;
+            const minX = x1 <= x2 ? x1 : x2;
+            const minY = y1 <= y2 ? y1 : y2;
+            return maxX - minX <= this.xs + hitBox.xs && maxY - minY <= this.ys + hitBox.ys;
         }
     };
     this.isOut = function (x, y, xMax, yMax, mx, my) {
-        return x + xs * 2 < 0 && mx <= 0 || y + ys * 2 < 0 && my <= 0
+        return x + xs + xs < 0 && mx <= 0 || y + ys + ys < 0 && my <= 0
             || x > xMax && mx > 0 || y > yMax && my > 0
     };
-    this.isOutScreen = function (x, y, xMax, yMax, mx, my) {
-        return x + xs * 2 < -2 * xs - 10 && mx <= 0 || y + ys * 2 < -2 * ys - 10 && my <= 0
-            || x > xMax + 2 * xs + 10 && mx > 0 || y > yMax + 2 * ys + 10 && my > 0
+    this.isOutScreen = function (x, y, mx, my) {
+        return x < -4 * xs - GUI_SCREEN.X && mx <= 0 || y < -4 * ys - GUI_SCREEN.Y && my <= 0
+            || x > GUI_SCREEN.X + GUI_SCREEN.WIDTH + xs + xs + GUI_SCREEN.X && mx > 0 || y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT + 2 * ys + GUI_SCREEN.Y && my > 0
     };
-    this.inScreen = function (x, y, xMin, yMin, xMax, yMax) {
-        if (x - xs / 2 < xMin) {
-            x = xs / 2 + xMin;
-        } else if (x + xs / 2 > xMax) {
-            x = xMax - xs / 2;
+    this.inScreen = function (x, y) {
+        if (x - xs / 2 < GUI_SCREEN.X) {
+            x = xs / 2 + GUI_SCREEN.X;
+        } else if (x + xs / 2 > GUI_SCREEN.X + GUI_SCREEN.WIDTH) {
+            x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - xs / 2;
         }
-        if (y - ys / 2 < yMin) {
-            y = ys / 2 + yMin;
-        } else if (y + ys / 2 > yMax) {
-            y = yMax - ys / 2;
+        if (y - ys / 2 < GUI_SCREEN.Y) {
+            y = ys / 2 + GUI_SCREEN.Y;
+        } else if (y + ys / 2 > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT) {
+            y = GUI_SCREEN.Y + GUI_SCREEN.HEIGHT - ys / 2;
         }
         return [x, y]
     }
@@ -151,20 +166,20 @@ export function ABox(r) {
         return x - this.r < 0 && mx <= 0 || x + this.r > xMax && mx > 0
             || y - this.r < 0 && my <= 0 || y + this.r > yMax && my > 0
     };
-    this.isOutScreen = function (x, y, xMax, yMax, mx, my) {
-        return x - this.r < -2 * this.r - 10 && mx <= 0 || x + this.r > xMax + 2 * this.r + 10 && mx > 0
-            || y - this.r < -2 * this.r - 10 && my <= 0 || y + this.r > yMax + 2 * this.r + 10 && my > 0
+    this.isOutScreen = function (x, y, mx, my) {
+        return x < -this.r - GUI_SCREEN.X && mx <= 0 || x > GUI_SCREEN.X + GUI_SCREEN.WIDTH + this.r + GUI_SCREEN.X && mx > 0
+            || y < -this.r - GUI_SCREEN.Y && my <= 0 || y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT + this.r + GUI_SCREEN.Y && my > 0
     };
-    this.inScreen = function (x, y, xMin, yMin, xMax, yMax) {
-        if (x - r < xMin) {
-            x = r + xMin;
-        } else if (x + r > xMax) {
-            x = xMax - r;
+    this.inScreen = function (x, y) {
+        if (x - r < GUI_SCREEN.X) {
+            x = r + GUI_SCREEN.X;
+        } else if (x + r > GUI_SCREEN.X + GUI_SCREEN.WIDTH) {
+            x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - r;
         }
-        if (y - r < yMin) {
-            y = r + yMin;
-        } else if (y + r > yMax) {
-            y = yMax - r;
+        if (y - r < GUI_SCREEN.Y) {
+            y = r + GUI_SCREEN.Y;
+        } else if (y + r > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT) {
+            y = GUI_SCREEN.Y + GUI_SCREEN.HEIGHT - r;
         }
         return [x, y]
     }
@@ -194,27 +209,24 @@ export function editImage(px, callback, ignoreColor) {
 //     child.prototype.constructor = child
 // }
 
-// export function pathEscape(s) {
-//     if (s[0] === "\\" || s[0] === "/") {
-//         s.splice(0, 1)
-//     }
-//     const sr = s[s.length - 1];
-//     if (sr !== "/") {
-//         if (sr === "\\") {
-//             s[s.length - 1] = "/"
-//         } else {
-//             s += "/"
-//         }
-//     }
-//     return s
-// }
-//
-// export function joinPath(l, r) {
-//     return pathEscape(l) + pathEscape(r)
-// }
+export function pathEscape(s) {
+    if (s[0] === "\\" || s[0] === "/") {
+        s.splice(0, 1)
+    }
+    const sr = s[s.length - 1];
+    if (sr !== "/") {
+        if (sr === "\\") {
+            s[s.length - 1] = "/"
+        } else {
+            s += "/"
+        }
+    }
+    return s
+}
 
-window.loadingCount = 0;
-window.loadingTotal = 0;
+export function joinPath(l, r) {
+    return pathEscape(l) + pathEscape(r)
+}
 
 export function newImage(src, width, height) {
     const img = new Image();
@@ -222,20 +234,33 @@ export function newImage(src, width, height) {
     img.style.width = width;
     img.style.height = height;
     img.addEventListener("load", function () {
-        window.loadingCount++
+        session.loadingCount++
     });
-    window.loadingTotal++;
+    session.loadingTotal++;
     return img
 }
 
-export function newAudio(name) {
+const sounds = [];
+export const audioObserver = new Observer();
+
+export function newAudio(name, volume = 100, type = "SE") {
     const audio = new Audio("./assets/sounds/" + name);
     audio.addEventListener("canplay", function () {
-        if (window.loadingCount < window.loadingTotal) {
-            window.loadingCount++
+        if (session.loadingCount < session.loadingTotal) {
+            session.loadingCount++
         }
+        audio.volume = volume * config.Volume[type] / 10000
     });
-    window.loadingTotal++;
+
+    function onVolumeChange(e) {
+        if (e.detail.type === type) {
+            audio.volume = volume * config.Volume[type] / 10000
+        }
+    }
+
+    audioObserver.addEventListener(EVENT_MAPPING.volumeChange, onVolumeChange);
+    sounds.push(audio);
+    session.loadingTotal++;
     return audio
 }
 
@@ -244,20 +269,49 @@ const screens = {};
 const contexts = {};
 
 export function clearScreen() {
-    layers.forEach(function (s) {
-        getLayer(s).clearRect(0, 0, width, height);
-    });
+    for (let layer of layers) {
+        getLayer(layer).clearRect(0, 0, WIDTH, HEIGHT);
+    }
 }
 
 function initScreen(screen, layerId) {
     screens[layerId] = screen;
     contexts[layerId] = screen.getContext("2d");
-    contexts[layerId].clearRect(0, 0, screen.width, screen.height);
+    contexts[layerId].clearRect(0, 0, WIDTH, HEIGHT);
+    contexts[layerId].scale(screen.width / WIDTH, screen.height / HEIGHT);
+    contexts[layerId].rect(0, 0, WIDTH, HEIGHT);
+    contexts[layerId].clip();
     layers.add(layerId)
 }
 
+
+window.addEventListener("resize", function () {
+    for (let layer of layers) {
+        resizeScreen(screens[layer]);
+        initScreen(screens[layer], layer)
+    }
+});
+
+function resizeScreen(layer) {
+    const trans = window.innerWidth / window.innerHeight;
+    if (trans > WXH) {
+        layer.height = window.innerHeight;
+        layer.width = window.innerWidth / WXH;
+        layer.style.left = (window.innerWidth - layer.width) / 2 + "px";
+    } else if (trans === WXH) {
+        layer.width = window.innerWidth;
+        layer.height = window.innerHeight;
+        layer.style.removeProperty("top");
+        layer.style.removeProperty("left");
+    } else {
+        layer.width = window.innerWidth;
+        layer.height = window.innerHeight / WXH;
+        layer.style.top = (window.innerHeight - layer.height) / 2 + "px";
+    }
+}
+
 function newLayer(layerId) {
-    let layer = undefined;
+    let layer;
     try {
         layer = document.getElementById("screen" + layerId)
     } catch (e) {
@@ -265,12 +319,8 @@ function newLayer(layerId) {
     if (!layer) {
         layer = document.createElement("canvas");
         layer.id = "screen" + layerId;
-        layer.width = width;
-        layer.height = height;
-        layer.style.position = "absolute";
+        resizeScreen(layer);
         layer.style.zIndex = layerId;
-        layer.style.width = pkg.window.width - 2 + "px";
-        layer.style.height = pkg.window.height - 1 + "px";
         layer.innerHTML = "<span style='font-size:large;color:red' title='浏览器可能不支持canvas'>图层加载失败</span>";
         document.body.append(layer);
         initScreen(layer, layerId)
@@ -284,110 +334,264 @@ export function getLayer(layerId) {
     return contexts[layerId]
 }
 
-export function rendererEntity() {
-    entities.forEach(function (entity) {
-        entity.draw(entity)
+export function takeScreenShot(layerId) {
+    let screen;
+    if (layerId) {
+        screen = screens[layerId]
+    } else {
+        screen = document.createElement("canvas");
+        const base = getLayer(0);
+        screen.width = base.canvas.width;
+        screen.height = base.canvas.height;
+        const ctx = screen.getContext("2d");
+        ctx.fillRect(0, 0, screen.width, screen.height);
+        const l = [];
+        for (let layer of layers) {
+            l.push(layer)
+        }
+        l.sort();
+        const length = l.length;
+        for (let i = 0; i < length; i++) {
+            ctx.drawImage(screens[l[i]], 0, 0)
+        }
+    }
+    if (screen) {
+        return screen.toDataURL("png")
+    } else {
+        throw new Error("Get layer failure")
+    }
+}
+
+export function downloadDataURL(dataURL, filename) {
+    const a = document.createElement("a");
+    a.download = filename;
+    a.href = dataURL;
+    a.click()
+}
+
+export function saveBase64(base64, filename, callback) {
+    fs.writeFile(filename, new Buffer(base64, "base64"), function (e) {
+        if (typeof callback === "function") {
+            callback(e)
+        } else {
+            if (e) {
+                console.error(e)
+            } else {
+                console.log("Write a file to:" + filename)
+            }
+        }
     })
 }
 
-export function updateEntity() {
-    for (let i = 0; i < entities.length; i++) {
-        if (entities.length > config["ECSMax"]) {//实体上限
-            entities.splice(i, 1)
+export function getValidTimeFileName() {
+    const now = new Date();
+    return now.getFullYear() + "-" + now.getMonth() + "-" + now.getDay() + "_" + now.getHours() + "-" + now.getMinutes() + "-" + now.getSeconds()
+}
+
+export function saveOrDownload(dataURL, path, name, callback) {
+    const filename = joinPath(path, name);
+    if (fs.existsSync(path) && !fs.existsSync(filename)) {
+        if (typeof callback === "function") {
+            saveBase64(dataURL.slice(dataURL.indexOf(",") + 1), filename, callback)
         } else {
-            const entity = entities[i];
-            if (!entity.tick(entity)) {
-                entities.splice(i, 1)
-            }
-            entity.draw(entity)
+            saveBase64(dataURL.slice(dataURL.indexOf(",") + 1), filename, function (e) {
+                if (e) {
+                    console.error(e);
+                    downloadDataURL(dataURL, filename)
+                }
+            })
         }
+    } else {
+        downloadDataURL(dataURL, filename);
+        if (typeof callback === "function") {
+            callback()
+        }
+    }
+}
+
+export function rendererEntity() {
+    const length = entities.length;
+    for (let i = 0; i < length; i++) {
+        try {
+            entities[i].draw(entities[i])
+        } catch (e) {
+            console.error(entities[i]);
+            throw e
+        }
+    }
+}
+
+export function tickingEntity() {
+    let length = entities.length;
+    for (let i = 0; i < length; i++) {
+        const entity = entities[i];
+        if (!entity.tick(entity)) {
+            entities.splice(i, 1)
+        }
+        length = entities.length
+    }
+}
+
+export function updateEntity() {
+    let length = entities.length;
+    for (let i = 0; i < length; i++) {
+        const entity = entities[i];
+        if (entity.tick(entity)) {
+            entity.draw(entity);
+        } else {
+            entities.splice(i, 1)
+        }
+        length = entities.length
     }
 }
 
 export function clearEntity(callback, max = 1) {
     let count = 0;
-    entities.forEach(function (entity) {
+    const length = entities.length;
+    for (let i = 0; i < length; i++) {
+        const entity = entities[i];
         if (callback(entity)) {
-            entity.tags.add(Tags.death);
+            entity.tags.add(TAGS.death);
             count++
         }
         if (count >= max) {
             return count
         }
-    });
+    }
     return count
 }
 
 export function modifyEntity(callback, max = 1) {
     let count = 0;
-    entities.forEach(function (entity) {
-        if (callback(entity)) {
+    const length = entities.length;
+    for (let i = 0; i < length; i++) {
+        if (callback(entities[i])) {
             count++
         }
         if (count >= max) {
             return count
         }
-    });
+    }
     return count
 }
 
-export const eventListenerObject = document.createElement("div");
+export const GUI_SCREEN = {
+    X: 25,
+    Y: 10,
+    WIDTH: 390,
+    HEIGHT: 460
+};
 export const entities = [];
-export const boss = [];
-export const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
-export const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+export const debugLayerCache = {
+    RBox: {},
+    ABox: {},
+    LINE: {}
+};
+export const session = {};
+export let config = require("config.json");
+export const resources = require("resources.json");
+export let save;
+if (fs.existsSync("save.json")) {
+    save = require("save.json");
+    session.highScore = save["highScore"];
+} else {
+    session.highScore = 0
+}
+session.loadingCount = 0;
+session.loadingTotal = 0;
+session.score = 0;
+session.slow = false;
+session.keys = new Set();
+session.debugFlag = false;
 if (config["Player"] > 7 || config["Player"] < 1) {
     throw new Error("ConfigValueError: 'Player' must be an integer from 1~7.")
 }
-export const save = JSON.parse(fs.readFileSync("./save.json", "utf8"));
+if (config["DeveloperMode"] === true) {
+    session.developerMode = true
+}
+
+export function saveConfigToFile() {
+    fs.writeFileSync('./config.json', JSON.stringify(config, null, 4))
+}
+
+export function resetAndSaveConfig() {
+    config = {
+        DeveloperMode: false,
+        FastStart: false,
+        FrameMax: "auto",
+        EntityCountSecMax: 1024,
+        Player: 3,
+        GrazeMax: 99999,
+        Volume: {
+            BGM: 1,
+            SE: 0.8
+        },
+        KeyBoard: {
+            Up: "ArrowUp",
+            Down: "ArrowDown",
+            Left: "ArrowLeft",
+            Right: "ArrowRight",
+            Shoot: "Z",
+            Bomb: "X",
+            Slow: "Shift"
+        },
+        ScreenShot: "F:/Sync"
+    };
+    saveConfigToFile()
+}
+
+export function loadSaveFromFile() {
+    save = require("save.json")
+}
 
 export function saveToFile(save) {
     fs.writeFileSync('./save.json', JSON.stringify(save))
 }
 
-export const width = 1280;
-export const height = 960;
+export const WIDTH = 640;
+export const HEIGHT = 480;
+export const WXH = WIDTH / HEIGHT;
 export const L = Math.PI / 180;
-export const Tags = {
+export const TAGS = {
     hostile: "Hostile",
     enemy: "Enemy",
     player: "Player",
-    death: "Death"
+    death: "Death",
+    misc: "Misc",
+    title: "Title"
 };
-const resources = JSON.parse(fs.readFileSync("./resources.json", "utf8"));
-export const Images = {
-    background: {
-        "11o26": newImage(resources["Images"]["background"]["11o26"]),
-        "03_02": newImage(resources["Images"]["background"]["03_02"])
-    },
-    sidebar: {
-        bomb: newImage(resources["Images"]["sidebar"]["bomb"]),
-        life: newImage(resources["Images"]["sidebar"]["life"])
-    },
-    player: {
-        rumiaShot: newImage(resources["Images"]["player"]["rumiaShot"])
-    },
-    error: newImage(resources["Images"]["error"]),
-    borderLine: newImage(resources["Images"]["borderLine"]),
-    playerBorder: newImage(resources["Images"]["playerBorder"]),
-    spellName: newImage(resources["Images"]["spellName"]),
-    spellPractice: newImage(resources["Images"]["spellPractice"]),
-    enemyMarker: newImage(resources["Images"]["enemyMarker"]),
-    enemyCircle: newImage(resources["Images"]["enemyCircle"]),
-    bossEffect: newImage(resources["Images"]["bossEffect"]),
-    getSpellCardBonus: newImage(resources["Images"]["getSpellCardBonus"]),
-    BonusFailure: newImage(resources["Images"]["BonusFailure"]),
-    eBullet: newImage(resources["Images"]["eBullet"]),
-    eBullet2: newImage(resources["Images"]["eBullet2"]),
-    bossAll: newImage(resources["Images"]["bossAll"]),
-    bossRumia: newImage(resources["Images"]["bossRumia"]),
-    powerOrb: newImage(resources["Images"]["powerOrb"])
+export const EVENT_MAPPING = {
+    load: "Load",
+    left: "Left",
+    right: "Right",
+    up: "Up",
+    down: "Down",
+    shoot: "Shoot",
+    bomb: "Bomb",
+    clearEntity: "ClearEntity",
+    cardEnEp: "CardEnEp",
+    bossInit: "BossInit",
+    miss: "Miss",
+    changeBGM: "ChangeBGM",
+    volumeChange: "VolumeChange"
 };
-
-const jade = {};
+// 背景-玩家-boss-弹幕(entity)/特效-符卡宣言-判定点-UI/效果/字幕-菜单-调试信息-错误/遮罩
+// ----------场景----------------------UI-------------
+// /：图层 -：绘制次序
+export const LAYER_MAPPING = {
+    STAGE: 0,
+    UI: 1,
+    EFFECT: 2,
+    TITLE: 3,
+    SHADE: 4
+};
+// 0图层可能重构为webgl
+const Sticker = {};
+const eBullet = newImage(resources.Images["eBullet"]);
+const eBullet2 = newImage(resources.Images["eBullet2"]);
 
 export function drawSticker(type, color) {
-    let x = 0, y = 0, w = 16, h = 16, canHue = true, image = Images.eBullet;
+    let x = 0, y = 0, w = 16, h = 16, canHue = true, image = eBullet;
     switch (type) {
         case "laser":
             break;
@@ -444,45 +648,51 @@ export function drawSticker(type, color) {
             h = 32;
             break;
         case "orb":
-            image = Images.eBullet2;
+            image = eBullet2;
             w = 32;
             h = 32;
             break;
         case "bigStar":
-            image = Images.eBullet2;
+            image = eBullet2;
             y = 32;
             w = 32;
             h = 32;
             break;
         case "knife":
-            image = Images.eBullet2;
+            image = eBullet2;
             y = 64;
             w = 32;
             h = 32;
             break;
         case "heart":
-            image = Images.eBullet2;
+            image = eBullet2;
             y = 96;
             w = 32;
             h = 32;
             break;
         case "butterfly":
-            image = Images.eBullet2;
+            image = eBullet2;
             y = 128;
             w = 32;
             h = 32;
             break;
         case "oval":
-            image = Images.eBullet2;
+            image = eBullet2;
             y = 160;
             w = 32;
             h = 32;
             break;
         case "big":
-            image = Images.eBullet2;
+            image = eBullet2;
             y = 192;
             w = 64;
             h = 64;
+            break;
+        case "small_light_ball":
+            image = eBullet2;
+            y = 480;
+            w = 32;
+            h = 32;
             break;
         default:
             throw new Error("Type: " + type + " is not supported.")
@@ -490,7 +700,7 @@ export function drawSticker(type, color) {
     if (isNaN(color)) {
         switch (color) {
             case "dimgray":
-                if (type === "coin" || type === "scale" || type === "bigStar") {
+                if (type === "coin" || type === "scale" || type === "bigStar" || type === "small_light_ball") {
                     throw new Error("dimgray " + type + " is not supported.")
                 }
                 break;
@@ -498,10 +708,12 @@ export function drawSticker(type, color) {
                 if (type === "coin") {
                     throw new Error("darkgray " + type + " is not supported.")
                 }
-                x += w;
+                if (type !== "small_light_ball") {
+                    x += w;
+                }
                 break;
             case "crimson":
-                if (type === "coin" || type === "scale" || type === "bigStar") {
+                if (type === "coin" || type === "scale" || type === "bigStar" || type === "small_light_ball") {
                     throw new Error("crimson " + type + " is not supported.")
                 }
                 x += 2 * w;
@@ -510,19 +722,31 @@ export function drawSticker(type, color) {
                 if (type === "coin") {
                     throw new Error("red " + type + " is not supported.")
                 }
-                x += 3 * w;
+                if (type === "small_light_ball") {
+                    x += w;
+                } else {
+                    x += 3 * w;
+                }
                 break;
             case "orangered":
                 if (type === "coin") {
                     throw new Error("orangered " + type + " is not supported.")
                 }
-                x += 4 * w;
+                if (type === "small_light_ball") {
+                    x += 7 * w
+                } else {
+                    x += 4 * w;
+                }
                 break;
             case "gold":
                 if (type === "coin") {
                     x = 0
                 }
-                x += 5 * w;
+                if (type === "small_light_ball") {
+                    x += 6 * w
+                } else {
+                    x += 5 * w;
+                }
                 break;
             case "silk":
                 if (type === "coin") {
@@ -539,13 +763,13 @@ export function drawSticker(type, color) {
                 }
                 break;
             case "khaki":
-                if (type === "coin" || type === "scale" || type === "bigStar") {
+                if (type === "coin" || type === "scale" || type === "bigStar" || type === "small_light_ball") {
                     throw new Error("darkorange " + type + " is not supported.")
                 }
                 x += 6 * w;
                 break;
             case "yellowgreen":
-                if (type === "coin" || type === "scale" || type === "bigStar") {
+                if (type === "coin" || type === "scale" || type === "bigStar" || type === "small_light_ball") {
                     throw new Error("yellowgreen " + type + " is not supported.")
                 }
                 x += 7 * w;
@@ -554,10 +778,14 @@ export function drawSticker(type, color) {
                 if (type === "coin") {
                     throw new Error("green " + type + " is not supported.")
                 }
-                x += 8 * w;
+                if (type === "small_light_ball") {
+                    x += 5 * w
+                } else {
+                    x += 8 * w;
+                }
                 break;
             case "aqua":
-                if (type === "coin" || type === "scale" || type === "bigStar") {
+                if (type === "coin" || type === "scale" || type === "bigStar" || type === "small_light_ball") {
                     throw new Error("aqua " + type + " is not supported.")
                 }
                 x += 9 * w;
@@ -566,16 +794,24 @@ export function drawSticker(type, color) {
                 if (type === "coin") {
                     throw new Error("lightseagreen " + type + " is not supported.")
                 }
-                x += 10 * w;
+                if (type === "small_light_ball") {
+                    x += 4 * w
+                } else {
+                    x += 10 * w;
+                }
                 break;
             case "blue":
                 if (type === "coin") {
                     throw new Error("blue " + type + " is not supported.")
                 }
-                x += 11 * w;
+                if (type === "small_light_ball") {
+                    x += 3 * w
+                } else {
+                    x += 11 * w;
+                }
                 break;
             case "darkblue":
-                if (type === "coin" || type === "scale" || type === "bigStar") {
+                if (type === "coin" || type === "scale" || type === "bigStar" || type === "small_light_ball") {
                     throw new Error("darkblue " + type + " is not supported.")
                 }
                 x += 12 * w;
@@ -584,13 +820,21 @@ export function drawSticker(type, color) {
                 if (type === "coin") {
                     throw new Error("purple " + type + " is not supported.")
                 }
-                x += 13 * w;
+                if (type === "small_light_ball") {
+                    x += 2 * w
+                } else {
+                    x += 13 * w;
+                }
                 break;
             case "hotpink":
                 if (type === "coin") {
                     throw new Error("hotpink " + type + " is not supported.")
                 }
-                x += 14 * w;
+                if (type === "small_light_ball") {
+                    x += 8 * w
+                } else {
+                    x += 14 * w;
+                }
                 break;
             default:
                 throw new Error(type + " Color: " + color + " is not supported.")
@@ -603,14 +847,14 @@ export function drawSticker(type, color) {
         x -= image.width;
         x += w
     }
-    if (!jade[type]) {
-        jade[type] = {}
+    if (!Sticker[type]) {
+        Sticker[type] = {}
     }
-    if (!jade[type][color]) {
-        const layer0 = document.createElement("canvas");
-        layer0.width = w;
-        layer0.height = h;
-        const ctx = layer0.getContext("2d");
+    if (!Sticker[type][color]) {
+        const canvas0 = document.createElement("canvas");
+        canvas0.width = w;
+        canvas0.height = h;
+        const ctx = canvas0.getContext("2d");
         ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
         if (!isNaN(color)) {
             if (!canHue) {
@@ -621,58 +865,34 @@ export function drawSticker(type, color) {
                 return hslToRgb(color, 1, hsl[2]);
             }), 0, 0);
         }
-        const graze = layer0.cloneNode(true);
-        const c = graze.getContext("2d");
-        c.drawImage(layer0, 0, 0);
-        c.globalCompositeOperation = "source-atop";
-        c.fillStyle = "rgba(249,255,1,0.5)";
-        c.fillRect(0, 0, graze.width, graze.height);
-        jade[type][color] = {
-            layer0: layer0,
-            graze: graze
+        const graze = canvas0.cloneNode(true);
+        const grazeCtx = graze.getContext("2d");
+        grazeCtx.drawImage(canvas0, 0, 0);
+        grazeCtx.globalCompositeOperation = "source-atop";
+        grazeCtx.fillStyle = "rgba(249,255,1,0.5)";
+        grazeCtx.fillRect(0, 0, graze.width, graze.height);
+        const hit = canvas0.cloneNode(true);
+        const hitCtx = hit.getContext("2d");
+        hitCtx.drawImage(canvas0, 0, 0);
+        hitCtx.globalCompositeOperation = "source-atop";
+        hitCtx.fillStyle = "rgba(255,0,15,0.5)";
+        hitCtx.fillRect(0, 0, hit.width, hit.height);
+        Sticker[type][color] = {
+            layer0: canvas0,
+            graze: graze,
+            hit: hit
         }
     }
-    return jade[type][color]
+    return Sticker[type][color]
 }
-
-export const Sounds = {
-    loading: newAudio(resources["Sounds"]["loading"]),
-    menu: newAudio(resources["Sounds"]["menu"]),
-    test: newAudio(resources["Sounds"]["test"]),
-    select: newAudio(resources["Sounds"]["select"]),
-    invalid: newAudio(resources["Sounds"]["invalid"]),
-    ok: newAudio(resources["Sounds"]["ok"]),
-    cancel: newAudio(resources["Sounds"]["cancel"]),
-    pause: newAudio(resources["Sounds"]["pause"]),
-    option: newAudio(resources["Sounds"]["option"]),
-    miss: newAudio(resources["Sounds"]["miss"]),
-    shoot: newAudio(resources["Sounds"]["shoot"]),
-    powerUp: newAudio(resources["Sounds"]["powerUp"]),
-    item: newAudio(resources["Sounds"]["item"]),
-    changeTrack: newAudio(resources["Sounds"]["changeTrack"]),
-    graze: newAudio(resources["Sounds"]["graze"]),
-    failure: newAudio(resources["Sounds"]["failure"]),
-    gun: newAudio(resources["Sounds"]["gun"]),
-    timeout: newAudio(resources["Sounds"]["timeout"]),
-    timeout1: newAudio(resources["Sounds"]["timeout1"]),
-    damage: newAudio(resources["Sounds"]["damage"]),
-    damage1: newAudio(resources["Sounds"]["damage1"]),
-    cardGet: newAudio(resources["Sounds"]["cardGet"]),
-    bonus: newAudio(resources["Sounds"]["bonus"]),
-    cat0: newAudio(resources["Sounds"]["cat0"]),
-    en_ep_1: newAudio(resources["Sounds"]["en_ep_1"]),
-    en_ep_2: newAudio(resources["Sounds"]["en_ep_2"]),
-    slash: newAudio(resources["Sounds"]["slash"]),
-    bombShoot: newAudio(resources["Sounds"]["bombShoot"])
-};
 
 const stopSounds = [];
 
 export function stopAllSound() {
-    for (const soundsKey in Sounds) {
-        if (!Sounds[soundsKey].paused) {
-            Sounds[soundsKey].pause();
-            stopSounds.push(Sounds[soundsKey])
+    for (let i = 0, length = sounds.length; i < length; i++) {
+        if (!sounds[i].paused) {
+            sounds[i].pause();
+            stopSounds.push(sounds[i])
         }
     }
 }
@@ -680,19 +900,15 @@ export function stopAllSound() {
 export function continueAllSound() {
     while (stopSounds.length > 0) {
         try {
-            Sounds[stopSounds.pop()].play()
+            stopSounds.pop().play()
         } catch (e) {
         }
     }
 }
 
 export function cancelAllSound() {
-    for (const soundsKey in Sounds) {
-        Sounds[soundsKey].pause();
-        Sounds[soundsKey].currentTime = 0;
+    for (let i = 0, length = sounds.length; i < length; i++) {
+        sounds[i].pause();
+        sounds[i].currentTime = 0
     }
 }
-
-window.score = 0;
-window.highScore = save["highScore"];
-window.slow = false;

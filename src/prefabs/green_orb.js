@@ -1,31 +1,42 @@
 import Prefab from "../prefab.js";
 import item from "../components/item.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, hslToRgb, rgbToHsl, editImage, Images, Sounds} from "../util.js";
+import {
+    ABox,
+    getLayer,
+    hslToRgb,
+    rgbToHsl,
+    editImage,
+    session,
+    GUI_SCREEN,
+    newImage,
+    resources, newAudio, LAYER_MAPPING
+} from "../util.js";
+import {showScore} from "../dialogue.js";
 
 const middle = document.createElement("canvas");
-middle.width = 12;
-middle.height = 12;
+middle.width = 10;
+middle.height = 10;
 const middleCtx = middle.getContext("2d");
 const small = document.createElement("canvas");
-Images.eBullet2.addEventListener("load", function () {
-    middleCtx.drawImage(Images.eBullet2, 112, 416, 12, 12, 0, 0, 12, 12);
+const eBullet2 = newImage(resources.Images["eBullet2"]);
+eBullet2.addEventListener("load", function () {
+    middleCtx.drawImage(eBullet2, 115, 419, 10, 10, 0, 0, 10, 10);
     const smallCtx = small.getContext("2d");
     smallCtx.drawImage(middle, 0, 0);
-    smallCtx.putImageData(editImage(smallCtx.getImageData(0, 0, 12, 12), function (r, g, b) {
+    smallCtx.putImageData(editImage(smallCtx.getImageData(0, 0, 10, 10), function (r, g, b) {
         const hsl = rgbToHsl(r, g, b);
         return hslToRgb(hsl[0], hsl[1], 1);
     }), 0, 0);
 });
-
-const layer = getLayer(0);
+const soundOfItemPickUp = newAudio(resources.Sounds["item"]);
+const layerStage = getLayer(LAYER_MAPPING.STAGE);
 let _;
 
-export default function greenOrb(x, y, mx, my, size = "middle", spy = false) {
+export default function GreenOrb(x, y, mx, my, size = "middle", spy = false) {
     const inst = new Prefab(x, y);
-
-    inst.sizeBox = new ABox(6);
-    inst.pickBox = new ABox(14);
+    inst.sizeBox = new ABox(5);
+    inst.pickBox = new ABox(12);
     inst.addComponent("movable", movable);
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
@@ -33,20 +44,28 @@ export default function greenOrb(x, y, mx, my, size = "middle", spy = false) {
     inst.components["item"].spy = spy;
     inst.components["item"].configMovement(inst);
     inst.components["item"].pick = function () {
-        Sounds.item.currentTime = 0;
-        _ = Sounds.item.play();
+        let bonus = 1;
         if (size === "middle") {
-            window.score += 100
-        } else if (size === "small") {
-            window.score += 10
+            bonus = 10
         }
+        let score, color = "white";
+        if (session.player.Y < (1 - session.player.pickLine) * GUI_SCREEN.HEIGHT + GUI_SCREEN.Y) {
+            score = 10000 * bonus;
+            color = "gold"
+        } else {
+            score = Math.floor(10000 * (GUI_SCREEN.Y + GUI_SCREEN.HEIGHT - session.player.Y) / GUI_SCREEN.HEIGHT * session.player.pickLine) * bonus
+        }
+        session.score += score;
+        showScore(inst.X, inst.Y, score, color);
+        soundOfItemPickUp.currentTime = 0;
+        _ = soundOfItemPickUp.play();
     };
-    inst.addLayer("greenOrb", function () {
+    inst.addLayer("GreenOrb", function () {
         this.draw = function (inst) {
             if (size === "middle") {
-                layer.drawImage(middle, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r)
+                layerStage.drawImage(middle, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r)
             } else if (size === "small") {
-                layer.drawImage(small, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r)
+                layerStage.drawImage(small, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r)
             }
         }
     });

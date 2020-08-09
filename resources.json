@@ -9,7 +9,9 @@
             "life": "sidebar/life.png"
         },
         "player": {
-            "rumiaShot": "player/rumia_shot.png"
+            "rumiaShot": "player/rumia_shot.png",
+            "hakureiReimuShot": "player/hakurei_reimu_shot.png",
+            "hakureiReimu": "player/hakurei_reimu.png"
         },
         "error": "error.jpg",
         "borderLine": "border_line.png",
@@ -20,18 +22,57 @@
         "enemyCircle": "enemy_circle_06.png",
         "bossEffect": "boss_effect_01.png",
         "getSpellCardBonus": "img_bonus_01.png",
-        "BonusFailure": "img_bonus_02.png",
+        "bonusFailure": "img_bonus_02.png",
         "eBullet": "ebullet_1.png",
         "eBullet2": "ebullet_2.png",
+        "eBullet3": "ebullet_3.png",
         "bossAll": "boss_all_01.png",
         "bossRumia": "boss_01_11.png",
+        "bossPatchouliKnowledge": "boss_01_41.png",
+        "bossHakureiReimu": "boss_03_41.png",
+        "bossKirisameMarisa": "boss_03_42.png",
+        "bossYukariYakumo": "boss_02_81.png",
         "powerOrb": "power_orb.png"
     },
     "Sounds": {
         "loading": "loading.flac",
-        "menu": "上海アリス幻樂団 - 永夜抄 ～ Eastern Night.flac",
-        "test": "上海アリス幻樂団 - 東方妖怪小町.flac",
-        "failure": "上海アリス幻樂団 - プレイヤーズスコア.flac",
+        "easternNight": {
+            "head": "th08_01_head.wav",
+            "loop": "th08_01_loop.wav"
+        },
+        "easternNightPractice": {
+            "head": "th08_21_head.wav",
+            "loop": "th08_21_loop.wav"
+        },
+        "failure": {
+            "all": "th10_18.wav",
+            "head": "th10_18_head.wav",
+            "loop": "th10_18_loop.wav"
+        },
+        "rumia": {
+            "head": "th06_03_head.wav",
+            "loop": "th06_03_loop.wav"
+        },
+        "patchouliKnowledge": {
+            "head": "th06_09_head.wav",
+            "loop": "th06_09_loop.wav"
+        },
+        "hakureiReimu": {
+            "head": "th08_09_head.wav",
+            "loop": "th08_09_loop.wav"
+        },
+        "kirisameMarisa": {
+            "head": "th08_10_head.wav",
+            "loop": "th08_10_loop.wav"
+        },
+        "yukariYakumo": {
+            "head": "th07_18_head.wav",
+            "loop": "th07_18_loop.wav"
+        },
+        "th095_04": {
+            "head": "th095_04_head.wav",
+            "loop": "th095_04_loop.wav"
+        },
         "select": "select.wav",
         "invalid": "invalid.wav",
         "ok": "ok.wav",
@@ -39,7 +80,9 @@
         "pause": "pause.wav",
         "option": "option.wav",
         "miss": "dead.wav",
+        "extend": "extend.wav",
         "shoot": "shoot.wav",
+        "laser": "lazer00.wav",
         "powerUp": "power_up.wav",
         "item": "item.wav",
         "changeTrack": "change_track.wav",
@@ -55,6 +98,7 @@
         "en_ep_1": "en_ep_1.wav",
         "en_ep_2": "en_ep_2.wav",
         "slash": "slash.wav",
-        "bombShoot": "bomb_shoot.wav"
+        "bombShoot": "bomb_shoot.wav",
+        "bombShoot1": "bomb_shoot_1.wav"
     }
 }

@@ -1,5 +1,4 @@
-import {Tags} from "./util.js";
-
+import {TAGS} from "./util.js";
 export default function Prefab(x, y) {
     this.X = 0 || x;
     this.Y = 0 || y;
@@ -8,44 +7,55 @@ export default function Prefab(x, y) {
     this.components = {};
     const self = this;
     this.tick = function () {
-        this.componentsShadow.forEach(function (component) {
-            self.components[component].tick(self)
-        });
-        return !this.tags.has(Tags.death)
+        for (let componentsShadow of this.componentsShadow) {
+            this.components[componentsShadow].tick(this)
+        }
+        return !this.tags.has(TAGS.death)
     };
     this.renderers = {};
     this.renderersShadow = new Set();
     this.draw = function () {
-        this.renderersShadow.forEach(function (renderer) {
-            self.renderers[renderer].draw(self)
-        })
-    }
+        for (let renderersShadow of this.renderersShadow) {
+            self.renderers[renderersShadow].draw(self)
+        }
+    };
 }
-Prefab.prototype.addComponent = function (component_name, fn) {
-    if (this.componentsShadow.has(component_name)) {
-        throw new Error("Component: " + component_name + " is already exist!")
+Prefab.prototype.addComponent = function (componentName, fn) {
+    if (this.componentsShadow.has(componentName)) {
+        throw new Error("Component: " + componentName + " is already exist!")
     }
-    this.components[component_name] = new fn();
-    this.componentsShadow.add(component_name);
-    console.assert(this.components[component_name], "Could not load component " + component_name)
+    this.components[componentName] = new fn(this);
+    this.componentsShadow.add(componentName);
+    console.assert(this.components[componentName], "Could not load component " + componentName)
 };
-Prefab.prototype.removeComponent = function (component_name) {
-    if (!this.componentsShadow.has(component_name)) {
+Prefab.prototype.removeComponent = function (componentName) {
+    if (!this.componentsShadow.has(componentName)) {
         return
     }
-    this.components[component_name] = null;
-    this.componentsShadow.delete(component_name);
+    this.components[componentName] = null;
+    this.componentsShadow.delete(componentName);
 };
-Prefab.prototype.addLayer = function (layer_name, fn) {
+Prefab.prototype.addLayer = function (layerName, fn) {
     this.tags.add("drawable");
-    if (this.renderersShadow.has(layer_name)) {
-        throw new Error("Layer: " + layer_name + " is already exist!")
+    if (this.renderersShadow.has(layerName)) {
+        throw new Error("Layer: " + layerName + " is already exist!")
     }
-    this.renderers[layer_name] = new fn();
-    this.renderersShadow.add(layer_name);
-    console.assert(this.renderers[layer_name], "Could not load renderer " + layer_name)
+    this.renderers[layerName] = new fn(this);
+    this.renderersShadow.add(layerName);
+    console.assert(this.renderers[layerName], "Could not load renderer " + layerName)
+};
+Prefab.prototype.removeLayer = function (layerName) {
+    if (!this.renderersShadow.has(layerName)) {
+        return
+    }
+    this.renderers[layerName] = null;
+    this.renderersShadow.delete(layerName);
 };
 Prefab.prototype.init = function (f) {
     f(this);
+    return this
+};
+Prefab.prototype.addTag = function (tagName) {
+    this.tags.add(tagName);
     return this
 };
