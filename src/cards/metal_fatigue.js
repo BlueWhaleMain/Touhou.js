@@ -3,7 +3,7 @@ import {entities, L, session, transTo, newAudio, resources} from "../util.js";
 import Jade from "../prefabs/jade.js";
 
 let _;
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 
 function signalOrb(card, spyAngle) {
     for (let j = 0; j < 8; j++) {
@@ -35,7 +35,7 @@ export default function metalFatigue(edit) {
         delay: 60,
         slowFrame: 0,
         startFrame: 120,
-        time: 6000,
+        time: 3200,
         bonus: 1000000,
         card: function (card) {
             const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);

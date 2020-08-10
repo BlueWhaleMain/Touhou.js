@@ -1,6 +1,6 @@
 import {TAGS, session, newAudio, resources} from "../util.js";
 let _;
-const soundOfGraze = newAudio(resources.Sounds["graze"]);
+const soundOfGraze = newAudio(resources.Sounds.graze);
 export default function bullet() {
     this.grazeState = undefined;
     this.tick = function (inst) {

@@ -76,7 +76,7 @@ texture.addEventListener("load", function () {
     ctx.drawImage(texture, x, y, w, h, 0, 0, w, h);
     bigLightBall.orangered = canvas;
 });
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 export default function HakureiReimuLightBall(x, y, mx, my, color, startTime, big = false) {
     const inst = new Prefab(x, y);

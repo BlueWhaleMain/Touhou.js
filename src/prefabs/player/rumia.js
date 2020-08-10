@@ -16,16 +16,16 @@ import GreenOrb from "../green_orb.js";
 import {ob} from "../../observer.js"
 
 let _;
-const soundOfShoot = newAudio(resources.Sounds["shoot"]);
-const soundOfCat0 = newAudio(resources.Sounds["cat0"]);
-const soundOfSlash = newAudio(resources.Sounds["slash"]);
+const soundOfShoot = newAudio(resources.Sounds.shoot);
+const soundOfCat0 = newAudio(resources.Sounds.cat0);
+const soundOfSlash = newAudio(resources.Sounds.slash);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 const rumiaNormal = [];
 const rumiaLeft = [];
 const rumiaRight = [];
-const texture = newImage(resources.Images["player"]["rumiaShot"]);
-const rumia = newImage(resources.Images["bossRumia"]);
+const texture = newImage(resources.Images.player.rumiaShot);
+const rumia = newImage(resources.Images.bossRumia);
 texture.addEventListener("load", function () {
     for (let i = 0; i < 8; i++) {
         rumiaNormal[i] = document.createElement("canvas");
@@ -129,23 +129,39 @@ export default function Rumia() {
             moveSpeed = 4.5
         }
         switch (op) {
-            case "left":
+            case EVENT_MAPPING.left:
                 inst.X -= moveSpeed;
                 if (moveFrame > -7) {
                     moveFrame--
                 }
                 break;
-            case "right":
+            case EVENT_MAPPING.right:
                 inst.X += moveSpeed;
                 if (moveFrame < 7) {
-                    moveFrame++;
+                    moveFrame++
                 }
                 break;
-            case "up":
+            case EVENT_MAPPING.up:
                 inst.Y -= moveSpeed;
                 break;
-            case "down":
+            case EVENT_MAPPING.down:
                 inst.Y += moveSpeed;
+                break;
+            case EVENT_MAPPING.upperLeft:
+                inst.X -= moveSpeed * Math.cos(45 * L);
+                inst.Y -= moveSpeed * Math.cos(45 * L);
+                break;
+            case EVENT_MAPPING.lowerLeft:
+                inst.X -= moveSpeed * Math.cos(45 * L);
+                inst.Y += moveSpeed * Math.cos(45 * L);
+                break;
+            case EVENT_MAPPING.upperRight:
+                inst.X += moveSpeed * Math.cos(45 * L);
+                inst.Y -= moveSpeed * Math.cos(45 * L);
+                break;
+            case EVENT_MAPPING.lowerRight:
+                inst.X += moveSpeed * Math.cos(45 * L);
+                inst.Y += moveSpeed * Math.cos(45 * L);
                 break;
         }
     };

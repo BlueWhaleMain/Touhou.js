@@ -8,13 +8,13 @@ const cache = document.createElement("canvas");
 cache.width = 16;
 cache.height = 16;
 const cacheCtx = cache.getContext("2d");
-const eBullet2 = newImage(resources.Images["eBullet2"]);
+const eBullet2 = newImage(resources.Images.eBullet2);
 eBullet2.addEventListener("load", function () {
     cacheCtx.drawImage(eBullet2, 64, 416, 16, 16, 0, 0, 16, 16);
 });
 let _;
-const soundOfExtend = newAudio(resources.Sounds["extend"]);
-const soundOfItemPickUp = newAudio(resources.Sounds["item"]);
+const soundOfExtend = newAudio(resources.Sounds.extend);
+const soundOfItemPickUp = newAudio(resources.Sounds.item);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
 export default function Player1Up(x, y, mx, my, spy = false) {

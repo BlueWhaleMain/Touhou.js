@@ -1,8 +1,8 @@
 import {session, getLayer, newAudio, resources, LAYER_MAPPING} from "./util.js";
 
 let _;
-const soundOfSelect = newAudio(resources.Sounds["select"]);
-const soundOfCancel = newAudio(resources.Sounds["cancel"]);
+const soundOfSelect = newAudio(resources.Sounds.select);
+const soundOfCancel = newAudio(resources.Sounds.cancel);
 export default function Menu(menuList, emitHandler, cancelHandler, drawingHandler, callback) {
     this.menuList = menuList;
     this.selectedIndex = 0;

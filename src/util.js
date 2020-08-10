@@ -493,7 +493,7 @@ export const resources = require("resources.json");
 export let save;
 if (fs.existsSync("save.json")) {
     save = require("save.json");
-    session.highScore = save["highScore"];
+    session.highScore = save.highScore;
 } else {
     session.highScore = 0
 }
@@ -503,15 +503,15 @@ session.score = 0;
 session.slow = false;
 session.keys = new Set();
 session.debugFlag = false;
-if (config["Player"] > 7 || config["Player"] < 1) {
+if (config.Player > 7 || config.Player < 1) {
     throw new Error("ConfigValueError: 'Player' must be an integer from 1~7.")
 }
-if (config["DeveloperMode"] === true) {
+if (config.DeveloperMode === true) {
     session.developerMode = true
 }
 
 export function saveConfigToFile() {
-    fs.writeFileSync('./config.json', JSON.stringify(config, null, 4))
+    fs.writeFileSync("./config.json", JSON.stringify(config, null, 4))
 }
 
 export function resetAndSaveConfig() {
@@ -519,6 +519,7 @@ export function resetAndSaveConfig() {
         DeveloperMode: false,
         FastStart: false,
         FrameMax: "auto",
+        FullScreen: false,
         EntityCountSecMax: 1024,
         Player: 3,
         GrazeMax: 99999,
@@ -545,7 +546,7 @@ export function loadSaveFromFile() {
 }
 
 export function saveToFile(save) {
-    fs.writeFileSync('./save.json', JSON.stringify(save))
+    fs.writeFileSync("./save.json", JSON.stringify(save))
 }
 
 export const WIDTH = 640;
@@ -566,6 +567,10 @@ export const EVENT_MAPPING = {
     right: "Right",
     up: "Up",
     down: "Down",
+    upperLeft: "UpperLeft",
+    lowerLeft: "LowerLeft",
+    upperRight: "UpperRight",
+    lowerRight: "LowerRight",
     shoot: "Shoot",
     bomb: "Bomb",
     clearEntity: "ClearEntity",
@@ -587,8 +592,8 @@ export const LAYER_MAPPING = {
 };
 // 0图层可能重构为webgl
 const Sticker = {};
-const eBullet = newImage(resources.Images["eBullet"]);
-const eBullet2 = newImage(resources.Images["eBullet2"]);
+const eBullet = newImage(resources.Images.eBullet);
+const eBullet2 = newImage(resources.Images.eBullet2);
 
 export function drawSticker(type, color) {
     let x = 0, y = 0, w = 16, h = 16, canHue = true, image = eBullet;

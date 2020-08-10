@@ -3,7 +3,7 @@ import {entities, L, transTo, newAudio, resources} from "../util.js";
 import Jade from "../prefabs/jade.js";
 
 let _;
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 export default function boundaryBetweenWaveAndParticle(edit) {
     let frame = 0;
     let raw = 0;
@@ -13,7 +13,7 @@ export default function boundaryBetweenWaveAndParticle(edit) {
         delay: 60,
         slowFrame: 0,
         startFrame: 120,
-        time: 6000,
+        time: 10000,
         bonus: 2000000,
         card: function (card) {
             if (frame % 2 === 0) {

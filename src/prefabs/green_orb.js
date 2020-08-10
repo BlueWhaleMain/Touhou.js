@@ -19,7 +19,7 @@ middle.width = 10;
 middle.height = 10;
 const middleCtx = middle.getContext("2d");
 const small = document.createElement("canvas");
-const eBullet2 = newImage(resources.Images["eBullet2"]);
+const eBullet2 = newImage(resources.Images.eBullet2);
 eBullet2.addEventListener("load", function () {
     middleCtx.drawImage(eBullet2, 115, 419, 10, 10, 0, 0, 10, 10);
     const smallCtx = small.getContext("2d");
@@ -29,7 +29,7 @@ eBullet2.addEventListener("load", function () {
         return hslToRgb(hsl[0], hsl[1], 1);
     }), 0, 0);
 });
-const soundOfItemPickUp = newAudio(resources.Sounds["item"]);
+const soundOfItemPickUp = newAudio(resources.Sounds.item);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 let _;
 

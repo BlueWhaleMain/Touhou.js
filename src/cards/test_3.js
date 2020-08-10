@@ -3,8 +3,8 @@ import {entities, L, session, arrowTo, transTo, newAudio, resources} from "../ut
 import Jade from "../prefabs/jade.js";
 
 let _;
-const soundOfChangeTrack = newAudio(resources.Sounds["changeTrack"]);
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const COLOR_MAPPING = {
     0: "red",
     1: "crimson",

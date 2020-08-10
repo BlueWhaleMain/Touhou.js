@@ -7,12 +7,12 @@ const cache = document.createElement("canvas");
 cache.width = 16;
 cache.height = 16;
 const cacheCtx = cache.getContext("2d");
-const eBullet2 = newImage(resources.Images["eBullet2"]);
+const eBullet2 = newImage(resources.Images.eBullet2);
 eBullet2.addEventListener("load", function () {
     cacheCtx.drawImage(eBullet2, 80, 416, 16, 16, 0, 0, 16, 16);
 });
-const soundOfItemPickUp = newAudio(resources.Sounds["item"]);
-const soundOfCardGet = newAudio(resources.Sounds["cardGet"]);
+const soundOfItemPickUp = newAudio(resources.Sounds.item);
+const soundOfCardGet = newAudio(resources.Sounds.cardGet);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 let _;
 

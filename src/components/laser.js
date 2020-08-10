@@ -1,8 +1,8 @@
 import {TAGS, session, newAudio, resources} from "../util.js";
 
 let _;
-const soundOfGraze = newAudio(resources.Sounds["graze"]);
-const soundOfLaser = newAudio(resources.Sounds["laser"]);
+const soundOfGraze = newAudio(resources.Sounds.graze);
+const soundOfLaser = newAudio(resources.Sounds.laser);
 export default function laser() {
     this.grazeState = undefined;
     this.tick = function (inst) {

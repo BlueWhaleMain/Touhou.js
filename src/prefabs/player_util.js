@@ -14,7 +14,7 @@ import {
 import PowerOrb from "./power_orb.js";
 import {ob} from "../observer.js"
 let _;
-const soundOfMiss = newAudio(resources.Sounds["miss"]);
+const soundOfMiss = newAudio(resources.Sounds.miss);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 export default function PlayerUtil() {
@@ -25,7 +25,7 @@ export default function PlayerUtil() {
     inst.indTime = 60;
     inst.indMin = -60;
     inst.miss = false;
-    inst.playerCount = config["Player"];
+    inst.playerCount = config.Player;
     inst.bombCount = 3;
     inst.power = 0;
     inst.point = 0;
@@ -237,7 +237,7 @@ export default function PlayerUtil() {
             return
         }
         if (typeof inst.callback.moveTo === "function") {
-            inst.callback.moveTo("left", session.slow)
+            inst.callback.moveTo(EVENT_MAPPING.left, session.slow)
         }
         inst.inScreen()
     });
@@ -246,7 +246,7 @@ export default function PlayerUtil() {
             return
         }
         if (typeof inst.callback.moveTo === "function") {
-            inst.callback.moveTo("right", session.slow)
+            inst.callback.moveTo(EVENT_MAPPING.right, session.slow)
         }
         inst.inScreen()
     });
@@ -255,7 +255,7 @@ export default function PlayerUtil() {
             return
         }
         if (typeof inst.callback.moveTo === "function") {
-            inst.callback.moveTo("up", session.slow)
+            inst.callback.moveTo(EVENT_MAPPING.up, session.slow)
         }
         inst.inScreen()
     });
@@ -264,7 +264,43 @@ export default function PlayerUtil() {
             return
         }
         if (typeof inst.callback.moveTo === "function") {
-            inst.callback.moveTo("down", session.slow)
+            inst.callback.moveTo(EVENT_MAPPING.down, session.slow)
+        }
+        inst.inScreen()
+    });
+    ob.addEventListener(EVENT_MAPPING.upperLeft, function () {
+        if (inst.hideTime > 0 || inst.miss) {
+            return
+        }
+        if (typeof inst.callback.moveTo === "function") {
+            inst.callback.moveTo(EVENT_MAPPING.upperLeft, session.slow)
+        }
+        inst.inScreen()
+    });
+    ob.addEventListener(EVENT_MAPPING.lowerLeft, function () {
+        if (inst.hideTime > 0 || inst.miss) {
+            return
+        }
+        if (typeof inst.callback.moveTo === "function") {
+            inst.callback.moveTo(EVENT_MAPPING.lowerLeft, session.slow)
+        }
+        inst.inScreen()
+    });
+    ob.addEventListener(EVENT_MAPPING.upperRight, function () {
+        if (inst.hideTime > 0 || inst.miss) {
+            return
+        }
+        if (typeof inst.callback.moveTo === "function") {
+            inst.callback.moveTo(EVENT_MAPPING.upperRight, session.slow)
+        }
+        inst.inScreen()
+    });
+    ob.addEventListener(EVENT_MAPPING.lowerRight, function () {
+        if (inst.hideTime > 0 || inst.miss) {
+            return
+        }
+        if (typeof inst.callback.moveTo === "function") {
+            inst.callback.moveTo(EVENT_MAPPING.lowerRight, session.slow)
         }
         inst.inScreen()
     });

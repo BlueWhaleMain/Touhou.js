@@ -25,7 +25,7 @@ const guiBackground = document.createElement("canvas");
 let t = 2, tsp = 0.1;
 guiBackground.width = WIDTH;
 guiBackground.height = HEIGHT;
-const bg11o26 = newImage(resources.Images["background"]["11o26"]);
+const bg11o26 = newImage(resources.Images.background["11o26"]);
 bg11o26.addEventListener("load", function () {
     const guiBackgroundCtx = guiBackground.getContext("2d");
     guiBackgroundCtx.fillStyle = layerUI.createPattern(bg11o26, "repeat");
@@ -36,9 +36,9 @@ bg11o26.addEventListener("load", function () {
     guiBackgroundCtx.shadowColor = "black";
     guiBackgroundCtx.roundRect(GUI_SCREEN.X, GUI_SCREEN.Y, GUI_SCREEN.WIDTH, GUI_SCREEN.HEIGHT, 5).fill()
 });
-const sidebarBomb = newImage(resources.Images["sidebar"]["bomb"]);
-const sidebarLife = newImage(resources.Images["sidebar"]["life"]);
-const spellPractice = newImage(resources.Images["spellPractice"]);
+const sidebarBomb = newImage(resources.Images.sidebar.bomb);
+const sidebarLife = newImage(resources.Images.sidebar.life);
+const spellPractice = newImage(resources.Images.spellPractice);
 export default function StageUtil() {
     const inst = new Prefab();
     inst.event = new Observer();
@@ -65,8 +65,8 @@ export default function StageUtil() {
                 }
                 return
             }
-            if (session.player.graze > config["GrazeMax"]) {
-                session.player.graze = config["GrazeMax"]
+            if (session.player.graze > config.GrazeMax) {
+                session.player.graze = config.GrazeMax
             }
             if (session.score > session.highScore && !session.developerMode) {
                 session.highScore = session.score

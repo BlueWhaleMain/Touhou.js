@@ -13,12 +13,12 @@ import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
 
 let _;
-const bossEffect = newImage(resources.Images["bossEffect"]);
-const soundOfDamage = newAudio(resources.Sounds["damage"]);
-const soundOfDamage1 = newAudio(resources.Sounds["damage1"]);
-const soundOfEnEp1 = newAudio(resources.Sounds["en_ep_1"]);
-const soundOfEnEp2 = newAudio(resources.Sounds["en_ep_2"]);
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const bossEffect = newImage(resources.Images.bossEffect);
+const soundOfDamage = newAudio(resources.Sounds.damage);
+const soundOfDamage1 = newAudio(resources.Sounds.damage1);
+const soundOfEnEp1 = newAudio(resources.Sounds.en_ep_1);
+const soundOfEnEp2 = newAudio(resources.Sounds.en_ep_2);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 export default function BossUtil(x, y, blood, cards, dialogue) {
     const inst = new Prefab(x, y);

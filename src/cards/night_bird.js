@@ -3,7 +3,7 @@ import {entities, L, session, transTo, newAudio, resources} from "../util.js";
 import Jade from "../prefabs/jade.js";
 
 let _;
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const r135 = 135 * L;
 export default function nightBird(edit) {
     let frame = 0;
@@ -14,7 +14,7 @@ export default function nightBird(edit) {
         delay: 60,
         slowFrame: 0,
         startFrame: 120,
-        time: 6000,
+        time: 2400,
         bonus: 500000,
         card: function (card) {
             const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y) + r135;

@@ -4,7 +4,7 @@ import Jade from "../prefabs/jade.js";
 import {makeMovableRotate} from "../components/movable.js";
 
 let _;
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 export default function mercuryPoison(edit) {
     let frame = 0;
     let c = 0;
@@ -14,7 +14,7 @@ export default function mercuryPoison(edit) {
         delay: 60,
         slowFrame: 0,
         startFrame: 120,
-        time: 6000,
+        time: 3800,
         bonus: 1000000,
         card: function (card) {
             const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y) + (frame / 20) * L;

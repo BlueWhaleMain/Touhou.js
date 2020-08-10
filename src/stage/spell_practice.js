@@ -23,20 +23,20 @@ const cache = document.createElement("canvas");
 cache.width = 416;
 cache.height = 588;
 const cacheDraw = cache.getContext("2d");
-const bg0302 = newImage(resources.Images["background"]["03_02"]);
+const bg0302 = newImage(resources.Images.background["03_02"]);
 bg0302.addEventListener("load", function () {
     cacheDraw.fillStyle = cacheDraw.createPattern(bg0302, "repeat");
     cacheDraw.fillRect(0, 0, cache.width, cache.height);
 });
-const enemyMarker = newImage(resources.Images["enemyMarker"]);
-const borderLine = newImage(resources.Images["borderLine"]);
+const enemyMarker = newImage(resources.Images.enemyMarker);
+const borderLine = newImage(resources.Images.borderLine);
 const bgm = {
-    head: newAudio(resources.Sounds["easternNightPractice"]["head"], 100),
-    loop: newAudio(resources.Sounds["easternNightPractice"]["loop"], 100)
+    head: newAudio(resources.Sounds.easternNightPractice.head, 100, "BGM"),
+    loop: newAudio(resources.Sounds.easternNightPractice.loop, 100, "BGM")
 };
-const soundOfInvalid = newAudio(resources.Sounds["invalid"]);
-const soundOfOK = newAudio(resources.Sounds["ok"]);
-const soundOfPause = newAudio(resources.Sounds["pause"]);
+const soundOfInvalid = newAudio(resources.Sounds.invalid);
+const soundOfOK = newAudio(resources.Sounds.ok);
+const soundOfPause = newAudio(resources.Sounds.pause);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
@@ -159,10 +159,10 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                         }
                     }
                     tickingEntity();
-                    const kb = config["KeyBoard"];
+                    const kb = config.KeyBoard;
                     if (inst.dialogueScript.length > 0) {
-                        if (session.keys.has(kb["Bomb"].toLowerCase())) {
-                            session.keys.delete(kb["Bomb"].toLowerCase())
+                        if (session.keys.has(kb.Bomb.toLowerCase())) {
+                            session.keys.delete(kb.Bomb.toLowerCase())
                         }
                         if (session.keys.has("z")) {
                             session.keys.delete("z");
@@ -183,22 +183,36 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                         inst.pause();
                         return
                     }
-                    if (session.keys.has(kb["Up"].toLowerCase())) {
-                        ob.dispatchEvent(EVENT_MAPPING.up)
+                    if (session.keys.has(kb.Up.toLowerCase())) {
+                        if (session.keys.has(kb.Left.toLowerCase())) {
+                            ob.dispatchEvent(EVENT_MAPPING.upperLeft)
+                        } else if (session.keys.has(kb.Right.toLowerCase())) {
+                            ob.dispatchEvent(EVENT_MAPPING.upperRight)
+                        } else {
+                            ob.dispatchEvent(EVENT_MAPPING.up)
+                        }
                     }
-                    if (session.keys.has(kb["Down"].toLowerCase())) {
-                        ob.dispatchEvent(EVENT_MAPPING.down)
+                    if (session.keys.has(kb.Down.toLowerCase())) {
+                        if (session.keys.has(kb.Left.toLowerCase())) {
+                            ob.dispatchEvent(EVENT_MAPPING.lowerLeft)
+                        } else if (session.keys.has(kb.Right.toLowerCase())) {
+                            ob.dispatchEvent(EVENT_MAPPING.lowerRight)
+                        } else {
+                            ob.dispatchEvent(EVENT_MAPPING.down)
+                        }
                     }
-                    if (session.keys.has(kb["Left"].toLowerCase())) {
-                        ob.dispatchEvent(EVENT_MAPPING.left)
+                    if (!session.keys.has(kb.Up.toLowerCase()) && !session.keys.has(kb.Down.toLowerCase())) {
+                        if (session.keys.has(kb.Left.toLowerCase())) {
+                            ob.dispatchEvent(EVENT_MAPPING.left)
+                        }
+                        if (session.keys.has(kb.Right.toLowerCase())) {
+                            ob.dispatchEvent(EVENT_MAPPING.right)
+                        }
                     }
-                    if (session.keys.has(kb["Right"].toLowerCase())) {
-                        ob.dispatchEvent(EVENT_MAPPING.right)
-                    }
-                    if (session.keys.has(kb["Shoot"].toLowerCase())) {
+                    if (session.keys.has(kb.Shoot.toLowerCase())) {
                         ob.dispatchEvent(EVENT_MAPPING.shoot)
                     }
-                    if (!session.practice && session.keys.has(kb["Bomb"].toLowerCase())) {
+                    if (!session.practice && session.keys.has(kb.Bomb.toLowerCase())) {
                         ob.dispatchEvent(EVENT_MAPPING.bomb)
                     }
                     if (inst.boss.length === 0) {
@@ -298,7 +312,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         if (session.developerMode) {
             return
         }
-        save["highScore"] = session.highScore;
+        save.highScore = session.highScore;
         saveToFile(save)
     };
     inst.ending = function () {

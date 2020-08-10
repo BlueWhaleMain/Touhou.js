@@ -4,7 +4,7 @@ import Jade from "../prefabs/jade.js";
 import {makeMovableArc} from "../components/movable.js";
 
 let _;
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 export default function demarcation(edit) {
     function lightRotate() {
         modifyEntity(function (entity) {
@@ -88,7 +88,7 @@ export default function demarcation(edit) {
         delay: 60,
         slowFrame: 0,
         startFrame: 120,
-        time: 6000,
+        time: 2400,
         bonus: 600000,
         card: function (card) {
             if (frame === 0) {

@@ -15,7 +15,7 @@ import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
 
 let _;
-const soundOfChangeTrack = newAudio(resources.Sounds["changeTrack"]);
+const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 const r90 = 90 * L;

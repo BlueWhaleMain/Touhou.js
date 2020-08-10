@@ -9,11 +9,12 @@ import {
     RBox,
     resources,
     session,
-    transTo
+    transTo, EVENT_MAPPING
 } from "../../util.js";
 import PlayerUtil from "../player_util.js";
 import HakureiReimuBill from "../hakurei_reimu_bill.js";
 import HakureiReimuLightBall from "../hakurei_reimu_light_ball.js";
+import SealingNeedle from "../sealing_needle.js";
 
 let _;
 const soundOfShoot = newAudio(resources.Sounds.shoot);
@@ -87,7 +88,7 @@ export default function HakureiReimu() {
             if (moveFrame) {
                 layerStage.save();
                 layerStage.translate(inst.X, inst.Y);
-                layerStage.rotate(moveFrame * L);
+                layerStage.rotate(moveFrame * 2 * L);
                 layerStage.drawImage(hakureiReimuNormal, -16, -24 + inst.hideTime * 0.5);
                 layerStage.restore()
             } else {
@@ -103,23 +104,39 @@ export default function HakureiReimu() {
             moveSpeed = 4
         }
         switch (op) {
-            case "left":
+            case EVENT_MAPPING.left:
                 inst.X -= moveSpeed;
                 if (moveFrame > -7) {
                     moveFrame--
                 }
                 break;
-            case "right":
+            case EVENT_MAPPING.right:
                 inst.X += moveSpeed;
                 if (moveFrame < 7) {
-                    moveFrame++;
+                    moveFrame++
                 }
                 break;
-            case "up":
+            case EVENT_MAPPING.up:
                 inst.Y -= moveSpeed;
                 break;
-            case "down":
+            case EVENT_MAPPING.down:
                 inst.Y += moveSpeed;
+                break;
+            case EVENT_MAPPING.upperLeft:
+                inst.X -= moveSpeed * Math.cos(45 * L);
+                inst.Y -= moveSpeed * Math.cos(45 * L);
+                break;
+            case EVENT_MAPPING.lowerLeft:
+                inst.X -= moveSpeed * Math.cos(45 * L);
+                inst.Y += moveSpeed * Math.cos(45 * L);
+                break;
+            case EVENT_MAPPING.upperRight:
+                inst.X += moveSpeed * Math.cos(45 * L);
+                inst.Y -= moveSpeed * Math.cos(45 * L);
+                break;
+            case EVENT_MAPPING.lowerRight:
+                inst.X += moveSpeed * Math.cos(45 * L);
+                inst.Y += moveSpeed * Math.cos(45 * L);
                 break;
         }
     };
@@ -129,24 +146,38 @@ export default function HakureiReimu() {
             inst.shootCount = 0
         }
         if (inst.power < 99 || inst.power >= 400) {
-            entities.push(HakureiReimuBill(inst.X, inst.Y, 0, -20));
+            entities.push(HakureiReimuBill(inst.X, inst.Y, 0, -20))
         }
         if (inst.power >= 100 && inst.power < 400) {
             entities.push(HakureiReimuBill(inst.X + 5, inst.Y, 0, -20));
-            entities.push(HakureiReimuBill(inst.X - 5, inst.Y, 0, -20));
+            entities.push(HakureiReimuBill(inst.X - 5, inst.Y, 0, -20))
         }
         let temp;
         if (inst.power >= 200 && inst.shootCount % 2 === 0 || inst.power >= 300) {
-            temp = transTo(0, -20, 20 * L);
-            entities.push(HakureiReimuBill(inst.X - 8, inst.Y + 2, temp[0], temp[1], true));
-            temp = transTo(0, -20, -20 * L);
-            entities.push(HakureiReimuBill(inst.X + 8, inst.Y + 2, temp[0], temp[1], true));
+            if (session.slow) {
+                entities.push(SealingNeedle(inst.X - 8, inst.Y - 2, 0, -20));
+                entities.push(SealingNeedle(inst.X + 8, inst.Y - 2, 0, -20))
+            } else {
+                temp = transTo(0, -20, 30 * L);
+                entities.push(HakureiReimuBill(inst.X - 8, inst.Y + 2, temp[0], temp[1], true));
+                temp = transTo(0, -20, -30 * L);
+                entities.push(HakureiReimuBill(inst.X + 8, inst.Y + 2, temp[0], temp[1], true))
+            }
         }
         if (inst.power >= 400) {
             temp = transTo(0, -20, 10 * L);
             entities.push(HakureiReimuBill(inst.X, inst.Y, temp[0], temp[1]));
             temp = transTo(0, -20, -10 * L);
             entities.push(HakureiReimuBill(inst.X, inst.Y, temp[0], temp[1]));
+            if (session.slow) {
+                entities.push(SealingNeedle(inst.X - 32, inst.Y - 2, 0, -20));
+                entities.push(SealingNeedle(inst.X + 32, inst.Y - 2, 0, -20))
+            } else {
+                temp = transTo(0, -20, 60 * L);
+                entities.push(HakureiReimuBill(inst.X - 16, inst.Y + 2, temp[0], temp[1], true));
+                temp = transTo(0, -20, -60 * L);
+                entities.push(HakureiReimuBill(inst.X + 16, inst.Y + 2, temp[0], temp[1], true))
+            }
         }
         inst.shootDelay = 6;
         session.score += 100;

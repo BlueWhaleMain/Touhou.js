@@ -3,7 +3,7 @@ import {entities, L, session, arrowTo, transTo, modifyEntity, newAudio, resource
 import Jade from "../prefabs/jade.js";
 
 let _;
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 export default function test2(edit) {
     let frame = 0;
     const meta = Math.random();

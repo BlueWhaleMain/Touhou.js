@@ -27,6 +27,7 @@ import bossPatchouliKnowledge from "./src/prefabs/boss/patchouli_knowledge.js";
 import metalFatigue from "./src/cards/metal_fatigue.js";
 import mercuryPoison from "./src/cards/mercury_poison.js";
 import HakureiReimu from "./src/prefabs/player/hakurei_reimu.js";
+import asteroidBelt from "./src/cards/asteroid_belt.js";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -51,8 +52,8 @@ const ASSETS = {
     },
     SOUND: {
         easternNight: {
-            head: newAudio(resources.Sounds["easternNight"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["easternNight"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.easternNight.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.easternNight.loop, 100, "BGM"),
             name: "永夜抄 ～ Eastern Night",
             description: "　　标题画面的主题曲。\n" +
                 "　　将标题曲给人的印象做成继承前作并与之相同的氛围。\n" +
@@ -61,8 +62,8 @@ const ASSETS = {
                 "　　不过嘛，作为标题画面的曲子我很喜欢。"
         },
         rumia: {
-            head: newAudio(resources.Sounds["rumia"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["rumia"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.rumia.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.rumia.loop, 100, "BGM"),
             name: "妖魔夜行",
             description: "露米娅的主题曲。\n" +
                 "不仅是这首音乐，这次，总体来说音乐变得轻快了。\n" +
@@ -71,8 +72,8 @@ const ASSETS = {
                 "节奏上有些像笨蛋的感觉。"
         },
         hakureiReimu: {
-            head: newAudio(resources.Sounds["hakureiReimu"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["hakureiReimu"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.hakureiReimu.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.hakureiReimu.loop, 100, "BGM"),
             name: "少女綺想曲 ～ Dream Battle",
             description: "　　博丽灵梦的主题曲。\n" +
                 "　　以怀念为主题，要问为什么是怀念，那是因为这首曲子是以数年前的曲子重制的，\n" +
@@ -81,8 +82,8 @@ const ASSETS = {
                 "这次游戏的里主题是“名为幻想的古老记忆”。"
         },
         kirisameMarisa: {
-            head: newAudio(resources.Sounds["kirisameMarisa"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["kirisameMarisa"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.kirisameMarisa.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.kirisameMarisa.loop, 100, "BGM"),
             name: "恋色マスタースパーク",
             description: "　　雾雨魔理沙的主题曲。\n" +
                 "　　都到这一步了也就不用说什么怀念不怀念了。封魔录是第２作呢。就是那么古老的曲子的改编曲。\n" +
@@ -90,8 +91,8 @@ const ASSETS = {
                 "　　如此恒定不变的人很少见啊。她的主题曲虽然有５首但这首是不是最像她的呢。"
         },
         patchouliKnowledge: {
-            head: newAudio(resources.Sounds["patchouliKnowledge"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["patchouliKnowledge"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.patchouliKnowledge.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.patchouliKnowledge.loop, 100, "BGM"),
             name: "ラクトガール ～ 少女密室",
             description: "帕秋莉·诺蕾姬的主题曲。\n" +
                 "啊—，又是平时的病……\n" +
@@ -100,8 +101,8 @@ const ASSETS = {
                 "起来（笑）"
         },
         yukariYakumo: {
-            head: newAudio(resources.Sounds["yukariYakumo"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["yukariYakumo"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.yukariYakumo.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.yukariYakumo.loop, 100, "BGM"),
             name: "ネクロファンタジア",
             description: "　八云紫的主题曲。\n" +
                 "　本来打算将蓝的曲子重新编排下，不过，变成了不同风格的曲子。\n" +
@@ -111,8 +112,8 @@ const ASSETS = {
                 "　幕。因为是那样的角色的曲子，所以曲子本身也非常形迹可疑(笑)"
         },
         th095_04: {
-            head: newAudio(resources.Sounds["th095_04"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["th095_04"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.th095_04.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.th095_04.loop, 100, "BGM"),
             name: "東の国の眠らない夜",
             description: "摄影用曲３，用于中盘之后的曲子。\n" +
                 "\n" +
@@ -122,8 +123,8 @@ const ASSETS = {
                 "　尤其是用钢琴。"
         },
         failure: {
-            head: newAudio(resources.Sounds["failure"]["head"], 100, "BGM"),
-            loop: newAudio(resources.Sounds["failure"]["loop"], 100, "BGM"),
+            head: newAudio(resources.Sounds.failure.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.failure.loop, 100, "BGM"),
             name: "プレイヤーズスコア",
             description: "　游戏结束的主题曲。\n" +
                 "\n" +
@@ -132,10 +133,10 @@ const ASSETS = {
                 "\n" +
                 "　为啥呢？"
         },
-        invalid: newAudio(resources.Sounds["invalid"]),
-        ok: newAudio(resources.Sounds["ok"]),
-        timeout: newAudio(resources.Sounds["timeout"]),
-        timeout1: newAudio(resources.Sounds["timeout1"], 100, "BGM")
+        invalid: newAudio(resources.Sounds.invalid),
+        ok: newAudio(resources.Sounds.ok),
+        timeout: newAudio(resources.Sounds.timeout),
+        timeout1: newAudio(resources.Sounds.timeout1, 100, "BGM")
     }
 };
 const transRumia = document.createElement("canvas");
@@ -345,7 +346,8 @@ function practiceStartFactory(selectedIndex) {
                     })
                 ]),
                 bossKirisameMarisa(500, 125, 1200, [
-                    milkyWay()
+                    milkyWay(),
+                    asteroidBelt()
                 ], [
                     SimpleDialogue([{
                         text: "额"
@@ -572,8 +574,8 @@ function spellPracticeFactory(selectedIndex) {
             break;
         case 5:
             stageMap = function () {
-                boss = bossRumia(-50, 125, 900, [
-                    nightBird()
+                boss = bossKirisameMarisa(500, 125, 1200, [
+                    asteroidBelt()
                 ]);
                 boss.playBGM();
                 return [boss]
@@ -583,7 +585,7 @@ function spellPracticeFactory(selectedIndex) {
         case 6:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
-                    demarcation()
+                    nightBird()
                 ]);
                 boss.playBGM();
                 return [boss]
@@ -593,6 +595,16 @@ function spellPracticeFactory(selectedIndex) {
         case 7:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
+                    demarcation()
+                ]);
+                boss.playBGM();
+                return [boss]
+            };
+            bgm = true;
+            break;
+        case 8:
+            stageMap = function () {
+                boss = bossRumia(-50, 125, 900, [
                     void_death(function (cd) {
                         cd.practice = true
                     })
@@ -600,7 +612,7 @@ function spellPracticeFactory(selectedIndex) {
                 return [boss]
             };
             break;
-        case 8:
+        case 9:
             stageMap = function () {
                 boss = bossPatchouliKnowledge(220, -60, 1000, [
                     metalFatigue()
@@ -610,7 +622,7 @@ function spellPracticeFactory(selectedIndex) {
             };
             bgm = true;
             break;
-        case 9:
+        case 10:
             stageMap = function () {
                 boss = bossPatchouliKnowledge(220, -60, 1000, [
                     mercuryPoison()
@@ -635,12 +647,13 @@ const spellPracticeMenu = new Menu([
     lightMenuItem(280, 215, "Test2"),
     lightMenuItem(280, 235, "Test3"),
     lightMenuItem(280, 255, "境符「波与粒的境界」"),
-    lightMenuItem(280, 275, "魔符「小行星带」"),
-    lightMenuItem(280, 295, "夜符「夜雀」"),
-    lightMenuItem(280, 315, "暗符「境界线」"),
-    lightMenuItem(280, 335, "深渊「空亡」"),
-    lightMenuItem(280, 355, "金符「金属疲劳」"),
-    lightMenuItem(280, 375, "金&水符「水银之毒」"),
+    lightMenuItem(280, 275, "魔符「银河」"),
+    lightMenuItem(280, 295, "魔空「小行星带」"),
+    lightMenuItem(280, 315, "夜符「夜雀」"),
+    lightMenuItem(280, 335, "暗符「境界线」"),
+    lightMenuItem(280, 355, "深渊「空亡」"),
+    lightMenuItem(280, 375, "金符「金属疲劳」"),
+    lightMenuItem(280, 395, "金&水符「水银之毒」"),
 ], function (selectedIndex) {
     spellPracticeFactory(selectedIndex);
     transitions(runSpellPractice);
@@ -1092,7 +1105,7 @@ img.style.left = window.innerHeight / 3 + "px";
 img.style.width = window.innerWidth * 0.375 + "px";
 img.style.height = window.innerHeight * 11 / 24 + "px";
 document.body.appendChild(img);
-const loadingBgm = newAudio(resources.Sounds["loading"], 100, "BGM");
+const loadingBgm = newAudio(resources.Sounds.loading, 100, "BGM");
 
 function transitions(f, callback) {
     ob.clearEventListener();
@@ -1102,7 +1115,7 @@ function transitions(f, callback) {
     tickingEntity();
     entities.length = 0;
     loadSaveFromFile();
-    session.highScore = save["highScore"];
+    session.highScore = save.highScore;
     if (typeof callback === "function") {
         callback()
     }
@@ -1199,7 +1212,7 @@ function loading(f) {
         layerStage.fillStyle = "white";
         layerStage.fillText((session.loadingCount / session.loadingTotal * 100).toFixed() + "%", 0, 479);
         layerStage.restore();
-        if (session.loadingCount === session.loadingTotal && loadingBgm.currentTime > 0 && (loadingBgm.paused || config["FastStart"])) {
+        if (session.loadingCount === session.loadingTotal && loadingBgm.currentTime > 0 && (loadingBgm.paused || config.FastStart)) {
             if (!loadingBgm.paused) {
                 loadingBgm.pause();
                 loadingBgm.currentTime = 0;
@@ -1218,13 +1231,13 @@ let n = 1000;
 
 function nextFrame(f) {
     // 为了idea 多余的类型检查操作 ==这又不是TypeScript
-    if (typeof config["FrameMax"] === "string" && !isNaN(parseInt(config["FrameMax"]))) {
+    if (typeof config.FrameMax === "string" && !isNaN(parseInt(config.FrameMax))) {
         throw Error("FrameMax muse be an integer not number string")
     }
-    if (isNaN(parseInt(config["FrameMax"]))) {
+    if (isNaN(parseInt(config.FrameMax))) {
         requestAnimationFrame(f)
     } else {
-        setTimeout(f, n / config["FrameMax"])
+        setTimeout(f, n / config.FrameMax)
     }
     if (session.keys.has("f2")) {
         saveOrDownload(takeScreenShot(), config["ScreenShot"], "Touhou.JS_ScreenShot_" + getValidTimeFileName() + ".png");
@@ -1264,8 +1277,8 @@ try {
                 "<span style='color:black'>|</span>" +
                 "<span style='color:" + bcsColor + "'>" + bcs + "ECS</span>";
             timestamp = time;
-            if (config["FrameMax"] !== frames) {
-                n = 1000 * frames / config["FrameMax"]
+            if (config.FrameMax !== frames) {
+                n = 1000 * frames / config.FrameMax
             }
             frames = 0;
         }, 1000);
@@ -1277,7 +1290,7 @@ try {
             } else {
                 ignoreKeys.add(key)
             }
-            if (key === config["KeyBoard"]["Slow"].toLowerCase()) {
+            if (key === config.KeyBoard.Slow.toLowerCase()) {
                 session.slow = true
             }
             if (restore) {
@@ -1303,7 +1316,7 @@ try {
                 ignoreKeys.delete(key)
             }
             session.keys.delete(key);
-            if (key === config["KeyBoard"]["Slow"].toLowerCase()) {
+            if (key === config.KeyBoard.Slow.toLowerCase()) {
                 session.slow = false
             }
         });

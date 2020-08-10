@@ -5,7 +5,7 @@ import {makeMovableArc} from "../components/movable.js";
 import Laser from "../prefabs/laser.js";
 
 let _;
-const soundOfBombShoot = newAudio(resources.Sounds["bombShoot"]);
+const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 export default function voidDeath(edit) {
     function lightRotate() {
         modifyEntity(function (entity) {
@@ -75,7 +75,7 @@ export default function voidDeath(edit) {
         delay: 60,
         slowFrame: 0,
         startFrame: 120,
-        time: 6000,
+        time: 10000,
         bonus: 1000000,
         card: function (card) {
             if (frame === 0) {

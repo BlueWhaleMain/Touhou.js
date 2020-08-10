@@ -13,7 +13,7 @@ gradient.addColorStop(1, "rgba(255,255,255,0)");
 simpleDialogCtx.fillStyle = gradient;
 simpleDialogCtx.globalAlpha = 0.5;
 simpleDialogCtx.fillRect(0, 0, 350, 50);
-const soundOfShoot = newAudio(resources.Sounds["shoot"]);
+const soundOfShoot = newAudio(resources.Sounds.shoot);
 
 export function SimpleDialogue(textObjs, imageObjs, doSth, callback) {
     let o = 1, oa = 0, loaded = false;
@@ -154,9 +154,6 @@ export function scoreNumberParse(score) {
 }
 
 export function showScore(x, y, score, color = "white") {
-    if (score < 1000) {
-        return
-    }
     entities.push(title(function () {
         const self = {};
         self.draw = function (self) {

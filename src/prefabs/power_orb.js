@@ -23,13 +23,13 @@ const middle = document.createElement("canvas");
 middle.width = 16;
 middle.height = 16;
 const middleCtx = middle.getContext("2d");
-const texture = newImage(resources.Images["powerOrb"]);
+const texture = newImage(resources.Images.powerOrb);
 texture.addEventListener("load", function () {
     bigCtx.drawImage(texture, 0, 0, 20, 20);
     middleCtx.drawImage(texture, 0, 0, 16, 16);
 });
-const soundOfItemPickUp = newAudio(resources.Sounds["item"]);
-const soundOfPowerUp = newAudio(resources.Sounds["powerUp"]);
+const soundOfItemPickUp = newAudio(resources.Sounds.item);
+const soundOfPowerUp = newAudio(resources.Sounds.powerUp);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
 let _;
