@@ -11,7 +11,7 @@ import {
     entities, clearEntity, drawSticker, newAudio
 } from "../util.js";
 import Prefab from "../prefab.js";
-import movable, {makeMovableRotate} from "../components/movable.js";
+import movable from "../components/movable.js";
 import GreenOrb from "./green_orb.js";
 
 let _;
@@ -85,6 +85,7 @@ export default function HakureiReimuLightBall(x, y, mx, my, color, startTime, bi
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.components["movable"].flush = false;
+    const r = Math.sqrt(Math.pow(inst.X - session.player.X, 2) + Math.pow(inst.Y - session.player.Y, 2));
     if (big) {
         inst.sizeBox = new ABox(128);
     } else {
@@ -120,13 +121,15 @@ export default function HakureiReimuLightBall(x, y, mx, my, color, startTime, bi
                 damage = 50
             }
             let l = undefined, selectedEntity;
-            for (let i = 0; i < length; i++) {
-                const entity = entities[i];
-                if (entity.tags.has(TAGS.enemy)) {
-                    const nl = Math.pow(inst.X - entity.X, 2) + Math.pow(inst.Y - entity.Y, 2);
-                    if (l === undefined || l > nl) {
-                        selectedEntity = entity;
-                        l = nl
+            if (!startTime) {
+                for (let i = 0; i < length; i++) {
+                    const entity = entities[i];
+                    if (entity.tags.has(TAGS.enemy)) {
+                        const nl = Math.pow(inst.X - entity.X, 2) + Math.pow(inst.Y - entity.Y, 2);
+                        if (l === undefined || l > nl) {
+                            selectedEntity = entity;
+                            l = nl
+                        }
                     }
                 }
             }
@@ -159,7 +162,7 @@ export default function HakureiReimuLightBall(x, y, mx, my, color, startTime, bi
                         _ = soundOfBombShoot.play();
                         inst.tags.add(TAGS.death);
                         return
-                    } else {
+                    } else if (!startTime) {
                         const nl = Math.pow(inst.X - b.X, 2) + Math.pow(inst.Y - b.Y, 2);
                         if (l === undefined || l > nl) {
                             selectedEntity = b;
@@ -168,12 +171,14 @@ export default function HakureiReimuLightBall(x, y, mx, my, color, startTime, bi
                     }
                 }
             }
-            if (selectedEntity && !startTime) {
+            if (selectedEntity) {
                 const speed = arrowTo(inst.X, inst.Y, selectedEntity.X, selectedEntity.Y, Math.sqrt(Math.pow(inst.components["movable"].MX, 2) + Math.pow(inst.components["movable"].MY, 2)));
                 inst.components["movable"].MX = speed[0];
                 inst.components["movable"].MY = speed[1]
-            } else {
-                makeMovableRotate(inst, 0.1)
+            } else if (Math.sqrt(Math.pow(inst.X - session.player.X, 2) + Math.pow(inst.Y - session.player.Y, 2)) > r) {
+                const speed = arrowTo(inst.X, inst.Y, session.player.X, session.player.Y, Math.sqrt(Math.pow(inst.components["movable"].MX, 2) + Math.pow(inst.components["movable"].MY, 2)));
+                inst.X += speed[0];
+                inst.Y += speed[1]
             }
             if (session.player.bombTime < 0) {
                 boom(damage * 5, new ABox(inst.sizeBox.r * 2));

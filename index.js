@@ -1159,12 +1159,10 @@ function run() {
         if (!session.stage || !session.stage.paused) {
             const currentBGM = session.currentBGM;
             if (currentBGM) {
-                if (currentBGM.dom.paused || currentBGM.dom.currentTime + 0.18 > currentBGM.dom.duration) {
+                if (currentBGM.dom.paused || currentBGM.dom.currentTime + 0.12 > currentBGM.dom.duration) {
                     if (currentBGM.loop && currentBGM.paused > 1) {
-                        if (currentBGM.loop.currentTime + 0.06 > currentBGM.loop.duration) {
-                            currentBGM.loop.currentTime = 0
-                        }
-                        if (currentBGM.loop.paused) {
+                        if (currentBGM.loop.paused || currentBGM.loop.currentTime + 0.1 > currentBGM.loop.duration) {
+                            currentBGM.loop.currentTime = 0;
                             _ = currentBGM.loop.play()
                         }
                     } else {
@@ -1230,12 +1228,11 @@ function loading(f) {
 let n = 1000;
 
 function nextFrame(f) {
-    // 为了idea 多余的类型检查操作 ==这又不是TypeScript
-    if (typeof config.FrameMax === "string" && !isNaN(parseInt(config.FrameMax))) {
-        throw Error("FrameMax muse be an integer not number string")
-    }
-    if (isNaN(parseInt(config.FrameMax))) {
+    // 配置文件为整数时idea划线==
+    if (config.FrameMax === "auto") {
         requestAnimationFrame(f)
+    } else if (typeof config.FrameMax !== "number") {
+        throw Error("FrameMax muse be an integer or 'auto'.")
     } else {
         setTimeout(f, n / config.FrameMax)
     }

@@ -1,5 +1,29 @@
 import {TAGS, L} from "../util.js";
 
+export function movableArc(inst, target, r, yaw = 0, ya = 1, max) {
+    const movable = inst.components["movable"];
+    const handler = function (inst) {
+        yaw += ya;
+        if (yaw >= 360) {
+            yaw = 0
+        }
+        inst.X = target.X + r * Math.cos(yaw * L);
+        inst.Y = target.Y + r * Math.sin(yaw * L);
+    };
+    if (max) {
+        movable.callback.tick = function () {
+            if (max > 0) {
+                max--;
+                handler(inst)
+            } else {
+                movable.callback.tick = undefined
+            }
+        }
+    } else {
+        movable.tick = handler
+    }
+}
+
 export function makeMovableArc(inst, r, yaw = 0, m = 1, ma = 0, mMin = 0, mMax) {
     const movable = inst.components["movable"];
     movable.callback.tick = function () {
