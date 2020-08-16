@@ -7,7 +7,7 @@ import {
     LAYER_MAPPING,
     RBox,
     TAGS,
-    session
+    session, newAudio, resources
 } from "../util.js";
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
@@ -15,9 +15,12 @@ import laser from "../components/laser.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js";
 
+let _;
 const r90 = 90 * L;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
+const soundOfLaser = newAudio(resources.Sounds.laser);
+const soundOfNep00 = newAudio(resources.Sounds.nep00);
 export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = true) {
     const inst = new Prefab(x, y);
     inst.layTime = 1;
@@ -38,6 +41,8 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.angle = angle;
+    let xs = 8;
+    const startTime = inst.startTime;
     inst.init = function () {
         let type = inst.type;
         let color = inst.color;
@@ -64,8 +69,11 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                 inst.DY = 8;
                 break;
             case "knife":
-                inst.sizeBox = new RBox(32, HEIGHT * 2);
-                inst.atkBox = new RBox(16, HEIGHT * 2);
+                break;
+            case "master_spark":
+                inst.sizeBox = new RBox(256, 512);
+                inst.atkBox = new RBox(224, 480);
+                xs = 256;
                 break;
             default:
                 throw new Error("LaserType: " + type + " is not supported.")
@@ -80,6 +88,15 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                     return
                 }
                 if (inst.startTime > 0) {
+                    if (type === "master_spark") {
+                        const height = inst.sizeBox.ys * (1 - inst.startTime / startTime);
+                        layerStage.save();
+                        layerStage.translate(inst.X + Math.sin(angle) * (height / 2 - 256), inst.Y - Math.cos(angle) * (height / 2 - 256));
+                        layerStage.rotate(inst.angle);
+                        layerStage.drawImage(drawSticker(type, color).layer0, 4, -height / 2, 4, height);
+                        layerStage.restore();
+                        return
+                    }
                     layerStage.save();
                     layerStage.translate(inst.X + inst.DX, inst.Y + inst.DY);
                     layerStage.rotate(inst.angle);
@@ -100,9 +117,23 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                 }
                 let width = Math.min(inst.sizeBox.xs, inst.layTime);
                 layerStage.save();
+                if (type === "master_spark") {
+                    if (inst.delayTime <= 0) {
+                        layerStage.globalAlpha = width / inst.sizeBox.xs;
+                        session.fake = false
+                    } else {
+                        if (inst.layTime * 10 <= inst.sizeBox.xs) {
+                            width = Math.min(inst.sizeBox.xs, inst.layTime * 10);
+                        } else {
+                            width = inst.sizeBox.xs
+                        }
+                        session.fake = true
+                    }
+                }
                 layerStage.translate(inst.X + inst.DX, inst.Y + inst.DY);
                 layerStage.rotate(inst.angle);
                 layerStage.drawImage(draw, -width / 2, -inst.sizeBox.ys / 2, width, inst.sizeBox.ys);
+                inst.atkBox.xs = xs * width / inst.sizeBox.xs;
                 layerStage.restore();
                 if (session.debugFlag === true) {
                     layerUI.save();
@@ -124,7 +155,7 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
             ob.removeEventListener(EVENT_MAPPING.clearEntity, drop);
             ob.removeEventListener(EVENT_MAPPING.clearEntity, clear);
             ob.removeEventListener(EVENT_MAPPING.cardEnEp, drop);
-            ob.removeEventListener(EVENT_MAPPING.miss, clear);
+            ob.removeEventListener(EVENT_MAPPING.miss, clear)
         }
     }
 
@@ -152,5 +183,15 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
     }
     ob.addEventListener(EVENT_MAPPING.cardEnEp, drop);
     ob.addEventListener(EVENT_MAPPING.load, load);
+    inst.start = function () {
+        if (inst.type === "master_spark") {
+
+            soundOfNep00.currentTime = 0;
+            _ = soundOfNep00.play()
+        } else {
+            soundOfLaser.currentTime = 0;
+            _ = soundOfLaser.play();
+        }
+    };
     return inst
 }

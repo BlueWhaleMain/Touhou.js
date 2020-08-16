@@ -9,14 +9,17 @@ import {
     config,
     session,
     EVENT_MAPPING,
-    GUI_SCREEN, newAudio, resources, LAYER_MAPPING
+    GUI_SCREEN, newAudio, resources, LAYER_MAPPING, newImage
 } from "../util.js";
 import PowerOrb from "./power_orb.js";
 import {ob} from "../observer.js"
+
 let _;
 const soundOfMiss = newAudio(resources.Sounds.miss);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
+const layerTitle = getLayer(LAYER_MAPPING.TITLE);
+const spellName = newImage(resources.Images.spellName);
 export default function PlayerUtil() {
     const inst = new Prefab(GUI_SCREEN.X + GUI_SCREEN.WIDTH / 2, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT);
     inst.shootDelay = 0;
@@ -100,6 +103,7 @@ export default function PlayerUtil() {
                     inst.miss = false;
                     ob.dispatchEvent(EVENT_MAPPING.miss);
                     if (session.practice) {
+                        inst.indTime = 210;
                         return
                     }
                     // modifyEntity(function (entity) {
@@ -175,6 +179,20 @@ export default function PlayerUtil() {
         // let ro = 0;
         let frame = 0;
         this.draw = function () {
+            if (inst.bombTime > 0) {
+                let layout = inst.bombTime * -6;
+                if (layout < -300) {
+                    layout = -300
+                }
+                layerTitle.drawImage(spellName, 0, 600 + layout);
+                layerTitle.save();
+                layerTitle.font = "10px Comic Sans MS";
+                layerTitle.fillStyle = "white";
+                layerTitle.shadowColor = "black";
+                layerTitle.shadowBlur = 5;
+                layerTitle.fillText(inst.spellName, 40, 629 + layout);
+                layerTitle.restore();
+            }
             if (session.slow) {
                 layerUI.save();
                 if (inst.deadPOS) {

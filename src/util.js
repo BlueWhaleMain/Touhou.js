@@ -114,9 +114,9 @@ export function RBox(xs, ys, angle) {
             y2 = y1 + (x2 - x1) * Math.sin(-this.angle) + (y2 - y1) * Math.cos(-this.angle)
         }
         if (hitBox.name === "ABox") {
-            const xx = x2 - x1, yy = y2 - y1, minX = Math.min(xx, xs / 2),
-                maxX = Math.max(minX, -xs / 2),
-                minY = Math.min(yy, ys / 2), maxY = Math.max(minY, -ys / 2);
+            const xx = x2 - x1, yy = y2 - y1, minX = Math.min(xx, this.xs / 2),
+                maxX = Math.max(minX, -this.xs / 2),
+                minY = Math.min(yy, this.ys / 2), maxY = Math.max(minY, -this.ys / 2);
             return (maxX - xx) * (maxX - xx) + (maxY - yy) * (maxY - yy) <= hitBox.r * hitBox.r;
         } else if (hitBox.name === "RBox") {
             const maxX = x1 + this.xs >= x2 + hitBox.xs ? x1 + this.xs : x2 + hitBox.xs;
@@ -127,23 +127,23 @@ export function RBox(xs, ys, angle) {
         }
     };
     this.isOut = function (x, y, xMax, yMax, mx, my) {
-        return x + xs + xs < 0 && mx <= 0 || y + ys + ys < 0 && my <= 0
+        return x + this.xs + this.xs < 0 && mx <= 0 || y + this.ys + this.ys < 0 && my <= 0
             || x > xMax && mx > 0 || y > yMax && my > 0
     };
     this.isOutScreen = function (x, y, mx, my) {
-        return x < -4 * xs - GUI_SCREEN.X && mx <= 0 || y < -4 * ys - GUI_SCREEN.Y && my <= 0
-            || x > GUI_SCREEN.X + GUI_SCREEN.WIDTH + xs + xs + GUI_SCREEN.X && mx > 0 || y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT + 2 * ys + GUI_SCREEN.Y && my > 0
+        return x < -4 * this.xs - GUI_SCREEN.X && mx <= 0 || y < -4 * this.ys - GUI_SCREEN.Y && my <= 0
+            || x > GUI_SCREEN.X + GUI_SCREEN.WIDTH + this.xs + this.xs + GUI_SCREEN.X && mx > 0 || y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT + 2 * this.ys + GUI_SCREEN.Y && my > 0
     };
     this.inScreen = function (x, y) {
-        if (x - xs / 2 < GUI_SCREEN.X) {
-            x = xs / 2 + GUI_SCREEN.X;
-        } else if (x + xs / 2 > GUI_SCREEN.X + GUI_SCREEN.WIDTH) {
-            x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - xs / 2;
+        if (x - this.xs / 2 < GUI_SCREEN.X) {
+            x = this.xs / 2 + GUI_SCREEN.X;
+        } else if (x + this.xs / 2 > GUI_SCREEN.X + GUI_SCREEN.WIDTH) {
+            x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - this.xs / 2;
         }
-        if (y - ys / 2 < GUI_SCREEN.Y) {
-            y = ys / 2 + GUI_SCREEN.Y;
-        } else if (y + ys / 2 > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT) {
-            y = GUI_SCREEN.Y + GUI_SCREEN.HEIGHT - ys / 2;
+        if (y - this.ys / 2 < GUI_SCREEN.Y) {
+            y = this.ys / 2 + GUI_SCREEN.Y;
+        } else if (y + this.ys / 2 > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT) {
+            y = GUI_SCREEN.Y + GUI_SCREEN.HEIGHT - this.ys / 2;
         }
         return [x, y]
     }
@@ -154,12 +154,12 @@ export function ABox(r) {
     this.r = r;
     this.isHit = function (x, y, x1, y1, hitBox) {
         if (hitBox.name === "ABox") {
-            return Math.pow(r + hitBox.r, 2) >= Math.pow(x - x1, 2) + Math.pow(y - y1, 2);
+            return Math.pow(this.r + hitBox.r, 2) >= Math.pow(x - x1, 2) + Math.pow(y - y1, 2);
         } else if (hitBox.name === "RBox") {
             const xx = x1 - x, yy = y1 - y, minX = Math.min(xx, hitBox.xs / 2),
                 maxX = Math.max(minX, -hitBox.xs / 2),
                 minY = Math.min(yy, hitBox.ys / 2), maxY = Math.max(minY, -hitBox.ys / 2);
-            return (maxX - xx) * (maxX - xx) + (maxY - yy) * (maxY - yy) <= r * r;
+            return (maxX - xx) * (maxX - xx) + (maxY - yy) * (maxY - yy) <= this.r * this.r;
         }
     };
     this.isOut = function (x, y, xMax, yMax, mx, my) {
@@ -171,15 +171,15 @@ export function ABox(r) {
             || y < -this.r - GUI_SCREEN.Y && my <= 0 || y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT + this.r + GUI_SCREEN.Y && my > 0
     };
     this.inScreen = function (x, y) {
-        if (x - r < GUI_SCREEN.X) {
-            x = r + GUI_SCREEN.X;
-        } else if (x + r > GUI_SCREEN.X + GUI_SCREEN.WIDTH) {
-            x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - r;
+        if (x - this.r < GUI_SCREEN.X) {
+            x = this.r + GUI_SCREEN.X;
+        } else if (x + this.r > GUI_SCREEN.X + GUI_SCREEN.WIDTH) {
+            x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - this.r;
         }
-        if (y - r < GUI_SCREEN.Y) {
-            y = r + GUI_SCREEN.Y;
-        } else if (y + r > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT) {
-            y = GUI_SCREEN.Y + GUI_SCREEN.HEIGHT - r;
+        if (y - this.r < GUI_SCREEN.Y) {
+            y = this.r + GUI_SCREEN.Y;
+        } else if (y + this.r > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT) {
+            y = GUI_SCREEN.Y + GUI_SCREEN.HEIGHT - this.r;
         }
         return [x, y]
     }
@@ -594,6 +594,7 @@ export const LAYER_MAPPING = {
 const Sticker = {};
 const eBullet = newImage(resources.Images.eBullet);
 const eBullet2 = newImage(resources.Images.eBullet2);
+const eBullet6 = newImage(resources.Images.eBullet6);
 
 export function drawSticker(type, color) {
     let x = 0, y = 0, w = 16, h = 16, canHue = true, image = eBullet;
@@ -698,6 +699,14 @@ export function drawSticker(type, color) {
             y = 480;
             w = 32;
             h = 32;
+            break;
+        case "master_spark":
+            image = eBullet6;
+            w = 256;
+            h = 512;
+            if (color) {
+                throw new Error("Type: master_spark is not support color.")
+            }
             break;
         default:
             throw new Error("Type: " + type + " is not supported.")
@@ -842,7 +851,9 @@ export function drawSticker(type, color) {
                 }
                 break;
             default:
-                throw new Error(type + " Color: " + color + " is not supported.")
+                if (type !== "master_spark") {
+                    throw new Error(type + " Color: " + color + " is not supported.")
+                }
         }
     } else {
         x += w;

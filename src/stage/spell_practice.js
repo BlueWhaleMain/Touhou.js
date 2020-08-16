@@ -73,6 +73,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     let timestamp = 0;
     let shade = 0;
     inst.loaded = false;
+    inst.failure = false;
     inst.dialogueScript = [];
     inst.boss = [];
     inst.event.addEventListener(STAGE_EVENT.load, function () {
@@ -238,6 +239,11 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     });
     inst.addLayer("SpellPractice", function () {
         this.draw = function (inst) {
+            layerStage.save();
+            if (session.fake) {
+                session.fake = false;
+                layerStage.translate(Math.random() * 10 - 5, Math.random() * 10 - 5)
+            }
             layerStage.drawImage(cache, 12.8, 9.6 + step);
             session.player.draw();
             for (let i = 0; i < inst.boss.length; i++) {
@@ -300,6 +306,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                     stageMenuEntities[i].draw(stageMenuEntities[i])
                 }
             }
+            layerStage.restore()
         }
     });
 
@@ -309,7 +316,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
 
     ob.addEventListener(EVENT_MAPPING.changeBGM, showBGM);
     inst.clear = function () {
-        if (session.developerMode) {
+        if (session.developerMode === true) {
             return
         }
         save.highScore = session.highScore;

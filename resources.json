@@ -26,6 +26,7 @@
         "eBullet": "ebullet_1.png",
         "eBullet2": "ebullet_2.png",
         "eBullet3": "ebullet_3.png",
+        "eBullet6": "ebullet_6.png",
         "bossAll": "boss_all_01.png",
         "bossRumia": "boss_01_11.png",
         "bossPatchouliKnowledge": "boss_01_41.png",
@@ -95,9 +96,11 @@
         "cardGet": "card_get.wav",
         "bonus": "bonus.wav",
         "cat0": "cat_0.wav",
+        "power0": "power0.wav",
         "en_ep_1": "en_ep_1.wav",
         "en_ep_2": "en_ep_2.wav",
         "slash": "slash.wav",
+        "nep00": "nep00.wav",
         "bombShoot": "bomb_shoot.wav",
         "bombShoot1": "bomb_shoot_1.wav"
     }

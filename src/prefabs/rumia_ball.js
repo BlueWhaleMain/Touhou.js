@@ -1,41 +1,15 @@
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, modifyEntity, TAGS, L, session, LAYER_MAPPING} from "../util.js";
+import {ABox, getLayer, modifyEntity, TAGS, session, LAYER_MAPPING, newImage, resources} from "../util.js";
 
-const r90 = 90 * L;
 const cache = document.createElement("canvas");
-cache.width = 10;
-cache.height = 30;
-const c = cache.getContext("2d");
-c.fillStyle = "black";
-c.shadowColor = "white";
-c.shadowBlur = 2;
-c.beginPath();
-c.arc(5, 5, 5, 0, 2 * Math.PI);
-c.closePath();
-c.fill();
-c.beginPath();
-c.arc(5, 5, 3, 0, 2 * Math.PI);
-c.closePath();
-c.fill();
-c.beginPath();
-c.shadowColor = "black";
-c.globalAlpha = 0.8;
-c.arc(5, 15, 5, 0, 2 * Math.PI);
-c.closePath();
-c.fill();
-c.beginPath();
-c.arc(5, 15, 3, 0, 2 * Math.PI);
-c.closePath();
-c.fill();
-c.globalAlpha = 0.5;
-c.arc(5, 25, 5, 0, 2 * Math.PI);
-c.closePath();
-c.fill();
-c.beginPath();
-c.arc(5, 25, 3, 0, 2 * Math.PI);
-c.closePath();
-c.fill();
+cache.width = 48;
+cache.height = 16;
+const texture = newImage(resources.Images.player.rumiaShot);
+texture.addEventListener("load", function () {
+    const c = cache.getContext("2d");
+    c.drawImage(texture, 224, 144, 48, 16, 0, 0, 48, 16)
+});
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 export default function RumiaBall(x, y, mx, my) {
     const inst = new Prefab(x, y);
@@ -78,8 +52,8 @@ export default function RumiaBall(x, y, mx, my) {
         this.draw = function (inst) {
             layerStage.save();
             layerStage.translate(inst.X, inst.Y);
-            layerStage.rotate(Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90);
-            layerStage.drawImage(cache, -inst.sizeBox.r, -inst.sizeBox.r);
+            layerStage.rotate(Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX));
+            layerStage.drawImage(cache, -24, -8);
             layerStage.restore()
         }
     });

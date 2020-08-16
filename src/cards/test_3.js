@@ -1,10 +1,22 @@
 import CardUtil from "../card_util.js";
-import {entities, L, session, arrowTo, transTo, newAudio, resources} from "../util.js";
+import {
+    entities,
+    L,
+    session,
+    arrowTo,
+    transTo,
+    newAudio,
+    resources,
+    newImage,
+    getLayer,
+    LAYER_MAPPING
+} from "../util.js";
 import Jade from "../prefabs/jade.js";
 
 let _;
 const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
+const playerBorder = newImage(resources.Images.playerBorder);
 const COLOR_MAPPING = {
     0: "red",
     1: "crimson",
@@ -18,6 +30,7 @@ const COLOR_MAPPING = {
     9: "purple",
     10: "hotpink"
 };
+const layerStage = getLayer(LAYER_MAPPING.STAGE);
 export default function test3(edit) {
     let frame = 0;
     const cardData = {
@@ -29,6 +42,15 @@ export default function test3(edit) {
         time: 3000,
         bonus: 500000,
         noCardFrame: 3600,
+        borderDraw: function (entity, time, total) {
+            layerStage.save();
+            layerStage.translate(entity.X, entity.Y);
+            layerStage.rotate(time / 24);
+            const scale = 2 + time / total * 4 + Math.sin(time / 24);
+            layerStage.scale(scale, scale);
+            layerStage.drawImage(playerBorder, -32, -32);
+            layerStage.restore();
+        },
         noCard: function (card) {
             if (frame % 18 === 0) {
                 for (let i = 0; i <= 360; i += 24) {

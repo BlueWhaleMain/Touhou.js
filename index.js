@@ -22,12 +22,16 @@ import milkyWay from "./src/cards/milky_way.js";
 import bossRumia from "./src/prefabs/boss/rumia.js";
 import nightBird from "./src/cards/night_bird.js";
 import demarcation from "./src/cards/demarcation.js";
-import void_death from "./src/cards/void_death.js";
+import voidDeath from "./src/cards/void_death.js";
 import bossPatchouliKnowledge from "./src/prefabs/boss/patchouli_knowledge.js";
 import metalFatigue from "./src/cards/metal_fatigue.js";
 import mercuryPoison from "./src/cards/mercury_poison.js";
 import HakureiReimu from "./src/prefabs/player/hakurei_reimu.js";
 import asteroidBelt from "./src/cards/asteroid_belt.js";
+import masterSpark from "./src/cards/master_spark.js";
+import bossHakureiReimu from "./src/prefabs/boss/hakurei_reimu.js";
+import dreamSealLoose from "./src/cards/dream_seal_loose.js";
+import dreamSealSilence from "./src/cards/dream_seal_silence.js";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -46,6 +50,7 @@ const ASSETS = {
     IMAGE: {
         rumia: newImage(resources.Images.bossRumia),
         hakureiReimu: newImage(resources.Images.player.hakureiReimu),
+        bossHakureiReimu: newImage(resources.Images.bossHakureiReimu),
         kirisameMarisa: newImage(resources.Images.bossKirisameMarisa),
         patchouliKnowledge: newImage(resources.Images.bossPatchouliKnowledge),
         yukariYakumo: newImage(resources.Images.bossYukariYakumo)
@@ -272,217 +277,496 @@ const musicRoomMenu = new Menu([
 });
 
 function practiceStartFactory(selectedIndex) {
-    const player = Rumia;
     let stageMap = [];
     let bgm = false;
     if (selectedIndex === 0) {
         stageMap = function () {
-            return [
-                bossYukariYakumo(480, -60, 1000, [
-                    test1(),
-                    test2(),
-                    test3(),
-                    boundaryBetweenWaveAndParticle(function (cd) {
-                        cd.practice = true
-                    })
-                ], [
-                    SimpleDialogue([{
-                        text: "#_#"
-                    }], [{
-                        image: transRumia
-                    }], function () {
-                        entities.push(title(function () {
-                            const self = {};
-                            self.draw = function (self) {
-                                layerEffect.save();
-                                layerEffect.globalAlpha = self.opacity;
-                                layerEffect.font = "14px sans-serif";
-                                layerEffect.fillStyle = "rgb(255,212,53)";
-                                layerEffect.shadowColor = "black";
-                                layerEffect.shadowBlur = 2;
-                                layerEffect.fillText("宵暗的妖怪 露米娅", 50, 360);
-                                layerEffect.restore()
-                            };
-                            return self
-                        }))
-                    }),
-                    SimpleDialogue([{
-                        text: "www", fillStyle: "purple", X: 300
-                    }], [{
-                        image: ASSETS.IMAGE.yukariYakumo,
-                        X: 190
-                    }], function (inst) {
-                        inst.target.X = 220;
-                        inst.target.Y = 125;
-                        entities.push(title(function () {
-                            const self = {};
-                            self.draw = function (self) {
-                                layerEffect.save();
-                                layerEffect.globalAlpha = self.opacity;
-                                layerEffect.font = "14px sans-serif";
-                                layerEffect.fillStyle = "rgb(168,13,255)";
-                                layerEffect.shadowColor = "black";
-                                layerEffect.shadowBlur = 2;
-                                layerEffect.fillText("妖怪的贤者 八云·紫", 250, 360);
-                                layerEffect.restore()
-                            };
-                            return self
-                        }))
-                    }),
-                    SimpleDialogue([{
-                        text: "？？？"
-                    }], [{image: transRumia}, {
-                        image: ASSETS.IMAGE.yukariYakumo,
-                        X: 200, globalAlpha: 0.4
-                    }]),
-                    SimpleDialogue([{
-                        text: "嗯？", fillStyle: "purple", X: 300
-                    }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
-                        image: ASSETS.IMAGE.yukariYakumo,
-                        X: 190
-                    }], function (inst) {
-                        cancelAllSound();
-                        inst.playBGM()
-                    })
-                ]),
-                bossKirisameMarisa(500, 125, 1200, [
-                    milkyWay(),
-                    asteroidBelt()
-                ], [
-                    SimpleDialogue([{
-                        text: "额"
-                    }], [{
-                        image: transRumia
-                    }]),
-                    SimpleDialogue([{
-                        text: "哈~", fillStyle: "gold", X: 200
-                    }], [{
-                        image: ASSETS.IMAGE.kirisameMarisa,
-                        X: 190
-                    }], function (inst) {
-                        inst.target.X = 220;
-                        inst.target.Y = 125;
-                        entities.push(title(function () {
-                            const self = {};
-                            self.draw = function (self) {
-                                layerEffect.save();
-                                layerEffect.globalAlpha = self.opacity;
-                                layerEffect.font = "14px sans-serif";
-                                layerEffect.fillStyle = "rgb(255,251,37)";
-                                layerEffect.shadowColor = "black";
-                                layerEffect.shadowBlur = 2;
-                                layerEffect.fillText("普通的魔法使 雾雨·魔理沙", 250, 360);
-                                layerEffect.restore()
-                            };
-                            return self
-                        }))
-                    }),
-                    SimpleDialogue([{
-                        text: "啊 是魔理沙"
-                    }], [{image: transRumia}, {
-                        image: ASSETS.IMAGE.kirisameMarisa,
-                        X: 200, globalAlpha: 0.4
-                    }]),
-                    SimpleDialogue([{
-                        text: "~DA☆ZE", fillStyle: "gold", X: 200, direction: "rtl"
-                    }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
-                        image: ASSETS.IMAGE.kirisameMarisa,
-                        X: 190
-                    }], function (inst) {
-                        cancelAllSound();
-                        inst.playBGM()
-                    })
-                ]),
-                bossRumia(-50, 125, 900, [
-                    nightBird(),
-                    demarcation(),
-                    void_death(function (cd) {
-                        cd.practice = true
-                    })
-                ], [
-                    SimpleDialogue([{
-                        text: "~"
-                    }], [{
-                        image: transRumia
-                    }]),
-                    SimpleDialogue([{
-                        text: "？！", fillStyle: "red", X: 300
-                    }], [{
-                        image: ASSETS.IMAGE.rumia,
-                        X: 190
-                    }], function (inst) {
-                        inst.target.X = 220;
-                        inst.target.Y = 125
-                    }),
-                    SimpleDialogue([{
-                        text: "因为是练习模式来着 所以没关系"
-                    }], [{image: transRumia}, {
-                        image: ASSETS.IMAGE.rumia,
-                        X: 200, globalAlpha: 0.4
-                    }]),
-                    SimpleDialogue([{
-                        text: "？是 这样吗", fillStyle: "red", X: 300, direction: "rtl"
-                    }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
-                        image: ASSETS.IMAGE.rumia,
-                        X: 190
-                    }], function (inst) {
-                        cancelAllSound();
-                        inst.playBGM()
-                    })
-                ]),
-                bossPatchouliKnowledge(220, -60, 1000, [
-                    metalFatigue(),
-                    mercuryPoison()
-                ], [
-                    SimpleDialogue([{
-                        text: "..."
-                    }], [{
-                        image: transRumia
-                    }]),
-                    SimpleDialogue([{
-                        text: "！", fillStyle: "purple", X: 250
-                    }], [{
-                        image: ASSETS.IMAGE.patchouliKnowledge,
-                        X: 190
-                    }], function (inst) {
-                        inst.target.X = 220;
-                        inst.target.Y = 125;
-                        entities.push(title(function () {
-                            const self = {};
-                            self.draw = function (self) {
-                                layerEffect.save();
-                                layerEffect.globalAlpha = self.opacity;
-                                layerEffect.font = "14px sans-serif";
-                                layerEffect.fillStyle = "rgb(239,14,255)";
-                                layerEffect.shadowColor = "black";
-                                layerEffect.shadowBlur = 2;
-                                layerEffect.direction = "rtl";
-                                layerEffect.fillText("知识与避世的少女 帕秋莉·诺蕾姬", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
-                                layerEffect.restore()
-                            };
-                            return self
-                        }))
-                    }),
-                    SimpleDialogue([{
-                        text: "==", fillStyle: "purple", X: 250
-                    }, {
-                        text: "?"
-                    }], [{image: transRumia}, {
-                        image: ASSETS.IMAGE.patchouliKnowledge,
-                        X: 190
-                    }], function (inst) {
-                        cancelAllSound();
-                        inst.playBGM()
-                    })
-                ])
-            ]
+            if (session.selectedPlayer === Rumia) {
+                return [
+                    bossYukariYakumo(480, -60, 1000, [
+                        test1(),
+                        test2(),
+                        test3(),
+                        boundaryBetweenWaveAndParticle(function (cd) {
+                            cd.practice = true
+                        })
+                    ], [
+                        SimpleDialogue([{
+                            text: "#_#"
+                        }], [{
+                            image: transRumia
+                        }], function () {
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(255,212,53)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("宵暗的妖怪 露米娅", 50, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "www", fillStyle: "purple", X: 300
+                        }], [{
+                            image: ASSETS.IMAGE.yukariYakumo,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(168,13,255)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("妖怪的贤者 八云·紫", 250, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "？？？"
+                        }], [{image: transRumia}, {
+                            image: ASSETS.IMAGE.yukariYakumo,
+                            X: 200, globalAlpha: 0.4
+                        }]),
+                        SimpleDialogue([{
+                            text: "嗯？", fillStyle: "purple", X: 300
+                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
+                            image: ASSETS.IMAGE.yukariYakumo,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossKirisameMarisa(500, 125, 1200, [
+                        milkyWay(),
+                        asteroidBelt(),
+                        masterSpark()
+                    ], [
+                        SimpleDialogue([{
+                            text: "额"
+                        }], [{
+                            image: transRumia
+                        }]),
+                        SimpleDialogue([{
+                            text: "哈~", fillStyle: "gold", X: 200
+                        }], [{
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(255,251,37)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("普通的魔法使 雾雨·魔理沙", 250, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "啊 是魔理沙"
+                        }], [{image: transRumia}, {
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 200, globalAlpha: 0.4
+                        }]),
+                        SimpleDialogue([{
+                            text: "~DA☆ZE", fillStyle: "gold", X: 200, direction: "rtl"
+                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossRumia(-50, 125, 900, [
+                        nightBird(),
+                        demarcation(),
+                        voidDeath(function (cd) {
+                            cd.practice = true
+                        })
+                    ], [
+                        SimpleDialogue([{
+                            text: "~"
+                        }], [{
+                            image: transRumia
+                        }]),
+                        SimpleDialogue([{
+                            text: "？！", fillStyle: "red", X: 300
+                        }], [{
+                            image: ASSETS.IMAGE.rumia,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125
+                        }),
+                        SimpleDialogue([{
+                            text: "因为是练习模式来着 所以没关系"
+                        }], [{image: transRumia}, {
+                            image: ASSETS.IMAGE.rumia,
+                            X: 200, globalAlpha: 0.4
+                        }]),
+                        SimpleDialogue([{
+                            text: "？是 这样吗", fillStyle: "red", X: 300, direction: "rtl"
+                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
+                            image: ASSETS.IMAGE.rumia,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossPatchouliKnowledge(220, -60, 1000, [
+                        metalFatigue(),
+                        mercuryPoison()
+                    ], [
+                        SimpleDialogue([{
+                            text: "..."
+                        }], [{
+                            image: transRumia
+                        }]),
+                        SimpleDialogue([{
+                            text: "！", fillStyle: "purple", X: 250
+                        }], [{
+                            image: ASSETS.IMAGE.patchouliKnowledge,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(239,14,255)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.direction = "rtl";
+                                    layerEffect.fillText("知识与避世的少女 帕秋莉·诺蕾姬", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "==", fillStyle: "purple", X: 250
+                        }, {
+                            text: "?"
+                        }], [{image: transRumia}, {
+                            image: ASSETS.IMAGE.patchouliKnowledge,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossHakureiReimu(480, -60, 1000, [
+                        dreamSealLoose(),
+                        dreamSealSilence()
+                    ], [
+                        SimpleDialogue([{
+                            text: "..."
+                        }], [{
+                            image: transRumia, X: 5
+                        }]),
+                        SimpleDialogue([{
+                            text: "！", fillStyle: "rgb(255,10,17)", X: 250
+                        }], [{
+                            image: ASSETS.IMAGE.bossHakureiReimu,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(255,10,17)";
+                                    layerEffect.shadowColor = "white";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.direction = "rtl";
+                                    layerEffect.fillText("乐园的巫女 博丽灵梦", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "胡闹就到此为止了！", fillStyle: "rgb(255,10,17)", X: 250
+                        }, {
+                            text: "是—这样吗—"
+                        }], [{image: transRumia, X: 5}, {
+                            image: ASSETS.IMAGE.bossHakureiReimu,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ])
+                ]
+            } else if (session.selectedPlayer === HakureiReimu) {
+                return [
+                    bossYukariYakumo(480, -60, 1000, [
+                        test1(),
+                        test2(),
+                        test3(),
+                        boundaryBetweenWaveAndParticle(function (cd) {
+                            cd.practice = true
+                        })
+                    ], [
+                        SimpleDialogue([{
+                            text: "又是你？", fillStyle: "rgb(255,10,17)"
+                        }], [{
+                            image: ASSETS.IMAGE.hakureiReimu, X: 5
+                        }], function () {
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(255,10,17)";
+                                    layerEffect.shadowColor = "white";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("乐园的巫女 博丽灵梦", 50, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "让人连个安稳觉都睡不了", fillStyle: "purple"
+                        }], [{
+                            image: ASSETS.IMAGE.yukariYakumo,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(168,13,255)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("妖怪的贤者 八云·紫", 250, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "怎么？", fillStyle: "rgb(255,10,17)"
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, X: 5}, {
+                            image: ASSETS.IMAGE.yukariYakumo,
+                            X: 200, globalAlpha: 0.4
+                        }]),
+                        SimpleDialogue([{
+                            text: "……", fillStyle: "purple", X: 300
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, globalAlpha: 0.4, X: 0}, {
+                            image: ASSETS.IMAGE.yukariYakumo,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossKirisameMarisa(500, 125, 1200, [
+                        milkyWay(),
+                        asteroidBelt(),
+                        masterSpark()
+                    ], [
+                        SimpleDialogue([{
+                            text: "?", fillStyle: "rgb(255,10,17)"
+                        }], [{
+                            image: ASSETS.IMAGE.hakureiReimu, X: 5
+                        }]),
+                        SimpleDialogue([{
+                            text: "很少见吧", fillStyle: "gold", X: 200
+                        }], [{
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(255,251,37)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("普通的魔法使 雾雨·魔理沙", 250, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "啊 是魔理沙", fillStyle: "rgb(255,10,17)"
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, X: 5}, {
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 200, globalAlpha: 0.4
+                        }]),
+                        SimpleDialogue([{
+                            text: "。不过，要干的事是一样的", fillStyle: "gold", X: 200, direction: "rtl"
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, globalAlpha: 0.4, X: 0}, {
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossRumia(-50, 125, 900, [
+                        nightBird(),
+                        demarcation(),
+                        voidDeath(function (cd) {
+                            cd.practice = true
+                        })
+                    ], [
+                        SimpleDialogue([{
+                            text: "还会出现妖怪，真是受不了啊", fillStyle: "rgb(255,10,17)"
+                        }], [{
+                            image: ASSETS.IMAGE.hakureiReimu, X: 5
+                        }]),
+                        SimpleDialogue([{
+                            text: "？在我眼前的就是吃了也没关系的人类", fillStyle: "red", X: GUI_SCREEN.WIDTH - GUI_SCREEN.X, direction: "rtl"
+                        }], [{
+                            image: ASSETS.IMAGE.rumia,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125
+                        }),
+                        SimpleDialogue([{
+                            text: "良药苦口\n" +
+                                "这句话你有听过吗？", fillStyle: "rgb(255,10,17)"
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, X: 5}, {
+                            image: ASSETS.IMAGE.rumia,
+                            X: 200, globalAlpha: 0.4
+                        }]),
+                        SimpleDialogue([{
+                            text: "—是—这样吗", fillStyle: "red", X: 300, direction: "rtl"
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, globalAlpha: 0.4, X: 0}, {
+                            image: ASSETS.IMAGE.rumia,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossPatchouliKnowledge(220, -60, 1000, [
+                        metalFatigue(),
+                        mercuryPoison()
+                    ], [
+                        SimpleDialogue([{
+                            text: "...", fillStyle: "rgb(255,10,17)"
+                        }], [{
+                            image: ASSETS.IMAGE.hakureiReimu, X: 5
+                        }]),
+                        SimpleDialogue([{
+                            text: "！", fillStyle: "purple", X: 250
+                        }], [{
+                            image: ASSETS.IMAGE.patchouliKnowledge,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(239,14,255)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.direction = "rtl";
+                                    layerEffect.fillText("知识与避世的少女 帕秋莉·诺蕾姬", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "那边的红白！", fillStyle: "purple", X: 250
+                        }, {
+                            text: "红白？", fillStyle: "rgb(255,10,17)"
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, X: 5}, {
+                            image: ASSETS.IMAGE.patchouliKnowledge,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    bossHakureiReimu(480, -60, 1000, [
+                        dreamSealLoose(),
+                        dreamSealSilence()
+                    ], [
+                        SimpleDialogue([{
+                            text: "谁？", fillStyle: "rgb(255,10,17)"
+                        }], [{
+                            image: ASSETS.IMAGE.hakureiReimu, X: 5
+                        }]),
+                        SimpleDialogue([{
+                            text: "！", fillStyle: "rgb(255,10,17)", X: 250
+                        }], [{
+                            image: ASSETS.IMAGE.bossHakureiReimu,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125
+                        }),
+                        SimpleDialogue([{
+                            text: "...", fillStyle: "rgb(255,10,17)", X: 250
+                        }, {
+                            text: "原来是我的符札啊", fillStyle: "rgb(255,10,17)"
+                        }], [{image: ASSETS.IMAGE.hakureiReimu, X: 5}, {
+                            image: ASSETS.IMAGE.bossHakureiReimu,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ])
+                ]
+            }
         };
     } else {
         ASSETS.SOUND.invalid.currentTime = 0;
         _ = ASSETS.SOUND.invalid.play();
         return
     }
-    session.stage = SpellPractice(player, stageMap, bgm, function () {
+    session.stage = SpellPractice(session.selectedPlayer, stageMap, bgm, function () {
         practiceStartFactory(selectedIndex)
     });
 }
@@ -495,8 +779,38 @@ const practiceStartMenu = new Menu([
 }, function () {
     mainMenu.load()
 }, function () {
+    if (session.keys.has("ArrowLeft".toLowerCase())) {
+        session.keys.delete("ArrowLeft".toLowerCase());
+        if (session.selectedPlayer === Rumia) {
+            session.selectedPlayer = HakureiReimu
+        } else {
+            session.selectedPlayer = Rumia
+        }
+        ASSETS.SOUND.ok.currentTime = 0;
+        _ = ASSETS.SOUND.ok.play()
+    }
+    if (session.keys.has("ArrowRight".toLowerCase())) {
+        session.keys.delete("ArrowRight".toLowerCase());
+        if (session.selectedPlayer === Rumia) {
+            session.selectedPlayer = HakureiReimu
+        } else {
+            session.selectedPlayer = Rumia
+        }
+        ASSETS.SOUND.ok.currentTime = 0;
+        _ = ASSETS.SOUND.ok.play()
+    }
+    layerStage.save();
+    layerStage.globalAlpha = 0.5;
+    if (session.selectedPlayer === Rumia) {
+        layerStage.drawImage(ASSETS.IMAGE.rumia, 10, 10, ASSETS.IMAGE.rumia.width * 2, ASSETS.IMAGE.rumia.height * 2);
+    }
+    if (session.selectedPlayer === HakureiReimu) {
+        layerStage.drawImage(ASSETS.IMAGE.hakureiReimu, 10, 10, ASSETS.IMAGE.hakureiReimu.width * 2, ASSETS.IMAGE.hakureiReimu.height * 2);
+    }
+    layerStage.restore();
     rendererEntity()
 }, function (self) {
+    session.selectedPlayer = Rumia;
     handler = function () {
         self.tick();
         self.draw()
@@ -512,7 +826,8 @@ function spellPracticeFactory(selectedIndex) {
         case 0:
             stageMap = function () {
                 boss = bossYukariYakumo(480, -60, 1000, [test1(function (card) {
-                    card.noCardFrame = null
+                    card.noCardFrame = null;
+                    card.practice = true
                 })]);
                 boss.playBGM();
                 return [boss]
@@ -522,7 +837,8 @@ function spellPracticeFactory(selectedIndex) {
         case 1:
             stageMap = function () {
                 boss = bossYukariYakumo(480, -60, 1000, [test2(function (card) {
-                    card.noCardFrame = null
+                    card.noCardFrame = null;
+                    card.practice = true
                 })]);
                 boss.playBGM();
                 return [boss]
@@ -532,7 +848,8 @@ function spellPracticeFactory(selectedIndex) {
         case 2:
             stageMap = function () {
                 boss = bossYukariYakumo(480, -60, 1000, [test3(function (card) {
-                    card.noCardFrame = null
+                    card.noCardFrame = null;
+                    card.practice = true
                 })]);
                 boss.playBGM();
                 return [boss]
@@ -565,7 +882,9 @@ function spellPracticeFactory(selectedIndex) {
         case 4:
             stageMap = function () {
                 boss = bossKirisameMarisa(500, 125, 1200, [
-                    milkyWay()
+                    milkyWay(function (cd) {
+                        cd.practice = true
+                    })
                 ]);
                 boss.playBGM();
                 return [boss]
@@ -575,7 +894,9 @@ function spellPracticeFactory(selectedIndex) {
         case 5:
             stageMap = function () {
                 boss = bossKirisameMarisa(500, 125, 1200, [
-                    asteroidBelt()
+                    asteroidBelt(function (cd) {
+                        cd.practice = true
+                    })
                 ]);
                 boss.playBGM();
                 return [boss]
@@ -584,8 +905,10 @@ function spellPracticeFactory(selectedIndex) {
             break;
         case 6:
             stageMap = function () {
-                boss = bossRumia(-50, 125, 900, [
-                    nightBird()
+                boss = bossKirisameMarisa(500, 125, 1200, [
+                    masterSpark(function (cd) {
+                        cd.practice = true
+                    })
                 ]);
                 boss.playBGM();
                 return [boss]
@@ -595,7 +918,9 @@ function spellPracticeFactory(selectedIndex) {
         case 7:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
-                    demarcation()
+                    nightBird(function (cd) {
+                        cd.practice = true
+                    })
                 ]);
                 boss.playBGM();
                 return [boss]
@@ -605,27 +930,69 @@ function spellPracticeFactory(selectedIndex) {
         case 8:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
-                    void_death(function (cd) {
+                    demarcation(function (cd) {
                         cd.practice = true
                     })
-                ]);
-                return [boss]
-            };
-            break;
-        case 9:
-            stageMap = function () {
-                boss = bossPatchouliKnowledge(220, -60, 1000, [
-                    metalFatigue()
                 ]);
                 boss.playBGM();
                 return [boss]
             };
             bgm = true;
             break;
+        case 9:
+            stageMap = function () {
+                boss = bossRumia(-50, 125, 900, [
+                    voidDeath(function (cd) {
+                        cd.practice = true
+                    })
+                ]);
+                return [boss]
+            };
+            break;
         case 10:
             stageMap = function () {
                 boss = bossPatchouliKnowledge(220, -60, 1000, [
-                    mercuryPoison()
+                    metalFatigue(function (cd) {
+                        cd.practice = true
+                    })
+                ]);
+                boss.playBGM();
+                return [boss]
+            };
+            bgm = true;
+            break;
+        case 11:
+            stageMap = function () {
+                boss = bossPatchouliKnowledge(220, -60, 1000, [
+                    mercuryPoison(function (cd) {
+                        cd.practice = true
+                    })
+                ]);
+                boss.playBGM();
+                return [boss]
+            };
+            bgm = true;
+            break;
+        case 12:
+            stageMap = function () {
+                boss = bossHakureiReimu(480, -60, 1000, [
+                    dreamSealLoose(function (cd) {
+                        cd.noCardFrame = null;
+                        cd.practice = true
+                    })
+                ]);
+                boss.playBGM();
+                return [boss]
+            };
+            bgm = true;
+            break;
+        case 13:
+            stageMap = function () {
+                boss = bossHakureiReimu(480, -60, 1000, [
+                    dreamSealSilence(function (cd) {
+                        cd.noCardFrame = null;
+                        cd.practice = true
+                    })
                 ]);
                 boss.playBGM();
                 return [boss]
@@ -649,11 +1016,14 @@ const spellPracticeMenu = new Menu([
     lightMenuItem(280, 255, "境符「波与粒的境界」"),
     lightMenuItem(280, 275, "魔符「银河」"),
     lightMenuItem(280, 295, "魔空「小行星带」"),
-    lightMenuItem(280, 315, "夜符「夜雀」"),
-    lightMenuItem(280, 335, "暗符「境界线」"),
-    lightMenuItem(280, 355, "深渊「空亡」"),
-    lightMenuItem(280, 375, "金符「金属疲劳」"),
-    lightMenuItem(280, 395, "金&水符「水银之毒」"),
+    lightMenuItem(280, 315, "恋符「极限火花」"),
+    lightMenuItem(280, 335, "夜符「夜雀」"),
+    lightMenuItem(280, 355, "暗符「境界线」"),
+    lightMenuItem(280, 375, "深渊「空亡」"),
+    lightMenuItem(280, 395, "金符「金属疲劳」"),
+    lightMenuItem(280, 415, "金&水符「水银之毒」"),
+    lightMenuItem(280, 435, "灵符「梦想封印　散」"),
+    lightMenuItem(280, 455, "散灵「梦想封印　寂」"),
 ], function (selectedIndex) {
     spellPracticeFactory(selectedIndex);
     transitions(runSpellPractice);

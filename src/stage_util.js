@@ -55,6 +55,12 @@ export default function StageUtil() {
                 inst.event.dispatchEvent(STAGE_EVENT.pause, {origin: "Util"});
                 return
             }
+            if (session.player.graze > config.GrazeMax) {
+                session.player.graze = config.GrazeMax
+            }
+            if (session.score > session.highScore && !session.developerMode) {
+                session.highScore = session.score
+            }
             if (inst.end === true) {
                 inst.event.dispatchEvent(STAGE_EVENT.end, {origin: "Util"});
                 if (session.keys.has("z")) {
@@ -63,13 +69,6 @@ export default function StageUtil() {
                     inst.event.clearEventListener();
                     inst.tags.add(TAGS.death)
                 }
-                return
-            }
-            if (session.player.graze > config.GrazeMax) {
-                session.player.graze = config.GrazeMax
-            }
-            if (session.score > session.highScore && !session.developerMode) {
-                session.highScore = session.score
             }
         }
     });

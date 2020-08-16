@@ -1,9 +1,23 @@
 import CardUtil from "../card_util.js";
-import {entities, L, session, arrowTo, transTo, modifyEntity, newAudio, resources} from "../util.js";
+import {
+    entities,
+    L,
+    session,
+    arrowTo,
+    transTo,
+    modifyEntity,
+    newAudio,
+    resources,
+    newImage,
+    getLayer,
+    LAYER_MAPPING
+} from "../util.js";
 import Jade from "../prefabs/jade.js";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
+const playerBorder = newImage(resources.Images.playerBorder);
+const layerStage = getLayer(LAYER_MAPPING.STAGE);
 export default function test2(edit) {
     let frame = 0;
     const meta = Math.random();
@@ -16,6 +30,15 @@ export default function test2(edit) {
         time: 4000,
         bonus: 200000,
         noCardFrame: 2400,
+        borderDraw: function (entity, time, total) {
+            layerStage.save();
+            layerStage.translate(entity.X, entity.Y);
+            layerStage.rotate(time / 24);
+            const scale = 2 + time / total * 4 + Math.sin(time / 24);
+            layerStage.scale(scale, scale);
+            layerStage.drawImage(playerBorder, -32, -32);
+            layerStage.restore();
+        },
         noCard: function (card) {
             if (frame % 20 === 0) {
                 modifyEntity(function (entity) {

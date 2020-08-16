@@ -1,8 +1,10 @@
 import {TAGS, session, newAudio, resources} from "../util.js";
+
 let _;
 const soundOfGraze = newAudio(resources.Sounds.graze);
 export default function bullet() {
     this.grazeState = undefined;
+    this.hitState = false;
     this.tick = function (inst) {
         if (inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
             if (this.grazeState === false) {
@@ -20,8 +22,10 @@ export default function bullet() {
                 session.score += session.player.point * 100;
                 inst.tags.add(TAGS.death)
             } else {
-                this.hitState = true;
-                session.player.die()
+                if (this.hitState === false) {
+                    session.player.die();
+                }
+                this.hitState = true
             }
         } else {
             this.hitState = false

@@ -54,11 +54,13 @@ export default function CardUtil(option) {
             }
             if (option.noCard) {
                 noCardFrame = 0;
-                ob.dispatchEvent(EVENT_MAPPING.clearEntity)
+                ob.dispatchEvent(EVENT_MAPPING.cardEnEp)
             }
             if (typeof option.open === "function") {
                 option.open(this)
             }
+            this.entity.target.X = option.X || 220;
+            this.entity.target.Y = option.Y || 125;
             this.entity.showTexture = true;
             soundOfCat0.currentTime = 0;
             _ = soundOfCat0.play();
@@ -220,12 +222,16 @@ export default function CardUtil(option) {
     };
     this.draw = function () {
         if (startFrame <= 0) {
-            layerStage.save();
-            layerStage.translate(this.entity.X, this.entity.Y);
-            layerStage.rotate(time / 24);
-            layerStage.scale(time / option.time * 2, time / option.time * 2);
-            layerStage.drawImage(enemyCircle, -128, -128);
-            layerStage.restore();
+            if (typeof option.borderDraw === "function") {
+                option.borderDraw(this.entity, time, option.time)
+            } else {
+                layerStage.save();
+                layerStage.translate(this.entity.X, this.entity.Y);
+                layerStage.rotate(time / 24);
+                layerStage.scale(time / option.time * 2, time / option.time * 2);
+                layerStage.drawImage(enemyCircle, -128, -128);
+                layerStage.restore();
+            }
             layerTitle.save();
             layerTitle.fillStyle = "white";
             if (time !== 0) {

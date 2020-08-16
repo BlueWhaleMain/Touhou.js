@@ -191,6 +191,7 @@ export default function HakureiReimu() {
         _ = soundOfLaser.play();
     };
     inst.callback.normalBomb = function () {
+        inst.spellName = "灵符「梦想妙珠」";
         inst.bombTime = 210;
         let speed = [3, 0];
         let entity = HakureiReimuLightBall(inst.X + speed[0] * 20, inst.Y + speed[1] * 20, speed[0], speed[1], "red", 60);
@@ -226,6 +227,7 @@ export default function HakureiReimu() {
         entities.push(entity);
     };
     inst.callback.missBomb = function () {
+        inst.spellName = "神灵「梦想封印·瞬」";
         inst.bombTime = 400;
         let innerSpeed = [0, -6];
         let entity = HakureiReimuLightBall(inst.X + innerSpeed[0] * 20, inst.Y + innerSpeed[1] * 20, innerSpeed[0], innerSpeed[1], "red", 120, true);
