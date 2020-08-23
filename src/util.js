@@ -234,7 +234,9 @@ export function newImage(src, width, height) {
     img.style.width = width;
     img.style.height = height;
     img.addEventListener("load", function () {
-        session.loadingCount++
+        if (session.loadingCount < session.loadingTotal) {
+            session.loadingCount++
+        }
     });
     session.loadingTotal++;
     return img
@@ -713,14 +715,14 @@ export function drawSticker(type, color) {
     }
     if (isNaN(color)) {
         switch (color) {
-            case "dimgray":
+            case "darkgray":
                 if (type === "coin" || type === "scale" || type === "bigStar" || type === "small_light_ball") {
-                    throw new Error("dimgray " + type + " is not supported.")
+                    throw new Error("darkgray " + type + " is not supported.")
                 }
                 break;
-            case "darkgray":
+            case "dimgray":
                 if (type === "coin") {
-                    throw new Error("darkgray " + type + " is not supported.")
+                    throw new Error("dimgray " + type + " is not supported.")
                 }
                 if (type !== "small_light_ball") {
                     x += w;
@@ -755,8 +757,7 @@ export function drawSticker(type, color) {
             case "gold":
                 if (type === "coin") {
                     x = 0
-                }
-                if (type === "small_light_ball") {
+                } else if (type === "small_light_ball") {
                     x += 6 * w
                 } else {
                     x += 5 * w;
@@ -764,14 +765,14 @@ export function drawSticker(type, color) {
                 break;
             case "silk":
                 if (type === "coin") {
-                    x += 2 * w;
+                    x += w;
                 } else {
                     throw new Error("silk " + type + " is not supported.")
                 }
                 break;
             case "copper":
                 if (type === "coin") {
-                    x += 3 * w;
+                    x += 2 * w;
                 } else {
                     throw new Error("copper " + type + " is not supported.")
                 }

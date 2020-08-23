@@ -32,15 +32,19 @@ import masterSpark from "./src/cards/master_spark.js";
 import bossHakureiReimu from "./src/prefabs/boss/hakurei_reimu.js";
 import dreamSealLoose from "./src/cards/dream_seal_loose.js";
 import dreamSealSilence from "./src/cards/dream_seal_silence.js";
+import doubleSpark from "./src/cards/double_spark.js";
+import test from "./src/cards/test.js";
 
 const gui = require("nw" + ".gui");
 //idea划线
 const win = gui["Window"].get();
-win.on("blur", function () {
-    if (session.stage && session.stage.paused === false) {
-        session.stage.pause()
-    }
-});
+if (config.PauseOnBlur === true) {
+    win.on("blur", function () {
+        if (session.stage && session.stage.paused === false) {
+            session.stage.pause()
+        }
+    });
+}
 let _;
 const ignoreKeys = new Set(), entityCountSecMax = config.EntityCountSecMax;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
@@ -289,7 +293,8 @@ function practiceStartFactory(selectedIndex) {
                         test3(),
                         boundaryBetweenWaveAndParticle(function (cd) {
                             cd.practice = true
-                        })
+                        }),
+                        test()
                     ], [
                         SimpleDialogue([{
                             text: "#_#"
@@ -353,7 +358,8 @@ function practiceStartFactory(selectedIndex) {
                     bossKirisameMarisa(500, 125, 1200, [
                         milkyWay(),
                         asteroidBelt(),
-                        masterSpark()
+                        masterSpark(),
+                        doubleSpark()
                     ], [
                         SimpleDialogue([{
                             text: "额"
@@ -421,7 +427,7 @@ function practiceStartFactory(selectedIndex) {
                             inst.target.Y = 125
                         }),
                         SimpleDialogue([{
-                            text: "因为是练习模式来着 所以没关系"
+                            text: "因为是测试模式来着 所以没关系"
                         }], [{image: transRumia}, {
                             image: ASSETS.IMAGE.rumia,
                             X: 200, globalAlpha: 0.4
@@ -535,7 +541,8 @@ function practiceStartFactory(selectedIndex) {
                         test3(),
                         boundaryBetweenWaveAndParticle(function (cd) {
                             cd.practice = true
-                        })
+                        }),
+                        test()
                     ], [
                         SimpleDialogue([{
                             text: "又是你？", fillStyle: "rgb(255,10,17)"
@@ -599,7 +606,8 @@ function practiceStartFactory(selectedIndex) {
                     bossKirisameMarisa(500, 125, 1200, [
                         milkyWay(),
                         asteroidBelt(),
-                        masterSpark()
+                        masterSpark(),
+                        doubleSpark()
                     ], [
                         SimpleDialogue([{
                             text: "?", fillStyle: "rgb(255,10,17)"
@@ -658,7 +666,10 @@ function practiceStartFactory(selectedIndex) {
                             image: ASSETS.IMAGE.hakureiReimu, X: 5
                         }]),
                         SimpleDialogue([{
-                            text: "？在我眼前的就是吃了也没关系的人类", fillStyle: "red", X: GUI_SCREEN.WIDTH - GUI_SCREEN.X, direction: "rtl"
+                            text: "？在我眼前的就是吃了也没关系的人类",
+                            fillStyle: "red",
+                            X: GUI_SCREEN.WIDTH - GUI_SCREEN.X,
+                            direction: "rtl"
                         }], [{
                             image: ASSETS.IMAGE.rumia,
                             X: 190
@@ -917,8 +928,8 @@ function spellPracticeFactory(selectedIndex) {
             break;
         case 7:
             stageMap = function () {
-                boss = bossRumia(-50, 125, 900, [
-                    nightBird(function (cd) {
+                boss = bossKirisameMarisa(500, 125, 1200, [
+                    doubleSpark(function (cd) {
                         cd.practice = true
                     })
                 ]);
@@ -930,7 +941,7 @@ function spellPracticeFactory(selectedIndex) {
         case 8:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
-                    demarcation(function (cd) {
+                    nightBird(function (cd) {
                         cd.practice = true
                     })
                 ]);
@@ -942,6 +953,18 @@ function spellPracticeFactory(selectedIndex) {
         case 9:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
+                    demarcation(function (cd) {
+                        cd.practice = true
+                    })
+                ]);
+                boss.playBGM();
+                return [boss]
+            };
+            bgm = true;
+            break;
+        case 10:
+            stageMap = function () {
+                boss = bossRumia(-50, 125, 900, [
                     voidDeath(function (cd) {
                         cd.practice = true
                     })
@@ -949,7 +972,7 @@ function spellPracticeFactory(selectedIndex) {
                 return [boss]
             };
             break;
-        case 10:
+        case 11:
             stageMap = function () {
                 boss = bossPatchouliKnowledge(220, -60, 1000, [
                     metalFatigue(function (cd) {
@@ -961,7 +984,7 @@ function spellPracticeFactory(selectedIndex) {
             };
             bgm = true;
             break;
-        case 11:
+        case 12:
             stageMap = function () {
                 boss = bossPatchouliKnowledge(220, -60, 1000, [
                     mercuryPoison(function (cd) {
@@ -973,7 +996,7 @@ function spellPracticeFactory(selectedIndex) {
             };
             bgm = true;
             break;
-        case 12:
+        case 13:
             stageMap = function () {
                 boss = bossHakureiReimu(480, -60, 1000, [
                     dreamSealLoose(function (cd) {
@@ -986,7 +1009,7 @@ function spellPracticeFactory(selectedIndex) {
             };
             bgm = true;
             break;
-        case 13:
+        case 14:
             stageMap = function () {
                 boss = bossHakureiReimu(480, -60, 1000, [
                     dreamSealSilence(function (cd) {
@@ -1017,13 +1040,14 @@ const spellPracticeMenu = new Menu([
     lightMenuItem(280, 275, "魔符「银河」"),
     lightMenuItem(280, 295, "魔空「小行星带」"),
     lightMenuItem(280, 315, "恋符「极限火花」"),
-    lightMenuItem(280, 335, "夜符「夜雀」"),
-    lightMenuItem(280, 355, "暗符「境界线」"),
-    lightMenuItem(280, 375, "深渊「空亡」"),
-    lightMenuItem(280, 395, "金符「金属疲劳」"),
-    lightMenuItem(280, 415, "金&水符「水银之毒」"),
-    lightMenuItem(280, 435, "灵符「梦想封印　散」"),
-    lightMenuItem(280, 455, "散灵「梦想封印　寂」"),
+    lightMenuItem(280, 335, "恋心「二重火花」"),
+    lightMenuItem(280, 355, "夜符「夜雀」"),
+    lightMenuItem(280, 375, "暗符「境界线」"),
+    lightMenuItem(280, 395, "深渊「空亡」"),
+    lightMenuItem(280, 415, "金符「金属疲劳」"),
+    lightMenuItem(280, 435, "金&水符「水银之毒」"),
+    lightMenuItem(280, 455, "灵符「梦想封印　散」"),
+    lightMenuItem(280, 475, "散灵「梦想封印　寂」"),
 ], function (selectedIndex) {
     spellPracticeFactory(selectedIndex);
     transitions(runSpellPractice);
@@ -1505,42 +1529,46 @@ let handler, frames = 0;
 
 function run() {
     try {
-        clearScreen();
-        if (session.keys.has("f3")) {
-            session.debugFlag = !session.debugFlag;
-            session.keys.delete("f3")
-        }
-        if (session.debugFlag) {
-            layerEffect.save();
-            layerEffect.font = "10px Comic Sans MS";
-            layerEffect.fillStyle = "white";
-            layerEffect.fillText("调试屏幕已开启", 0, HEIGHT - 1);
-            layerEffect.restore()
-        }
-        if (session.keys.has("f11")) {
-            // idea 挨打
-            win["toggleFullscreen"]();
-            session.keys.delete("f11")
-        }
-        handler();
-        if (entities.length > entityCountSecMax) {
-            entities.length = entityCountSecMax
-        }
-        if (!session.stage || !session.stage.paused) {
-            const currentBGM = session.currentBGM;
-            if (currentBGM) {
-                if (currentBGM.dom.paused || currentBGM.dom.currentTime + 0.12 > currentBGM.dom.duration) {
-                    if (currentBGM.loop && currentBGM.paused > 1) {
-                        if (currentBGM.loop.paused || currentBGM.loop.currentTime + 0.1 > currentBGM.loop.duration) {
-                            currentBGM.loop.currentTime = 0;
-                            _ = currentBGM.loop.play()
+        if (session.slowRunning === true) {
+            session.slowRunning = false
+        } else {
+            clearScreen();
+            if (session.keys.has("f3")) {
+                session.debugFlag = !session.debugFlag;
+                session.keys.delete("f3")
+            }
+            if (session.debugFlag) {
+                layerEffect.save();
+                layerEffect.font = "10px Comic Sans MS";
+                layerEffect.fillStyle = "white";
+                layerEffect.fillText("调试屏幕已开启", 0, HEIGHT - 1);
+                layerEffect.restore()
+            }
+            if (session.keys.has("f11")) {
+                // idea 挨打
+                win["toggleFullscreen"]();
+                session.keys.delete("f11")
+            }
+            handler();
+            if (entities.length > entityCountSecMax) {
+                entities.length = entityCountSecMax
+            }
+            if (!session.stage || !session.stage.paused) {
+                const currentBGM = session.currentBGM;
+                if (currentBGM) {
+                    if (currentBGM.dom.paused || currentBGM.dom.currentTime + 0.12 > currentBGM.dom.duration) {
+                        if (currentBGM.loop && currentBGM.paused > 1) {
+                            if (currentBGM.loop.paused || currentBGM.loop.currentTime + 0.1 > currentBGM.loop.duration) {
+                                currentBGM.loop.currentTime = 0;
+                                _ = currentBGM.loop.play()
+                            }
+                        } else {
+                            _ = currentBGM.dom.play();
+                            currentBGM.paused = currentBGM.paused + 1 || 2;
                         }
-                    } else {
-                        _ = currentBGM.dom.play();
-                        currentBGM.paused = currentBGM.paused + 1 || 2;
+                    } else if (currentBGM.dom.currentTime > currentBGM.leaveTime) {
+                        currentBGM.dom.currentTime = currentBGM.loopTime
                     }
-                } else if (currentBGM.dom.currentTime > currentBGM.leaveTime) {
-                    currentBGM.dom.currentTime = currentBGM.loopTime
                 }
             }
         }

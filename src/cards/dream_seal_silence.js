@@ -6,6 +6,7 @@ import {generateRandomSpeed} from "../components/movable.js";
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const soundOfOption = newAudio(resources.Sounds.option);
+const volumeOfBombShoot = soundOfBombShoot.volume;
 export default function dreamSealSilence(edit) {
     let frame = 0;
     let rand = 0;
@@ -32,6 +33,7 @@ export default function dreamSealSilence(edit) {
                         entities.push(Jade("bill", "red", card.entity.X, card.entity.Y, speed[0], speed[1], undefined, false));
                     }
                 }
+                soundOfBombShoot.volume = volumeOfBombShoot;
                 soundOfBombShoot.currentTime = 0;
                 _ = soundOfBombShoot.play();
                 rand = Math.random();
@@ -44,6 +46,7 @@ export default function dreamSealSilence(edit) {
                         let spawnPoint = [speed[0] * 10, speed[1] * 10];
                         entities.push(Jade("ring", "red", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false));
                     }
+                    soundOfBombShoot.volume = Math.random();
                     soundOfBombShoot.currentTime = 0;
                     _ = soundOfBombShoot.play();
                 }
@@ -52,6 +55,15 @@ export default function dreamSealSilence(edit) {
                         card.entity.target.X += 40
                     } else {
                         card.entity.target.X -= 40
+                    }
+                    if (rand > 0.6) {
+                        if (card.entity.Y < 100) {
+                            card.entity.target.Y += 20
+                        }
+                    } else {
+                        if (card.entity.Y > 80) {
+                            card.entity.target.Y -= 20
+                        }
                     }
                     if (card.entity.X > GUI_SCREEN.WIDTH + GUI_SCREEN.X) {
                         card.entity.X = GUI_SCREEN.X;
@@ -84,6 +96,7 @@ export default function dreamSealSilence(edit) {
                         entities.push(Jade("bill", "darkgray", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false))
                     }
                 }
+                soundOfBombShoot.volume = volumeOfBombShoot;
                 soundOfBombShoot.currentTime = 0;
                 _ = soundOfBombShoot.play()
             }
@@ -96,6 +109,7 @@ export default function dreamSealSilence(edit) {
                     spawnPoint = [speed[0] * 10, speed[1] * 10];
                     entities.push(Jade("orb", "red", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false));
                 }
+                soundOfBombShoot.volume = Math.random();
                 soundOfBombShoot.currentTime = 0;
                 _ = soundOfBombShoot.play()
             }

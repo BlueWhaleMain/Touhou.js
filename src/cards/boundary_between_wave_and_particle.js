@@ -27,17 +27,14 @@ export default function boundaryBetweenWaveAndParticle(edit) {
             layerStage.restore();
         },
         card: function (card) {
-            for (let i = 0; i < 9; i++) {
-                const angle = (40 * i + 5 * Math.pow(raw / 4, 2)) * L;
+            for (let i = 0; i < 5; i++) {
+                const angle = (72 * i + 5 * Math.pow(raw / 2, 2)) * L;
                 const speed = transTo(3, 3, angle);
                 entities.push(Jade("rice", "hotpink", card.entity.X, card.entity.Y, speed[0], speed[1], -angle - 45 * L, false))
             }
             raw += 0.2;
             soundOfBombShoot.currentTime = 0;
-            _ = soundOfBombShoot.play();
-            if (raw > 360) {
-                raw = 0
-            }
+            _ = soundOfBombShoot.play()
         }
     };
     if (typeof edit === "function") {

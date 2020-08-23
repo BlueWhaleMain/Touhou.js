@@ -128,16 +128,20 @@ export default function CardUtil(option) {
                         }
                         option.delay--
                     } else {
-                        if (session.player.Y - GUI_SCREEN.Y >= (1 - session.player.pickLine) * GUI_SCREEN.HEIGHT) {
-                            bonus -= 100
-                        } else {
-                            bonus += 1000
-                        }
-                        if (bonus < 0) {
-                            bonus = 0
-                        }
-                        if (bonus > option.bonus) {
+                        if (this.isTimeSpell) {
                             bonus = option.bonus
+                        } else {
+                            if (session.player.Y - GUI_SCREEN.Y >= (1 - session.player.pickLine) * GUI_SCREEN.HEIGHT) {
+                                bonus -= 100
+                            } else {
+                                bonus += 1000
+                            }
+                            if (bonus < 0) {
+                                bonus = 0
+                            }
+                            if (bonus > option.bonus) {
+                                bonus = option.bonus
+                            }
                         }
                         option.card(this)
                     }
@@ -159,6 +163,9 @@ export default function CardUtil(option) {
                         isEnd = true
                     }
                     if (slowFrame > 0) {
+                        if (slowFrame % 2 === 0) {
+                            session.slowRunning = true;
+                        }
                         slowFrame--
                     } else {
                         session.practice = false;

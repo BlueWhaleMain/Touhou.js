@@ -39,6 +39,7 @@ const soundOfOK = newAudio(resources.Sounds.ok);
 const soundOfPause = newAudio(resources.Sounds.pause);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
+const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
 const layerShade = getLayer(LAYER_MAPPING.SHADE);
 export default function SpellPractice(player, stageMap, stageBGM, restartCallBack) {
@@ -109,12 +110,12 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         layerTitle.font = "12px sans-serif";
         layerTitle.fillText(session.score, 200, 170);
         layerTitle.restore();
+        if (inst.failure === false) {
+            session.player.tick();
+        }
         if (isStopped()) {
             inst.ending();
             return
-        }
-        if (inst.failure === false) {
-            session.player.tick();
         }
         updateEntity();
         if (session.keys.has("z")) {
@@ -152,6 +153,21 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                     pausedMenu.tick();
                     pausedMenu.draw()
                 } else {
+                    if (session.fake) {
+                        session.fake = false;
+                        session.fakeRect = [Math.random() * 10 - 5, Math.random() * 10 - 5]
+                    } else {
+                        session.fakeRect = null
+                    }
+                    if (session.flash) {
+                        session.flash = false;
+                        session.flashValue = session.flashValue + 0.02 || 0;
+                        if (session.flashValue > 1) {
+                            session.flashValue = 0
+                        }
+                    } else {
+                        session.flashValue = null
+                    }
                     session.player.tick();
                     for (let i = 0; i < inst.boss.length; i++) {
                         inst.boss[i].tick();
@@ -240,9 +256,15 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     inst.addLayer("SpellPractice", function () {
         this.draw = function (inst) {
             layerStage.save();
-            if (session.fake) {
-                session.fake = false;
-                layerStage.translate(Math.random() * 10 - 5, Math.random() * 10 - 5)
+            if (session.fakeRect) {
+                layerStage.translate(session.fakeRect[0], session.fakeRect[1])
+            }
+            if (session.flashValue) {
+                layerEffect.save();
+                layerEffect.fillStyle = "white";
+                layerEffect.globalAlpha = session.flashValue;
+                layerEffect.fillRect(0, 0, WIDTH, HEIGHT);
+                layerEffect.restore()
             }
             layerStage.drawImage(cache, 12.8, 9.6 + step);
             session.player.draw();

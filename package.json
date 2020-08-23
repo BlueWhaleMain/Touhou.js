@@ -3,12 +3,13 @@
     "version": "1.0.0",
     "description": "使用Canvas实现的东方二次创作",
     "main": "index.html",
+    "nodejs": true,
     "window": {
         "icon": "index.png",
         "toolbar": false,
         "frame": true,
-        "width": 1282,
-        "height": 961,
+        "width": 1280,
+        "height": 960,
         "resizable": false
     },
     "scripts": {
@@ -16,15 +17,19 @@
         "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
         "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
     },
-    "keywords": [],
+    "keywords": [
+        "touhou",
+        "rumia",
+        "BlueWhaleMain",
+        "canvas"
+    ],
     "author": "BlueWhaleMain <BlueWhaleMain@outlook.com>",
     "license": "ISC",
     "build": {
-        "nwVersion": "0.46.3"
+        "nwVersion": "0.47.3"
     },
     "dependencies": {},
     "devDependencies": {
-        "nw": "^0.46.4",
         "nwjs-builder-phoenix": "^1.15.0"
     }
 }

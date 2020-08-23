@@ -9,13 +9,13 @@ const soundOfPower0 = newAudio(resources.Sounds.power0);
 const colorMapping = [
     "red", "purple", "blue", "green", "water", "gold"
 ];
-export default function masterSpark(edit) {
+export default function doubleSpark(edit) {
     let frame = 0;
     let bombed = false;
     let colorIndex = 0;
     const cardData = {
-        // 恋符「极限火花」 rtl的bug
-        name: "「恋符「极限火花",
+        // 恋心「二重火花」 rtl的bug
+        name: "「恋心「二重火花",
         delay: 60,
         slowFrame: 0,
         startFrame: 120,
@@ -41,7 +41,7 @@ export default function masterSpark(edit) {
                 frame++
             }
             const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
-            if (bombed && frame % 40 === 0) {
+            if (bombed && frame % 20 === 0) {
                 const color = colorMapping[colorIndex];
                 colorIndex++;
                 if (colorIndex > 5) {
@@ -68,7 +68,13 @@ export default function masterSpark(edit) {
             }
             if (frame % 480 === 1) {
                 bombed = true;
-                let a = Math.atan2(session.player.Y - card.entity.Y, session.player.X - card.entity.X) + 90 * L;
+                let a = Math.atan2(session.player.Y - card.entity.Y, session.player.X - card.entity.X) + 80 * L;
+                entities.push(Laser("master_spark", undefined, card.entity.X + 256 * Math.sin(a), card.entity.Y - 256 * Math.cos(a), 0, 0, a, {
+                    startTime: 60,
+                    delayTime: 240,
+                    outTime: 60
+                }));
+                a = Math.atan2(session.player.Y - card.entity.Y, session.player.X - card.entity.X) + 100 * L;
                 entities.push(Laser("master_spark", undefined, card.entity.X + 256 * Math.sin(a), card.entity.Y - 256 * Math.cos(a), 0, 0, a, {
                     startTime: 60,
                     delayTime: 240,
