@@ -70,6 +70,17 @@ const ASSETS = {
                 "　　幻想般的，难道是幻想乡般的缩写吗？\n" +
                 "　　不过嘛，作为标题画面的曲子我很喜欢。"
         },
+        easternNightPractice: {
+            head: newAudio(resources.Sounds.easternNightPractice.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.easternNightPractice.loop, 100, "BGM"),
+            name: "東方妖怪小町",
+            description: "Last Word的主题曲。\n" +
+                "想要表现出一种脱离剧情框架的感觉。\n" +
+                "看起来似乎很帅气但并非如此。\n" +
+                "看起来似乎很可爱但并非如此。\n" +
+                "看起来似乎……不令人害怕。\n" +
+                "如果能够让人一直听下去心情也不会变坏就好了呢。"
+        },
         rumia: {
             head: newAudio(resources.Sounds.rumia.head, 100, "BGM"),
             loop: newAudio(resources.Sounds.rumia.loop, 100, "BGM"),
@@ -160,13 +171,14 @@ ASSETS.IMAGE.rumia.addEventListener("load", function () {
 
 const musicRoomMenu = new Menu([
     lightMenuItem(140, 125, ASSETS.SOUND.easternNight.name),
-    lightMenuItem(140, 145, ASSETS.SOUND.rumia.name),
-    lightMenuItem(140, 165, ASSETS.SOUND.hakureiReimu.name),
-    lightMenuItem(140, 185, ASSETS.SOUND.kirisameMarisa.name),
-    lightMenuItem(140, 205, ASSETS.SOUND.patchouliKnowledge.name),
-    lightMenuItem(140, 225, ASSETS.SOUND.yukariYakumo.name),
-    lightMenuItem(140, 245, ASSETS.SOUND.th095_04.name),
-    lightMenuItem(140, 265, ASSETS.SOUND.failure.name),
+    lightMenuItem(140, 145, ASSETS.SOUND.easternNightPractice.name),
+    lightMenuItem(140, 165, ASSETS.SOUND.rumia.name),
+    lightMenuItem(140, 185, ASSETS.SOUND.hakureiReimu.name),
+    lightMenuItem(140, 205, ASSETS.SOUND.kirisameMarisa.name),
+    lightMenuItem(140, 225, ASSETS.SOUND.patchouliKnowledge.name),
+    lightMenuItem(140, 245, ASSETS.SOUND.yukariYakumo.name),
+    lightMenuItem(140, 265, ASSETS.SOUND.th095_04.name),
+    lightMenuItem(140, 285, ASSETS.SOUND.failure.name),
 ], function (selectedIndex) {
     let selectedBgm;
     switch (selectedIndex) {
@@ -174,24 +186,27 @@ const musicRoomMenu = new Menu([
             selectedBgm = ASSETS.SOUND.easternNight;
             break;
         case 1:
-            selectedBgm = ASSETS.SOUND.rumia;
+            selectedBgm = ASSETS.SOUND.easternNightPractice;
             break;
         case 2:
-            selectedBgm = ASSETS.SOUND.hakureiReimu;
+            selectedBgm = ASSETS.SOUND.rumia;
             break;
         case 3:
-            selectedBgm = ASSETS.SOUND.kirisameMarisa;
+            selectedBgm = ASSETS.SOUND.hakureiReimu;
             break;
         case 4:
-            selectedBgm = ASSETS.SOUND.patchouliKnowledge;
+            selectedBgm = ASSETS.SOUND.kirisameMarisa;
             break;
         case 5:
-            selectedBgm = ASSETS.SOUND.yukariYakumo;
+            selectedBgm = ASSETS.SOUND.patchouliKnowledge;
             break;
         case 6:
-            selectedBgm = ASSETS.SOUND.th095_04;
+            selectedBgm = ASSETS.SOUND.yukariYakumo;
             break;
         case 7:
+            selectedBgm = ASSETS.SOUND.th095_04;
+            break;
+        case 8:
             selectedBgm = ASSETS.SOUND.failure;
             break;
         default:

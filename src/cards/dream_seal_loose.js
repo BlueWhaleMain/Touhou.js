@@ -27,7 +27,7 @@ export default function dreamSealLoose(edit) {
                         let speed = (0.4 + 0.8 * Math.pow(1.09, k * 4));
                         speed = transTo(speed, speed, j * 12 * L + spyAngle);
                         const spawnPoint = [speed[0] * 10, speed[1] * 10];
-                        entities.push(Jade("bill", "darkgray", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false));
+                        entities.push(Jade("bill", "dimgray", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false));
                         speed = 0.4 + 0.05 * k;
                         speed = transTo(speed, speed, j * 12 * L + spyAngle + k * 4 * L);
                         entities.push(Jade("bill", "red", card.entity.X, card.entity.Y, speed[0], speed[1], undefined, false));
@@ -96,7 +96,7 @@ export default function dreamSealLoose(edit) {
                         let speed = (0.4 + 0.8 * Math.pow(1.09, k * 4));
                         speed = transTo(speed, speed, j * 12 * L + spyAngle);
                         const spawnPoint = [speed[0] * 10, speed[1] * 10];
-                        entities.push(Jade("bill", "darkgray", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false))
+                        entities.push(Jade("bill", "dimgray", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false))
                     }
                 }
                 soundOfBombShoot.volume = volumeOfBombShoot;

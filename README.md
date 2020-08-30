@@ -1,17 +1,18 @@
 # Touhou.js
 使用Canvas实现的东方二次创作
 
+[![Contributors](https://img.shields.io/github/contributors/bluewhalemain/Touhou.js.svg)](https://github.com/bluewhalemain/Touhou.js/graphs/contributors)![GitHub repo size in bytes](https://img.shields.io/github/repo-size/bluewhalemain/Touhou.js.svg)
+
 ## 注意
 asset文件夹内部有许多未授权引用的外部文件，来源将后续在wiki中补充
 
 需要慢速切换场景时，设置 config.json `"FastStart": false`
 
-由于electron不兼容静态import与module，页面脚本完全无法运行，也不会报错，
-console对象无法使用，如果大肆重构必然伤筋动骨，故放弃electron
+将WebGL封装为2d的想法已放弃，差别过大，实际渲染时性能还不如2d
 
-WebGL由于绘图实现方式过于复杂，替换势必也会重写渲染引擎，故放弃
+功能更新会减缓，主要攻克架构问题，考虑使用pixi.js重构
 
-以上两种均已尝试并以失败告终
+由于功能已经较多，重构会非常困难
 
 ## 如何使用
 release版本可以直接运行EXE，开发环境使用npm启动
