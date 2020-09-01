@@ -1561,8 +1561,13 @@ function run() {
             }
             if (session.keys.has("f11")) {
                 // idea 挨打
-                win["toggleFullscreen"]();
-                session.keys.delete("f11")
+                session.keys.delete("f11");
+                win["toggleFullscreen"]()
+            }
+            if (win["isFullscreen"]) {
+                document.body.style.cursor = "none"
+            } else if (document.body.style) {
+                document.body.style = null
             }
             handler();
             if (entities.length > entityCountSecMax) {

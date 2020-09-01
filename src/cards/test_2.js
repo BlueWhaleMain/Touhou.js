@@ -97,7 +97,7 @@ export default function test2(edit) {
             if (frame % 10 === 0) {
                 for (let i = 0; i <= 360; i += 13) {
                     let speed = transTo(2, 2, (i + frame / 10) * L);
-                    entities.push(Jade("point", "darkgray", 220, 125, speed[0], speed[1], undefined, false));
+                    entities.push(Jade("point", "dimgray", 220, 125, speed[0], speed[1], undefined, false));
                 }
             }
             frame++

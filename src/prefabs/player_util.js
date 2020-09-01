@@ -46,9 +46,6 @@ export default function PlayerUtil() {
             return
         }
         inst.hitCount++;
-        if (session.developerMode) {
-            return
-        }
         if (inst.indTime < 0) {
             inst.miss = true;
             _ = soundOfMiss.play()
@@ -101,6 +98,9 @@ export default function PlayerUtil() {
                 }
                 if (inst.indTime === 0) {
                     inst.miss = false;
+                    if (session.developerMode) {
+                        return
+                    }
                     ob.dispatchEvent(EVENT_MAPPING.miss);
                     if (session.practice) {
                         inst.indTime = 210;

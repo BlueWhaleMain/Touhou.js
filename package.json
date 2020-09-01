@@ -9,8 +9,7 @@
         "toolbar": false,
         "frame": true,
         "width": 1280,
-        "height": 960,
-        "resizable": false
+        "height": 960
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,7 +25,7 @@
     "author": "BlueWhaleMain <BlueWhaleMain@outlook.com>",
     "license": "ISC",
     "build": {
-        "nwVersion": "0.48.0"
+        "nwVersion": "0.47.3"
     },
     "dependencies": {},
     "devDependencies": {

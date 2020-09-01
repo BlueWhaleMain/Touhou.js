@@ -28,11 +28,11 @@ export default function boundaryBetweenWaveAndParticle(edit) {
         },
         card: function (card) {
             for (let i = 0; i < 5; i++) {
-                const angle = (72 * i + 5 * Math.pow(raw / 2, 2)) * L;
+                const angle = (72 * i + Math.pow(raw, 2)) * L;
                 const speed = transTo(3, 3, angle);
                 entities.push(Jade("rice", "hotpink", card.entity.X, card.entity.Y, speed[0], speed[1], -angle - 45 * L, false))
             }
-            raw += 0.2;
+            raw += 0.15;
             soundOfBombShoot.currentTime = 0;
             _ = soundOfBombShoot.play()
         }
