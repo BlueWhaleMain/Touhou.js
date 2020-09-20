@@ -1,7 +1,9 @@
 import Observer from "./observer.js";
 
 const fs = require("fs");
-
+Math.prefix = function (x, len = 2, ch = "0") {
+    return (Array(len).join(ch) + Math.round(x)).slice(-len)
+};
 CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
     if (w < 2 * r) r = w / 2;
     if (h < 2 * r) r = h / 2;
@@ -300,6 +302,7 @@ function resizeScreen(layer) {
         layer.height = window.innerHeight;
         layer.width = window.innerWidth / WXH;
         layer.style.left = (window.innerWidth - layer.width) / 2 + "px";
+        layer.style.removeProperty("top");
     } else if (trans === WXH) {
         layer.width = window.innerWidth;
         layer.height = window.innerHeight;
@@ -309,6 +312,7 @@ function resizeScreen(layer) {
         layer.width = window.innerWidth;
         layer.height = window.innerHeight / WXH;
         layer.style.top = (window.innerHeight - layer.height) / 2 + "px";
+        layer.style.removeProperty("left");
     }
 }
 
@@ -544,6 +548,11 @@ export function resetAndSaveConfig() {
 }
 
 export function loadSaveFromFile() {
+    if (!fs.existsSync("save.json")) {
+        saveToFile({
+            highScore: 0
+        })
+    }
     save = require("save.json")
 }
 

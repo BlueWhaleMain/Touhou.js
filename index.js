@@ -40,7 +40,7 @@ const gui = require("nw" + ".gui");
 const win = gui["Window"].get();
 if (config.PauseOnBlur === true) {
     win.on("blur", function () {
-        if (session.stage && session.stage.paused === false) {
+        if (session.stage && session.stage.paused === false && session.stage.end === false) {
             session.stage.pause()
         }
     });
@@ -259,7 +259,7 @@ const musicRoomMenu = new Menu([
             layerTitle.strokeStyle = "rgb(153,153,153)";
             layerTitle.strokeRect(400, 90, 120, 10);
             layerTitle.fillRect(400, 90, 120 * current / total, 10);
-            layerTitle.fillText(Math.floor(current / 60) + ":" + Math.round(current % 60) + "/" + Math.floor(total / 60) + ":" + Math.round(total % 60), 522, 100);
+            layerTitle.fillText(Math.floor(current / 60) + ":" + Math.prefix(current % 60) + "/" + Math.floor(total / 60) + ":" + Math.prefix(total % 60), 522, 100);
             if (session.currentBGM.loop) {
                 layerTitle.fillStyle = "red";
                 layerTitle.fillRect(400 + 120 * session.currentBGM.dom.duration / total, 90, 1, 10)

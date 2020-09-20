@@ -1,6 +1,6 @@
 {
     "DeveloperMode": false,
-    "FastStart": false,
+    "FastStart": true,
     "PauseOnBlur": true,
     "FrameMax": "auto",
     "FullScreen": false,

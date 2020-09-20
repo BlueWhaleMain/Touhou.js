@@ -19,6 +19,8 @@ release版本可以直接运行EXE，开发环境使用npm启动
 
 使用F2截图，F3显示调试信息，F11切换全屏
 
+release版本的js文件可以直接替换，方便缓解bug
+
 ## 常见问题
 爆帧（帧率长时间超过60）：
 修改config.json默认配置`"FrameMax": "auto"`为`"FrameMax": 60`
