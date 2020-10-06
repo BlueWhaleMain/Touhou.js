@@ -1,4 +1,4 @@
-import {session, getLayer, newAudio, resources, LAYER_MAPPING} from "./util.js";
+import {session, getLayer, newAudio, resources, LAYER_MAPPING, HEIGHT} from "./util.js";
 
 let _;
 const soundOfSelect = newAudio(resources.Sounds.select);
@@ -6,6 +6,8 @@ const soundOfCancel = newAudio(resources.Sounds.cancel);
 export default function Menu(menuList, emitHandler, cancelHandler, drawingHandler, callback) {
     this.menuList = menuList;
     this.selectedIndex = 0;
+    this.sline = 0;
+    this.aline = HEIGHT / 2;
     this.load = function () {
         this.menuList[this.selectedIndex].select();
         if (typeof callback === "function") {
@@ -57,7 +59,7 @@ export default function Menu(menuList, emitHandler, cancelHandler, drawingHandle
     this.draw = function () {
         const length = this.menuList.length;
         for (let i = 0; i < length; i++) {
-            this.menuList[i].draw(this.menuList[i])
+            this.menuList[i].draw(this)
         }
         if (typeof drawingHandler === "function") {
             drawingHandler(this)
@@ -102,9 +104,9 @@ export function MenuItem(x = 0, y = 0, context = "", fake = 150, drawingHandler)
         inst.selected = false
     };
     inst.initDraw = unselect;
-    inst.draw = function () {
+    inst.draw = function (menu) {
         layerTitle.save();
-        inst.initDraw(layerTitle).fillText(inst.context, inst.X + inst.fake, inst.Y);
+        inst.initDraw(layerTitle).fillText(inst.context, inst.X + inst.fake, inst.Y - menu.sline);
         layerTitle.restore();
         if (wasFake === false) {
             if (inst.fake > -10) {
@@ -131,7 +133,7 @@ export function MenuItem(x = 0, y = 0, context = "", fake = 150, drawingHandler)
             }
         }
         if (typeof drawingHandler === "function") {
-            drawingHandler(inst)
+            drawingHandler(inst, menu)
         }
     };
     return inst
@@ -169,12 +171,19 @@ export function lightMenuItem(x, y, context, drawingHandler) {
         inst.selected = false
     };
     inst.initDraw = unselect;
-    inst.draw = function () {
+    inst.draw = function (menu) {
+        if (inst.selected) {
+            if (inst.Y > menu.aline) {
+                menu.sline = inst.Y - HEIGHT / 2
+            } else {
+                menu.sline = 0
+            }
+        }
         layerTitle.save();
-        inst.initDraw(layerTitle).fillText(inst.context, inst.X, inst.Y);
+        inst.initDraw(layerTitle).fillText(inst.context, inst.X, inst.Y - menu.sline);
         layerTitle.restore();
         if (typeof drawingHandler === "function") {
-            drawingHandler(inst)
+            drawingHandler(inst, menu)
         }
     };
     return inst

@@ -34,6 +34,7 @@ import dreamSealLoose from "./src/cards/dream_seal_loose.js";
 import dreamSealSilence from "./src/cards/dream_seal_silence.js";
 import doubleSpark from "./src/cards/double_spark.js";
 import test from "./src/cards/test.js";
+import moonlightRay from "./src/cards/moonlight_ray.js";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -274,7 +275,7 @@ const musicRoomMenu = new Menu([
                 layerTitle.shadowColor = "rgb(153,153,153)";
             }
             y = 125 + i * 20;
-            layerTitle.fillText("No." + (i + 1), 60, y)
+            layerTitle.fillText("No." + (i + 1), 60, y - self.sline)
         }
         y += 20;
         if (session.currentBGM.description) {
@@ -421,6 +422,7 @@ function practiceStartFactory(selectedIndex) {
                         })
                     ]),
                     bossRumia(-50, 125, 900, [
+                        moonlightRay(),
                         nightBird(),
                         demarcation(),
                         voidDeath(function (cd) {
@@ -669,6 +671,7 @@ function practiceStartFactory(selectedIndex) {
                         })
                     ]),
                     bossRumia(-50, 125, 900, [
+                        moonlightRay(),
                         nightBird(),
                         demarcation(),
                         voidDeath(function (cd) {
@@ -956,7 +959,8 @@ function spellPracticeFactory(selectedIndex) {
         case 8:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
-                    nightBird(function (cd) {
+                    moonlightRay(function (cd) {
+                        cd.noCardFrame = null;
                         cd.practice = true
                     })
                 ]);
@@ -968,7 +972,7 @@ function spellPracticeFactory(selectedIndex) {
         case 9:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
-                    demarcation(function (cd) {
+                    nightBird(function (cd) {
                         cd.practice = true
                     })
                 ]);
@@ -980,6 +984,18 @@ function spellPracticeFactory(selectedIndex) {
         case 10:
             stageMap = function () {
                 boss = bossRumia(-50, 125, 900, [
+                    demarcation(function (cd) {
+                        cd.practice = true
+                    })
+                ]);
+                boss.playBGM();
+                return [boss]
+            };
+            bgm = true;
+            break;
+        case 11:
+            stageMap = function () {
+                boss = bossRumia(-50, 125, 900, [
                     voidDeath(function (cd) {
                         cd.practice = true
                     })
@@ -987,7 +1003,7 @@ function spellPracticeFactory(selectedIndex) {
                 return [boss]
             };
             break;
-        case 11:
+        case 12:
             stageMap = function () {
                 boss = bossPatchouliKnowledge(220, -60, 1000, [
                     metalFatigue(function (cd) {
@@ -999,7 +1015,7 @@ function spellPracticeFactory(selectedIndex) {
             };
             bgm = true;
             break;
-        case 12:
+        case 13:
             stageMap = function () {
                 boss = bossPatchouliKnowledge(220, -60, 1000, [
                     mercuryPoison(function (cd) {
@@ -1011,7 +1027,7 @@ function spellPracticeFactory(selectedIndex) {
             };
             bgm = true;
             break;
-        case 13:
+        case 14:
             stageMap = function () {
                 boss = bossHakureiReimu(480, -60, 1000, [
                     dreamSealLoose(function (cd) {
@@ -1024,7 +1040,7 @@ function spellPracticeFactory(selectedIndex) {
             };
             bgm = true;
             break;
-        case 14:
+        case 15:
             stageMap = function () {
                 boss = bossHakureiReimu(480, -60, 1000, [
                     dreamSealSilence(function (cd) {
@@ -1056,13 +1072,14 @@ const spellPracticeMenu = new Menu([
     lightMenuItem(280, 295, "魔空「小行星带」"),
     lightMenuItem(280, 315, "恋符「极限火花」"),
     lightMenuItem(280, 335, "恋心「二重火花」"),
-    lightMenuItem(280, 355, "夜符「夜雀」"),
-    lightMenuItem(280, 375, "暗符「境界线」"),
-    lightMenuItem(280, 395, "深渊「空亡」"),
-    lightMenuItem(280, 415, "金符「金属疲劳」"),
-    lightMenuItem(280, 435, "金&水符「水银之毒」"),
-    lightMenuItem(280, 455, "灵符「梦想封印　散」"),
-    lightMenuItem(280, 475, "散灵「梦想封印　寂」"),
+    lightMenuItem(280, 355, "月符「月亮光」"),
+    lightMenuItem(280, 375, "夜符「夜雀」"),
+    lightMenuItem(280, 395, "暗符「境界线」"),
+    lightMenuItem(280, 415, "深渊「空亡」"),
+    lightMenuItem(280, 435, "金符「金属疲劳」"),
+    lightMenuItem(280, 455, "金&水符「水银之毒」"),
+    lightMenuItem(280, 475, "灵符「梦想封印　散」"),
+    lightMenuItem(280, 495, "散灵「梦想封印　寂」"),
 ], function (selectedIndex) {
     spellPracticeFactory(selectedIndex);
     transitions(runSpellPractice);
@@ -1108,7 +1125,7 @@ const spellPracticeMenu = new Menu([
             layerTitle.fillStyle = "white";
             layerTitle.shadowColor = "rgb(153,153,153)";
         }
-        layerTitle.fillText("No." + (i + 1), 200, 195 + i * 20)
+        layerTitle.fillText("No." + (i + 1), 200, 195 + i * 20 - self.sline)
     }
     layerTitle.restore();
     rendererEntity()

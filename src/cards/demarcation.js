@@ -1,5 +1,5 @@
 import CardUtil from "../card_util.js";
-import {entities, L, transTo, modifyEntity, session, newAudio, resources} from "../util.js";
+import {entities, L, transTo, modifyEntity, session, newAudio, resources, GUI_SCREEN} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import {makeMovableArc} from "../components/movable.js";
 
@@ -38,11 +38,11 @@ export default function demarcation(edit) {
     function move(card) {
         card.entity.maxMovementSpeed = 5;
         if (Math.random() > 0.5) {
-            if (card.entity.X < 400) {
+            if (card.entity.X < GUI_SCREEN.WIDTH - GUI_SCREEN.X) {
                 card.entity.target.X += 50
             }
         } else {
-            if (card.entity.X > 100) {
+            if (card.entity.X > 2 * GUI_SCREEN.X) {
                 card.entity.target.X -= 50
             }
         }
@@ -55,10 +55,10 @@ export default function demarcation(edit) {
                 card.entity.target.Y -= 10
             }
         }
-        if (card.entity.X > 400) {
+        if (card.entity.X > GUI_SCREEN.WIDTH - GUI_SCREEN.X) {
             card.entity.target.X -= 50
         }
-        if (card.entity.X < 100) {
+        if (card.entity.X < 2 * GUI_SCREEN.X) {
             card.entity.target.X += 50
         }
         if (card.entity.Y > 100) {

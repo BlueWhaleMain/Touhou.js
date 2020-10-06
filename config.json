@@ -8,8 +8,8 @@
     "Player": 3,
     "GrazeMax": 99999,
     "Volume": {
-        "BGM": 100,
-        "SE": 80
+        "BGM": 80,
+        "SE": 60
     },
     "KeyBoard": {
         "Up": "ArrowUp",

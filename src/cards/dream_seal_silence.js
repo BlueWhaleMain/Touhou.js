@@ -51,18 +51,22 @@ export default function dreamSealSilence(edit) {
                     _ = soundOfBombShoot.play();
                 }
                 if (frame % 20 === 0) {
-                    if (rand > 0.5) {
-                        card.entity.target.X += 40
-                    } else {
-                        card.entity.target.X -= 40
-                    }
-                    if (rand > 0.6) {
-                        if (card.entity.Y < 100) {
-                            card.entity.target.Y += 20
+                    if (card.entity.X === card.entity.target.X && card.entity.Y === card.entity.target.Y) {
+                        if (rand > 0.5) {
+                            card.entity.target.X += 40
+                        } else {
+                            card.entity.target.X -= 40
                         }
-                    } else {
-                        if (card.entity.Y > 80) {
-                            card.entity.target.Y -= 20
+                    }
+                    if (card.entity.X === card.entity.target.X && card.entity.Y === card.entity.target.Y) {
+                        if (rand > 0.6) {
+                            if (card.entity.Y < 100) {
+                                card.entity.target.Y += 20
+                            }
+                        } else {
+                            if (card.entity.Y > 80) {
+                                card.entity.target.Y -= 20
+                            }
                         }
                     }
                     if (card.entity.X > GUI_SCREEN.WIDTH + GUI_SCREEN.X) {

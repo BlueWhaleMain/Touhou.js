@@ -206,11 +206,11 @@ export default function Rumia() {
         _ = soundOfCat0.play();
     };
     inst.callback.normalBomb = function () {
-        inst.spellName = "暗符「境界线」";
+        inst.spellName = "月符「月亮光」";
         inst.bombTime = 210
     };
     inst.callback.missBomb = function () {
-        inst.spellName = "深渊「空亡」";
+        inst.spellName = "暗符「境界线」";
         inst.bombTime = 400
     };
     inst.callback.bombLay = function () {

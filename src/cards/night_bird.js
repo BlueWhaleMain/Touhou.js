@@ -21,7 +21,7 @@ export default function nightBird(edit) {
             if (0 < frame && frame < 17) {
                 let j = frame;
                 for (let k = 0; k < 3; k++) {
-                    let speed = (0.4 + 0.4 * Math.pow(1.09, (15 - j) / 16 + k * 4));
+                    let speed = 0.4 + 0.4 * Math.pow(1.09, (15 - j) / 16 + k * 4);
                     speed = transTo(speed, speed, (110 - 135 / 16 * j - 3) * L + spyAngle);
                     const spawnPoint = [speed[0] * 10, speed[1] * 10];
                     entities.push(Jade("ring", "aqua", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false))
@@ -32,7 +32,7 @@ export default function nightBird(edit) {
             if (17 < frame && frame < 33) {
                 let j = frame - 16;
                 for (let k = 0; k < 3; k++) {
-                    let speed = (0.4 + 0.4 * Math.pow(1.09, (15 - j) / 16 + k * 4));
+                    let speed = 0.4 + 0.4 * Math.pow(1.09, (15 - j) / 16 + k * 4);
                     speed = transTo(speed, speed, (-100 + 135 / 16 * j) * L + spyAngle);
                     const spawnPoint = [speed[0] * 10, speed[1] * 10];
                     entities.push(Jade("ring", "blue", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false))

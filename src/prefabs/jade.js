@@ -242,5 +242,9 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
         });
         return inst
     };
+    inst.edit = function (f) {
+        f(inst);
+        return inst
+    };
     return inst
 }

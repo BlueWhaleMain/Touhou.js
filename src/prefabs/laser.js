@@ -185,13 +185,24 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
     ob.addEventListener(EVENT_MAPPING.load, load);
     inst.start = function () {
         if (inst.type === "master_spark") {
-
             soundOfNep00.currentTime = 0;
             _ = soundOfNep00.play()
         } else {
             soundOfLaser.currentTime = 0;
             _ = soundOfLaser.play();
         }
+    };
+    inst.rotate = function (b, a, l = 256) {
+        inst.X = b.X + l * Math.sin(a);
+        inst.Y = b.Y - l * Math.cos(a);
+        inst.sizeBox.angle = a;
+        inst.atkBox.angle = a;
+        inst.angle = a;
+        return inst
+    };
+    inst.edit = function (f) {
+        f(inst);
+        return inst
     };
     return inst
 }
