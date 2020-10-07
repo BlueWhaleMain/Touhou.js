@@ -8,6 +8,7 @@ const playerBorder = newImage(resources.Images.playerBorder);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 export default function boundaryBetweenWaveAndParticle(edit) {
     let raw = 0;
+    let sp = 0;
     const cardData = {
         // 境符「波与粒的境界」 rtl的bug
         name: "「境符「波与粒的境界",
@@ -16,7 +17,7 @@ export default function boundaryBetweenWaveAndParticle(edit) {
         startFrame: 120,
         time: 12000,
         bonus: 2000000,
-        Y: 220,
+        Y: 200,
         borderDraw: function (entity, time, total) {
             layerStage.save();
             layerStage.translate(entity.X, entity.Y);
@@ -28,11 +29,18 @@ export default function boundaryBetweenWaveAndParticle(edit) {
         },
         card: function (card) {
             for (let i = 0; i < 5; i++) {
-                const angle = (72 * i + Math.pow(raw, 2)) * L;
-                const speed = transTo(3, 3, angle);
+                const angle = (72 * i + raw * 2) * L;
+                const speed = transTo(2, 2, angle);
                 entities.push(Jade("rice", "hotpink", card.entity.X, card.entity.Y, speed[0], speed[1], -angle - 45 * L, false))
             }
-            raw += 0.15;
+            raw += sp;
+            if (raw >= 360) {
+                raw -= 360
+            }
+            sp += 0.05;
+            if (sp >= 360) {
+                sp -= 360
+            }
             soundOfBombShoot.currentTime = 0;
             _ = soundOfBombShoot.play()
         }

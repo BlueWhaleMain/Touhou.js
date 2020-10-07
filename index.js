@@ -35,7 +35,9 @@ import dreamSealSilence from "./src/cards/dream_seal_silence.js";
 import doubleSpark from "./src/cards/double_spark.js";
 import test from "./src/cards/test.js";
 import moonlightRay from "./src/cards/moonlight_ray.js";
+import DI from "./src/global.js";
 
+DI();
 const gui = require("nw" + ".gui");
 //idea划线
 const win = gui["Window"].get();
@@ -846,241 +848,200 @@ const practiceStartMenu = new Menu([
     };
 });
 
+const sps = [];
+
+function addSpellCard(name, f, bgm) {
+    sps.push({
+        name, f, bgm
+    })
+}
+
 function spellPracticeFactory(selectedIndex) {
     const player = session.selectedPlayer;
     let stageMap = [];
-    let boss;
     let bgm = false;
-    switch (selectedIndex) {
-        case 0:
-            stageMap = function () {
-                boss = bossYukariYakumo(480, -60, 1000, [test1(function (card) {
-                    card.noCardFrame = null;
-                    card.practice = true
-                })]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 1:
-            stageMap = function () {
-                boss = bossYukariYakumo(480, -60, 1000, [test2(function (card) {
-                    card.noCardFrame = null;
-                    card.practice = true
-                })]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 2:
-            stageMap = function () {
-                boss = bossYukariYakumo(480, -60, 1000, [test3(function (card) {
-                    card.noCardFrame = null;
-                    card.practice = true
-                })]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 3:
-            stageMap = function () {
-                boss = bossYukariYakumo(480, -60, 1000, [
-                    boundaryBetweenWaveAndParticle(function (cd) {
-                        cd.practice = true
-                    })]);
-                if (session.currentBGM) {
-                    _ = session.currentBGM.dom.pause();
-                    if (session.currentBGM.loop) {
-                        _ = session.currentBGM.loop.pause();
-                    }
-                }
-                ASSETS.SOUND.th095_04.head.currentTime = 0;
-                ASSETS.SOUND.th095_04.loop.currentTime = 0;
-                session.currentBGM = {
-                    dom: ASSETS.SOUND.th095_04.head,
-                    loop: ASSETS.SOUND.th095_04.loop,
-                    name: ASSETS.SOUND.th095_04.name
-                };
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 4:
-            stageMap = function () {
-                boss = bossKirisameMarisa(500, 125, 1200, [
-                    milkyWay(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 5:
-            stageMap = function () {
-                boss = bossKirisameMarisa(500, 125, 1200, [
-                    asteroidBelt(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 6:
-            stageMap = function () {
-                boss = bossKirisameMarisa(500, 125, 1200, [
-                    masterSpark(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 7:
-            stageMap = function () {
-                boss = bossKirisameMarisa(500, 125, 1200, [
-                    doubleSpark(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 8:
-            stageMap = function () {
-                boss = bossRumia(-50, 125, 900, [
-                    moonlightRay(function (cd) {
-                        cd.noCardFrame = null;
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 9:
-            stageMap = function () {
-                boss = bossRumia(-50, 125, 900, [
-                    nightBird(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 10:
-            stageMap = function () {
-                boss = bossRumia(-50, 125, 900, [
-                    demarcation(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 11:
-            stageMap = function () {
-                boss = bossRumia(-50, 125, 900, [
-                    voidDeath(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                return [boss]
-            };
-            break;
-        case 12:
-            stageMap = function () {
-                boss = bossPatchouliKnowledge(220, -60, 1000, [
-                    metalFatigue(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 13:
-            stageMap = function () {
-                boss = bossPatchouliKnowledge(220, -60, 1000, [
-                    mercuryPoison(function (cd) {
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 14:
-            stageMap = function () {
-                boss = bossHakureiReimu(480, -60, 1000, [
-                    dreamSealLoose(function (cd) {
-                        cd.noCardFrame = null;
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        case 15:
-            stageMap = function () {
-                boss = bossHakureiReimu(480, -60, 1000, [
-                    dreamSealSilence(function (cd) {
-                        cd.noCardFrame = null;
-                        cd.practice = true
-                    })
-                ]);
-                boss.playBGM();
-                return [boss]
-            };
-            bgm = true;
-            break;
-        default:
-            ASSETS.SOUND.invalid.currentTime = 0;
-            _ = ASSETS.SOUND.invalid.play();
-            return
+    if (selectedIndex < sps.length) {
+        const sp = sps[selectedIndex];
+        stageMap = sp.f;
+        bgm = sp.bgm
+    } else {
+        ASSETS.SOUND.invalid.currentTime = 0;
+        _ = ASSETS.SOUND.invalid.play();
+        return
     }
     session.stage = SpellPractice(player, stageMap, bgm, function () {
         spellPracticeFactory(selectedIndex)
     });
 }
 
-const spellPracticeMenu = new Menu([
-    lightMenuItem(280, 195, "Test1"),
-    lightMenuItem(280, 215, "Test2"),
-    lightMenuItem(280, 235, "Test3"),
-    lightMenuItem(280, 255, "境符「波与粒的境界」"),
-    lightMenuItem(280, 275, "魔符「银河」"),
-    lightMenuItem(280, 295, "魔空「小行星带」"),
-    lightMenuItem(280, 315, "恋符「极限火花」"),
-    lightMenuItem(280, 335, "恋心「二重火花」"),
-    lightMenuItem(280, 355, "月符「月亮光」"),
-    lightMenuItem(280, 375, "夜符「夜雀」"),
-    lightMenuItem(280, 395, "暗符「境界线」"),
-    lightMenuItem(280, 415, "深渊「空亡」"),
-    lightMenuItem(280, 435, "金符「金属疲劳」"),
-    lightMenuItem(280, 455, "金&水符「水银之毒」"),
-    lightMenuItem(280, 475, "灵符「梦想封印　散」"),
-    lightMenuItem(280, 495, "散灵「梦想封印　寂」"),
-], function (selectedIndex) {
+addSpellCard("Test1", function () {
+    const boss = bossYukariYakumo(480, -60, 1000, [test1(function (card) {
+        card.noCardFrame = null;
+        card.practice = true
+    })]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("Test2", function () {
+    const boss = bossYukariYakumo(480, -60, 1000, [test2(function (card) {
+        card.noCardFrame = null;
+        card.practice = true
+    })]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("Test3", function () {
+    const boss = bossYukariYakumo(480, -60, 1000, [test3(function (card) {
+        card.noCardFrame = null;
+        card.practice = true
+    })]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("境符「波与粒的境界」", function () {
+    const boss = bossYukariYakumo(480, -60, 1000, [
+        boundaryBetweenWaveAndParticle(function (cd) {
+            cd.practice = true
+        })]);
+    if (session.currentBGM) {
+        _ = session.currentBGM.dom.pause();
+        if (session.currentBGM.loop) {
+            _ = session.currentBGM.loop.pause();
+        }
+    }
+    ASSETS.SOUND.th095_04.head.currentTime = 0;
+    ASSETS.SOUND.th095_04.loop.currentTime = 0;
+    session.currentBGM = {
+        dom: ASSETS.SOUND.th095_04.head,
+        loop: ASSETS.SOUND.th095_04.loop,
+        name: ASSETS.SOUND.th095_04.name
+    };
+    return [boss]
+}, true);
+addSpellCard("「纯粹的弹幕测试」", function () {
+    const boss = bossYukariYakumo(480, -60, 1000, [test(function (card) {
+        card.practice = true
+    })]);
+    return [boss]
+}, false);
+addSpellCard("魔符「银河」", function () {
+    const boss = bossKirisameMarisa(500, 125, 1200, [
+        milkyWay(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("魔空「小行星带」", function () {
+    const boss = bossKirisameMarisa(500, 125, 1200, [
+        asteroidBelt(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("恋符「极限火花」", function () {
+    const boss = bossKirisameMarisa(500, 125, 1200, [
+        masterSpark(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("恋心「二重火花」", function () {
+    const boss = bossKirisameMarisa(500, 125, 1200, [
+        doubleSpark(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("月符「月亮光」", function () {
+    const boss = bossRumia(-50, 125, 900, [
+        moonlightRay(function (cd) {
+            cd.noCardFrame = null;
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("夜符「夜雀」", function () {
+    const boss = bossRumia(-50, 125, 900, [
+        nightBird(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("暗符「境界线」", function () {
+    const boss = bossRumia(-50, 125, 900, [
+        demarcation(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("深渊「空亡」", function () {
+    const boss = bossRumia(-50, 125, 900, [
+        voidDeath(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    return [boss]
+}, true);
+addSpellCard("金符「金属疲劳」", function () {
+    const boss = bossPatchouliKnowledge(220, -60, 1000, [
+        metalFatigue(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("金&水符「水银之毒」", function () {
+    const boss = bossPatchouliKnowledge(220, -60, 1000, [
+        mercuryPoison(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("灵符「梦想封印　散」", function () {
+    const boss = bossHakureiReimu(480, -60, 1000, [
+        dreamSealLoose(function (cd) {
+            cd.noCardFrame = null;
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+addSpellCard("散灵「梦想封印　寂」", function () {
+    const boss = bossHakureiReimu(480, -60, 1000, [
+        dreamSealSilence(function (cd) {
+            cd.noCardFrame = null;
+            cd.practice = true
+        })
+    ]);
+    boss.playBGM();
+    return [boss]
+}, true);
+
+const spm = [];
+const spl = sps.length;
+for (let i = 0; i < spl; i++) {
+    spm.push(lightMenuItem(280, 195 + 20 * i, sps[i].name))
+}
+
+const spellPracticeMenu = new Menu(spm, function (selectedIndex) {
     spellPracticeFactory(selectedIndex);
     transitions(runSpellPractice);
 }, function () {

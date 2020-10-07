@@ -55,6 +55,7 @@ export default function Rumia() {
     inst.pickLine = 3 / 4;
     inst.shootCount = 0;
     inst.powerMax = 400;
+    inst.tags.add(TAGS.monster);
     inst.inScreen();
     let textureLayout = 200;
     let textureOpacity = 0;

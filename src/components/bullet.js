@@ -5,7 +5,13 @@ const soundOfGraze = newAudio(resources.Sounds.graze);
 export default function bullet() {
     this.grazeState = undefined;
     this.hitState = false;
+    this.ignoreTags = new Set();
     this.tick = function (inst) {
+        for (const tag of this.ignoreTags) {
+            if (session.player.tags.has(tag)) {
+                return
+            }
+        }
         if (inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
             if (this.grazeState === false) {
                 session.player.graze++;

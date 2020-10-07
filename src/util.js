@@ -1,21 +1,6 @@
 import Observer from "./observer.js";
 
 const fs = require("fs");
-Math.prefix = function (x, len = 2, ch = "0") {
-    return (Array(len).join(ch) + Math.round(x)).slice(-len)
-};
-CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    if (w < 2 * r) r = w / 2;
-    if (h < 2 * r) r = h / 2;
-    this.beginPath();
-    this.moveTo(x + r, y);
-    this.arcTo(x + w, y, x + w, y + h, r);
-    this.arcTo(x + w, y + h, x, y + h, r);
-    this.arcTo(x, y + h, x, y, r);
-    this.arcTo(x, y, x + w, y, r);
-    this.closePath();
-    return this;
-};
 
 /**
  * HSL颜色值转换为RGB.
@@ -128,13 +113,18 @@ export function RBox(xs, ys, angle) {
             return maxX - minX <= this.xs + hitBox.xs && maxY - minY <= this.ys + hitBox.ys;
         }
     };
-    this.isOut = function (x, y, xMax, yMax, mx, my) {
-        return x + this.xs + this.xs < 0 && mx <= 0 || y + this.ys + this.ys < 0 && my <= 0
-            || x > xMax && mx > 0 || y > yMax && my > 0
+    this.isOutX = function (x, y, mx, xMax, xMin) {
+        return mx <= 0 && x < -4 * this.xs - xMin || mx > 0 && x > xMax + this.xs + this.xs + xMin
+    };
+    this.isOutY = function (x, y, my, yMax, yMin) {
+        return my <= 0 && y < -4 * this.ys - yMin || my > 0 && y > yMax + this.ys + this.ys + yMin
+    };
+    this.isOut = function (x, y, mx, my, xMax, yMax, xMin, yMin) {
+        return this.isOutX(x, y, mx, xMax, xMin) || this.isOutY(x, y, my, yMax, yMin)
     };
     this.isOutScreen = function (x, y, mx, my) {
-        return x < -4 * this.xs - GUI_SCREEN.X && mx <= 0 || y < -4 * this.ys - GUI_SCREEN.Y && my <= 0
-            || x > GUI_SCREEN.X + GUI_SCREEN.WIDTH + this.xs + this.xs + GUI_SCREEN.X && mx > 0 || y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT + 2 * this.ys + GUI_SCREEN.Y && my > 0
+        return this.isOut(x, y, mx, my, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT,
+            GUI_SCREEN.X, GUI_SCREEN.Y)
     };
     this.inScreen = function (x, y) {
         if (x - this.xs / 2 < GUI_SCREEN.X) {
@@ -164,13 +154,18 @@ export function ABox(r) {
             return (maxX - xx) * (maxX - xx) + (maxY - yy) * (maxY - yy) <= this.r * this.r;
         }
     };
-    this.isOut = function (x, y, xMax, yMax, mx, my) {
-        return x - this.r < 0 && mx <= 0 || x + this.r > xMax && mx > 0
-            || y - this.r < 0 && my <= 0 || y + this.r > yMax && my > 0
+    this.isOutX = function (x, y, mx, xMax, xMin) {
+        return x < -this.r - xMin && mx <= 0 || x > xMax + this.r + xMin && mx > 0
+    };
+    this.isOutY = function (x, y, my, yMax, yMin) {
+        return y < -this.r - yMin && my <= 0 || y > yMax + this.r + yMin && my > 0
+    };
+    this.isOut = function (x, y, mx, my, xMax, yMax, xMin, yMin) {
+        return this.isOutX(x, y, mx, xMax, xMin) || this.isOutY(x, y, my, yMax, yMin)
     };
     this.isOutScreen = function (x, y, mx, my) {
-        return x < -this.r - GUI_SCREEN.X && mx <= 0 || x > GUI_SCREEN.X + GUI_SCREEN.WIDTH + this.r + GUI_SCREEN.X && mx > 0
-            || y < -this.r - GUI_SCREEN.Y && my <= 0 || y > GUI_SCREEN.Y + GUI_SCREEN.HEIGHT + this.r + GUI_SCREEN.Y && my > 0
+        return this.isOut(x, y, mx, my, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT,
+            GUI_SCREEN.X, GUI_SCREEN.Y)
     };
     this.inScreen = function (x, y) {
         if (x - this.r < GUI_SCREEN.X) {
@@ -570,7 +565,11 @@ export const TAGS = {
     player: "Player",
     death: "Death",
     misc: "Misc",
-    title: "Title"
+    title: "Title",
+    hit: "Hit",
+    envoy: "Envoy",
+    monster: "Monster",
+    human: "Human",
 };
 export const EVENT_MAPPING = {
     load: "Load",

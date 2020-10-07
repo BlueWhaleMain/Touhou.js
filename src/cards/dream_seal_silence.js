@@ -2,6 +2,7 @@ import {entities, L, session, transTo, newAudio, resources, GUI_SCREEN} from "..
 import Jade from "../prefabs/jade.js";
 import CardUtil from "../card_util.js";
 import {generateRandomSpeed} from "../components/movable.js";
+import YinYangJade from "../prefabs/yin_yang_jade.js";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
@@ -77,6 +78,7 @@ export default function dreamSealSilence(edit) {
                         card.entity.X = GUI_SCREEN.WIDTH + GUI_SCREEN.X;
                         card.entity.target.X = GUI_SCREEN.WIDTH + GUI_SCREEN.X - 40
                     }
+                    entities.push(YinYangJade(card.entity, card.entity.X, card.entity.Y, Math.random() - 0.5, -2));
                     soundOfOption.currentTime = 0;
                     _ = soundOfOption.play()
                 }
@@ -112,12 +114,15 @@ export default function dreamSealSilence(edit) {
                     speed = generateRandomSpeed(8, 8, -8, undefined, undefined, undefined, 2);
                     spawnPoint = [speed[0] * 10, speed[1] * 10];
                     entities.push(Jade("orb", "red", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false));
+                    if (frame % 4 === 0) {
+                        speed = generateRandomSpeed(8, 8, -8, undefined, undefined, undefined, 2);
+                        spawnPoint = [speed[0] * 10, speed[1] * 10];
+                        entities.push(YinYangJade(card.entity, card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], false));
+                    }
                 }
                 soundOfBombShoot.volume = Math.random();
                 soundOfBombShoot.currentTime = 0;
-                _ = soundOfBombShoot.play()
-            }
-            if (frame === 40) {
+                _ = soundOfBombShoot.play();
                 soundOfOption.currentTime = 0;
                 _ = soundOfOption.play()
             }

@@ -1,4 +1,5 @@
 import {TAGS} from "../util.js";
+
 export default function health() {
     let value = 1, max = 1, min = 0;
     this.indestructible = false;
@@ -30,7 +31,7 @@ export default function health() {
         if (this.indestructible) {
             return
         }
-        if (this.callback.doDelta) {
+        if (typeof this.callback.doDelta === "function") {
             if (this.callback.doDelta(val, value) === false) {
                 return
             }
@@ -40,6 +41,11 @@ export default function health() {
             value = min
         } else if (value > max) {
             value = max
+        }
+        if (value < 1) {
+            if (typeof this.callback.dead === "function") {
+                this.callback.dead(this)
+            }
         }
     };
     this.die = function () {

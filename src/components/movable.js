@@ -1,4 +1,4 @@
-import {TAGS, L} from "../util.js";
+import {TAGS, L, GUI_SCREEN} from "../util.js";
 
 export function movableArc(inst, target, r, yaw = 0, ya = 1, max) {
     const movable = inst.components["movable"];
@@ -132,7 +132,33 @@ export default function movable() {
     this.flush = true;
     this.grave = 0;
     this.callback = {};
+    this.stop = false;
+    this.reflex = {
+        enabled: false,
+        xMax: GUI_SCREEN.X + GUI_SCREEN.WIDTH,
+        yMax: 2 * GUI_SCREEN.HEIGHT,
+        xMin: GUI_SCREEN.X,
+        yMin: GUI_SCREEN.Y,
+        count: -1
+    };
     this.tick = function (inst) {
+        if (this.stop === true) {
+            return
+        }
+        if (this.reflex.enabled === true && this.reflex.count !== 0) {
+            let work = false;
+            if (inst.atkBox.isOutX(inst.X, inst.Y, this.MX, this.reflex.xMax, this.reflex.xMin)) {
+                this.MX = -this.MX;
+                work = true
+            }
+            if (inst.atkBox.isOutY(inst.X, inst.Y, this.MY, this.reflex.yMax, this.reflex.yMin)) {
+                this.MY = -this.MY;
+                work = true
+            }
+            if (work === true && this.reflex.count > 0) {
+                this.reflex.count--
+            }
+        }
         inst.X += this.MX;
         inst.Y += this.MY;
         if (this.grave) {

@@ -9,7 +9,7 @@ import {
     RBox,
     resources,
     session,
-    transTo, EVENT_MAPPING
+    transTo, EVENT_MAPPING, TAGS
 } from "../../util.js";
 import PlayerUtil from "../player_util.js";
 import HakureiReimuBill from "../hakurei_reimu_bill.js";
@@ -42,6 +42,7 @@ export default function HakureiReimu() {
     inst.shootCount = 0;
     inst.powerMax = 400;
     inst.indMin = -15;
+    inst.tags.add(TAGS.human);
     inst.inScreen();
     let textureLayout = 200;
     let textureOpacity = 0;

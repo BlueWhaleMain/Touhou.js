@@ -19,6 +19,7 @@
         "spellName": "spell_name.png",
         "spellPractice": "spell_practice.png",
         "enemyMarker": "enemy_marker.png",
+        "enemy": "enemy.png",
         "enemyCircle": "enemy_circle_06.png",
         "bossEffect": "boss_effect_01.png",
         "getSpellCardBonus": "img_bonus_01.png",

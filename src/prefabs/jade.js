@@ -19,6 +19,7 @@ const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 const r90 = 90 * L;
+const r360 = 360 * L;
 export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true) {
     const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
@@ -237,7 +238,10 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
                 if (inst.rotation === undefined) {
                     inst.rotation = 0
                 }
-                inst.rotation += Math.sqrt(Math.pow(inst.components["movable"].MX, 2) + Math.pow(inst.components["movable"].MY, 2)) * deg
+                inst.rotation += Math.sqrt(Math.pow(inst.components["movable"].MX, 2) + Math.pow(inst.components["movable"].MY, 2)) * deg;
+                if (inst.rotation > r360) {
+                    inst.rotation -= r360
+                }
             }
         });
         return inst
