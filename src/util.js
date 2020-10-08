@@ -225,17 +225,24 @@ export function joinPath(l, r) {
     return pathEscape(l) + pathEscape(r)
 }
 
+const images = {};
+
 export function newImage(src, width, height) {
-    const img = new Image();
-    img.src = "./assets/images/" + src;
+    let img = images[src];
+    if (!img) {
+        img = new Image();
+        img.src = "./assets/images/" + src;
+        img.addEventListener("load", function () {
+            if (session.loadingCount < session.loadingTotal) {
+                session.loadingCount++
+            }
+        });
+        session.loadingTotal++;
+        images[src] = img
+    }
+    img = img.cloneNode(true);
     img.style.width = width;
     img.style.height = height;
-    img.addEventListener("load", function () {
-        if (session.loadingCount < session.loadingTotal) {
-            session.loadingCount++
-        }
-    });
-    session.loadingTotal++;
     return img
 }
 

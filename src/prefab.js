@@ -5,7 +5,6 @@ export default function Prefab(x, y) {
     this.tags = new Set();
     this.componentsShadow = new Set();
     this.components = {};
-    const self = this;
     this.tick = function () {
         for (let componentsShadow of this.componentsShadow) {
             this.components[componentsShadow].tick(this)
@@ -16,7 +15,7 @@ export default function Prefab(x, y) {
     this.renderersShadow = new Set();
     this.draw = function () {
         for (let renderersShadow of this.renderersShadow) {
-            self.renderers[renderersShadow].draw(self)
+            this.renderers[renderersShadow].draw(this)
         }
     };
 }

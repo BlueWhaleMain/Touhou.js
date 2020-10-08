@@ -9,15 +9,15 @@ import {
     L,
     TAGS,
     entities,
-    EVENT_MAPPING, debugLayerCache, session, newAudio, resources, LAYER_MAPPING
+    EVENT_MAPPING, newAudio, resources, LAYER_MAPPING
 } from "../util.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
+import debug from "../layers/debug.js";
 
 let _;
 const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
-const layerUI = getLayer(LAYER_MAPPING.UI);
 const r90 = 90 * L;
 const r360 = 360 * L;
 export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true) {
@@ -135,43 +135,9 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
                 } else {
                     layerStage.drawImage(draw, inst.X + inst.DX - inst.sizeBox.r, inst.Y + inst.DY - inst.sizeBox.r);
                 }
-                if (session.debugFlag === true && session.developerMode === true) {
-                    if (!debugLayerCache.ABox[inst.atkBox.r]) {
-                        debugLayerCache.ABox[inst.atkBox.r] = document.createElement("canvas");
-                        debugLayerCache.ABox[inst.atkBox.r].width = inst.atkBox.r + inst.atkBox.r + 2;
-                        debugLayerCache.ABox[inst.atkBox.r].height = inst.atkBox.r + inst.atkBox.r + 2;
-                        const cacheCtx = debugLayerCache.ABox[inst.atkBox.r].getContext("2d");
-                        cacheCtx.save();
-                        cacheCtx.strokeStyle = "red";
-                        cacheCtx.beginPath();
-                        cacheCtx.arc(inst.atkBox.r + 1, inst.atkBox.r + 1, inst.atkBox.r, 0, Math.PI * 2);
-                        cacheCtx.stroke();
-                        cacheCtx.restore()
-                    }
-                    draw = debugLayerCache.ABox[inst.atkBox.r];
-                    layerUI.drawImage(draw, inst.X - inst.atkBox.r - 1, inst.Y - inst.atkBox.r - 1);
-                    if (!debugLayerCache.LINE[20]) {
-                        debugLayerCache.LINE[20] = document.createElement("canvas");
-                        debugLayerCache.LINE[20].width = 1;
-                        debugLayerCache.LINE[20].height = 20;
-                        const cacheCtx = debugLayerCache.LINE[20].getContext("2d");
-                        cacheCtx.save();
-                        cacheCtx.strokeStyle = "white";
-                        cacheCtx.beginPath();
-                        cacheCtx.moveTo(0, 0);
-                        cacheCtx.lineTo(0, 20);
-                        cacheCtx.stroke();
-                        cacheCtx.restore()
-                    }
-                    draw = debugLayerCache.LINE[20];
-                    layerUI.save();
-                    layerUI.translate(inst.X, inst.Y);
-                    layerUI.rotate(Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90);
-                    layerUI.drawImage(draw, 0, -20);
-                    layerUI.restore()
-                }
             }
         });
+        inst.addLayer("debug", debug);
     };
     inst.init();
 

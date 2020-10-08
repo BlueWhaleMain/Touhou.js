@@ -1,5 +1,4 @@
 import Prefab from "../prefab.js";
-import movable from "../components/movable.js";
 import bullet from "../components/bullet.js";
 import {
     getLayer,
@@ -28,12 +27,13 @@ hide.height = 64;
 const texture = newImage(resources.Images.enemy);
 texture.addEventListener("load", function () {
     let c = cache.getContext("2d");
-    c.drawImage(texture, 0, 192, 32, 32, 0, 0, 32, 32);
+    c.drawImage(texture, 0, 224, 32, 32, 0, 0, 32, 32);
+    c.drawImage(texture, 32, 224, 32, 32, 0, 0, 32, 32);
     c = hide.getContext("2d");
     c.drawImage(texture, 0, 128, 64, 64, 0, 0, 64, 64);
 });
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
-export default function YinYangJade(entity, x, y, mx, my, reflex = true, rotation = 0, blood = 10) {
+export default function StarMaster(entity, x, y, rotation = 0, blood = 100) {
     const inst = new Prefab(x, y);
     inst.addComponent("health", health);
     inst.components["health"].indestructible = session.player.tags.has(TAGS.monster);
@@ -56,15 +56,11 @@ export default function YinYangJade(entity, x, y, mx, my, reflex = true, rotatio
         inst.sizeBox = new ABox(16);
         inst.atkBox = new ABox(12)
     }
-    inst.addComponent("movable", movable);
-    inst.components["movable"].reflex.enabled = reflex;
-    inst.components["movable"].MX = mx;
-    inst.components["movable"].MY = my;
     inst.rotation = rotation;
     inst.addComponent("bullet", bullet);
     inst.components["bullet"].ignoreTags.add(TAGS.monster);
     inst.tags.add(TAGS.envoy);
-    inst.addComponent("YinYangJade", function () {
+    inst.addComponent("StarMaster", function () {
         this.tick = function (inst) {
             if (session.player.tags.has(TAGS.monster)) {
                 inst.sizeBox = new ABox(32);
@@ -78,13 +74,13 @@ export default function YinYangJade(entity, x, y, mx, my, reflex = true, rotatio
             if (inst.rotation === undefined) {
                 inst.rotation = 0
             }
-            inst.rotation += Math.sqrt(Math.pow(inst.components["movable"].MX, 2) + Math.pow(inst.components["movable"].MY, 2)) / 8;
+            inst.rotation += L;
             if (inst.rotation > r360) {
                 inst.rotation -= r360
             }
         }
     });
-    inst.addLayer("YinYangJade", function () {
+    inst.addLayer("StarMaster", function () {
         this.draw = function () {
             layerStage.save();
             layerStage.translate(inst.X, inst.Y);

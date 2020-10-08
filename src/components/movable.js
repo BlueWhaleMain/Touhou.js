@@ -46,7 +46,7 @@ export function makeMovableRotate(inst, speed, yaw = 45, m = 1) {
     const movable = inst.components["movable"];
     const MX = movable.MX;
     const MY = movable.MY;
-    let r = Math.sqrt(Math.pow(MX, 2) + Math.pow(MY, 2));
+    let r = Math.sqrt(MX * MX + MY * MY);
     inst.components["movable"].callback.tick = function (inst) {
         r += speed;
         const angle = Math.atan2(MY, MX) + yaw * L;
@@ -113,12 +113,12 @@ export function generateRandomSpeed(m = 2, max = 1, min = -1, abMax, abMin, spMa
             rand2 = abMin
         }
     }
-    if (spMax && Math.sqrt(Math.pow(rand1, 2) + Math.pow(rand2, 2)) > spMax) {
+    if (spMax && Math.sqrt(rand1 * rand1 + rand2 * rand2) > spMax) {
         const angle = Math.atan2(rand2, rand1);
         rand1 = Math.sin(angle) * spMax;
         rand2 = -Math.cos(angle) * spMax
     }
-    if (spMin && Math.sqrt(Math.pow(rand1, 2) + Math.pow(rand2, 2)) < spMin) {
+    if (spMin && Math.sqrt(rand1 * rand1 + rand2 * rand2) < spMin) {
         const angle = Math.atan2(rand2, rand1);
         rand1 = Math.sin(angle) * spMin;
         rand2 = -Math.cos(angle) * spMin
