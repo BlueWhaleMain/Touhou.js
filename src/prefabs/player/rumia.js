@@ -234,7 +234,7 @@ export default function Rumia() {
         textureOpacity = 0;
         textureLayout = 200;
         layout = 0.02;
-        ob.dispatchEvent(EVENT_MAPPING.clearEntity, {isPlayer: true});
+        ob.dispatchEvent(EVENT_MAPPING.clearEntity, {isPlayer: true, drop: true});
         _ = soundOfSlash.play()
     };
     return inst

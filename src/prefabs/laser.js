@@ -164,11 +164,13 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
     }
 
     function drop(e) {
-        for (let i = -inst.sizeBox.ys / 2; i < inst.sizeBox.ys / 2; i += 8) {
-            if (e.type === EVENT_MAPPING.bossInit) {
-                entities.push(GreenOrb(inst.X + Math.sin(inst.angle) * i, inst.Y - Math.cos(inst.angle) * i, 0, -2, "middle", true));
-            } else {
-                entities.push(GreenOrb(inst.X + Math.sin(inst.angle) * i, inst.Y - Math.cos(inst.angle) * i, 0, -2, "small", true));
+        if (e.type === EVENT_MAPPING.cardEnEp || e.detail && e.detail.drop === true) {
+            for (let i = -inst.sizeBox.ys / 2; i < inst.sizeBox.ys / 2; i += 8) {
+                if (e.type === EVENT_MAPPING.bossInit) {
+                    entities.push(GreenOrb(inst.X + Math.sin(inst.angle) * i, inst.Y - Math.cos(inst.angle) * i, 0, -2, "middle", true));
+                } else {
+                    entities.push(GreenOrb(inst.X + Math.sin(inst.angle) * i, inst.Y - Math.cos(inst.angle) * i, 0, -2, "small", true));
+                }
             }
         }
         inst.tags.add(TAGS.death)

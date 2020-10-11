@@ -13,6 +13,7 @@ import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
 
 let _;
+export const HEALTH_DELTA_MAX = 80;
 const bossEffect = newImage(resources.Images.bossEffect);
 const soundOfDamage = newAudio(resources.Sounds.damage);
 const soundOfDamage1 = newAudio(resources.Sounds.damage1);
@@ -26,7 +27,8 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
     inst.dead = false;
     inst.loaded = false;
     inst.callback = {};
-    let healthDeltaMax = 80;
+    inst.healthDeltaMax = HEALTH_DELTA_MAX;
+    let healthDeltaMax = inst.healthDeltaMax;
     inst.target = {
         X: x, Y: y
     };
@@ -70,7 +72,7 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
     inst.components["health"].indestructible = true;
     inst.components["health"].init(blood, blood, 1);
     inst.components["health"].callback.doDelta = function (val, value) {
-        healthDeltaMax -= val;
+        healthDeltaMax += val;
         if (healthDeltaMax < 0 || inst.tags.has(TAGS.death)) {
             return false
         }
@@ -183,7 +185,7 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
                 }
             } else {
                 inst.dieFrame = 0;
-                healthDeltaMax = 80;
+                healthDeltaMax = inst.healthDeltaMax;
                 if (inst.showTexture) {
                     textureLayout += 1.5;
                     textureOpacity += layout;

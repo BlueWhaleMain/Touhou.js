@@ -8,7 +8,7 @@ import {
     hslToRgb,
     rendererEntity,
     TAGS, tickingEntity,
-    updateEntity,
+    updateEntity, saveReplay,
     WIDTH, newAudio, resources, newImage, LAYER_MAPPING
 } from "../util.js";
 import StageUtil, {STAGE_EVENT} from "../stage_util.js";
@@ -42,7 +42,7 @@ const layerUI = getLayer(LAYER_MAPPING.UI);
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
 const layerShade = getLayer(LAYER_MAPPING.SHADE);
-export default function SpellPractice(player, stageMap, stageBGM, restartCallBack) {
+export default function SpellPractice(player, stageMap, stageBGM, restartCallBack, seed, record) {
     const inst = StageUtil();
     const pausedMenu = new Menu([
         MenuItem(50, 275, "解除暂停"),
@@ -55,11 +55,13 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                 inst.paused = false;
                 break;
             case 1:
+                inst.ending();
                 inst.tags.add(TAGS.death);
                 soundOfOK.currentTime = 0;
                 _ = soundOfOK.play();
                 return;
             case 2:
+                inst.ending();
                 inst.tags.add(TAGS.death);
                 inst.restart = true;
                 inst.restartCallBack = restartCallBack;
@@ -71,6 +73,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     }, function () {
         return 2
     });
+    let runningFrames = 0;
     let timestamp = 0;
     let shade = 0;
     inst.loaded = false;
@@ -78,6 +81,14 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     inst.dialogueScript = [];
     inst.boss = [];
     inst.event.addEventListener(STAGE_EVENT.load, function () {
+        if (seed) {
+            Math.seed = seed
+        } else {
+            Math.random()
+        }
+        session.record = {};
+        session.recording = !!record;
+        session.rand = Math.seed;
         session.score = 0;
         session.player = player();
         session.player.power = 400;
@@ -113,7 +124,10 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         if (inst.failure === false) {
             session.player.tick();
         }
-        if (isStopped()) {
+        if (session.demoPlay === true) {
+            inst.ending();
+            inst.tags.add(TAGS.death)
+        } else if (isStopped()) {
             inst.ending();
             return
         }
@@ -122,6 +136,14 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
             session.keys.delete("z")
         }
     });
+    inst.event.addEventListener(STAGE_EVENT.out, function () {
+        if (record === undefined) {
+            session.record[runningFrames] = runningFrames;
+            saveReplay(session.stg, session.rand, session.record)
+        }
+    });
+    let events = [];
+    let shift = session.slow;
     inst.addComponent("SpellPractice", function () {
         this.tick = function (inst) {
             if (inst.end === true) {
@@ -200,37 +222,70 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                         inst.pause();
                         return
                     }
-                    if (session.keys.has(kb.Up.toLowerCase())) {
-                        if (session.keys.has(kb.Left.toLowerCase())) {
-                            ob.dispatchEvent(EVENT_MAPPING.upperLeft)
-                        } else if (session.keys.has(kb.Right.toLowerCase())) {
-                            ob.dispatchEvent(EVENT_MAPPING.upperRight)
-                        } else {
-                            ob.dispatchEvent(EVENT_MAPPING.up)
+                    runningFrames++;
+                    if (record) {
+                        const e = record[runningFrames];
+                        if (e === runningFrames) {
+                            inst.ending();
+                            inst.tags.add(TAGS.death);
+                            return
                         }
-                    }
-                    if (session.keys.has(kb.Down.toLowerCase())) {
-                        if (session.keys.has(kb.Left.toLowerCase())) {
-                            ob.dispatchEvent(EVENT_MAPPING.lowerLeft)
-                        } else if (session.keys.has(kb.Right.toLowerCase())) {
-                            ob.dispatchEvent(EVENT_MAPPING.lowerRight)
-                        } else {
-                            ob.dispatchEvent(EVENT_MAPPING.down)
+                        if (e) {
+                            for (const event of e) {
+                                ob.dispatchEvent(event)
+                            }
                         }
-                    }
-                    if (!session.keys.has(kb.Up.toLowerCase()) && !session.keys.has(kb.Down.toLowerCase())) {
-                        if (session.keys.has(kb.Left.toLowerCase())) {
-                            ob.dispatchEvent(EVENT_MAPPING.left)
+                    } else {
+                        events = [];
+                        if (shift !== session.slow) {
+                            events.push(session.slow ? EVENT_MAPPING.shift : EVENT_MAPPING.unshift);
+                            shift = session.slow
                         }
-                        if (session.keys.has(kb.Right.toLowerCase())) {
-                            ob.dispatchEvent(EVENT_MAPPING.right)
+                        if (session.keys.has(kb.Up.toLowerCase())) {
+                            if (session.keys.has(kb.Left.toLowerCase())) {
+                                events.push(EVENT_MAPPING.upperLeft);
+                                ob.dispatchEvent(EVENT_MAPPING.upperLeft)
+                            } else if (session.keys.has(kb.Right.toLowerCase())) {
+                                events.push(EVENT_MAPPING.upperRight);
+                                ob.dispatchEvent(EVENT_MAPPING.upperRight)
+                            } else {
+                                events.push(EVENT_MAPPING.up);
+                                ob.dispatchEvent(EVENT_MAPPING.up)
+                            }
                         }
-                    }
-                    if (session.keys.has(kb.Shoot.toLowerCase())) {
-                        ob.dispatchEvent(EVENT_MAPPING.shoot)
-                    }
-                    if (!session.practice && session.keys.has(kb.Bomb.toLowerCase())) {
-                        ob.dispatchEvent(EVENT_MAPPING.bomb)
+                        if (session.keys.has(kb.Down.toLowerCase())) {
+                            if (session.keys.has(kb.Left.toLowerCase())) {
+                                events.push(EVENT_MAPPING.lowerLeft);
+                                ob.dispatchEvent(EVENT_MAPPING.lowerLeft)
+                            } else if (session.keys.has(kb.Right.toLowerCase())) {
+                                events.push(EVENT_MAPPING.lowerRight);
+                                ob.dispatchEvent(EVENT_MAPPING.lowerRight)
+                            } else {
+                                events.push(EVENT_MAPPING.down);
+                                ob.dispatchEvent(EVENT_MAPPING.down)
+                            }
+                        }
+                        if (!session.keys.has(kb.Up.toLowerCase()) && !session.keys.has(kb.Down.toLowerCase())) {
+                            if (session.keys.has(kb.Left.toLowerCase())) {
+                                events.push(EVENT_MAPPING.left);
+                                ob.dispatchEvent(EVENT_MAPPING.left)
+                            }
+                            if (session.keys.has(kb.Right.toLowerCase())) {
+                                events.push(EVENT_MAPPING.right);
+                                ob.dispatchEvent(EVENT_MAPPING.right)
+                            }
+                        }
+                        if (session.keys.has(kb.Shoot.toLowerCase())) {
+                            events.push(EVENT_MAPPING.shoot);
+                            ob.dispatchEvent(EVENT_MAPPING.shoot)
+                        }
+                        if (!session.practice && session.keys.has(kb.Bomb.toLowerCase())) {
+                            events.push(EVENT_MAPPING.bomb);
+                            ob.dispatchEvent(EVENT_MAPPING.bomb)
+                        }
+                        if (events && events.length > 0) {
+                            session.record[runningFrames] = JSON.parse(JSON.stringify(events))
+                        }
                     }
                     if (inst.boss.length === 0) {
                         if (inst.stageMap.length === 0) {
@@ -338,7 +393,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
 
     ob.addEventListener(EVENT_MAPPING.changeBGM, showBGM);
     inst.clear = function () {
-        if (session.developerMode === true) {
+        if (session.developerMode === true || record) {
             return
         }
         save.highScore = session.highScore;
@@ -346,7 +401,8 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     };
     inst.ending = function () {
         entities.slice(0);
-        ob.removeEventListener(EVENT_MAPPING.changeBGM, showBGM)
+        ob.removeEventListener(EVENT_MAPPING.changeBGM, showBGM);
+        session.demoPlay = false;
     };
     inst.callback.pause = function () {
         pausedMenu.load();

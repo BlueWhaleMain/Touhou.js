@@ -3,7 +3,6 @@ import {
     getLayer,
     entities,
     EVENT_MAPPING,
-    GUI_SCREEN,
     newImage,
     resources,
     newAudio,
@@ -33,6 +32,7 @@ export default function CardUtil(option) {
     let bonus = option.bonus;
     let noCardFrame = option.noCardFrame || 0;
     let timeStr = "";
+    const bonusMax = option.bonus;
     this.option = option;
     this.isTimeSpell = option.isTimeSpell;
     this.isOpen = false;
@@ -105,7 +105,7 @@ export default function CardUtil(option) {
             time = noCardFrame;
             if (typeof option.noCard === "function") {
                 this.entity.checkPOS();
-                option.noCard(this)
+                option.noCard(this, time)
             }
             if (this.entity.components["health"].getValue() <= this.entity.components["health"].getMax() / 8) {
                 this.entity.components["health"].init(this.entity.components["health"].getMax(), this.entity.components["health"].getMax() * 8, 1);
@@ -131,19 +131,25 @@ export default function CardUtil(option) {
                         if (this.isTimeSpell) {
                             bonus = option.bonus
                         } else {
-                            if (session.player.Y - GUI_SCREEN.Y >= (1 - session.player.pickLine) * GUI_SCREEN.HEIGHT) {
-                                bonus -= 100
-                            } else {
-                                bonus += 1000
+                            // if (session.player.Y - GUI_SCREEN.Y >= (1 - session.player.pickLine) * GUI_SCREEN.HEIGHT) {
+                            //     bonus -= 100
+                            // } else {
+                            //     bonus += 1000
+                            // }
+                            // 符卡分最大值÷（符卡总时间-300f）x0.75
+                            if (time < option.time - 300) {
+                                bonus -= ~~(bonusMax / (option.time - 300) * 0.75);
                             }
-                            if (bonus < 0) {
+                            if (bonus > bonusMax) {
+                                bonus = bonusMax
+                            } else if (bonus < 0) {
                                 bonus = 0
                             }
                             if (bonus > option.bonus) {
                                 bonus = option.bonus
                             }
                         }
-                        option.card(this)
+                        option.card(this, time)
                     }
                 }
             } else {

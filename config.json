@@ -7,6 +7,7 @@
     "EntityCountSecMax": 1024,
     "Player": 3,
     "GrazeMax": 99999,
+    "Idle": 3600,
     "Volume": {
         "BGM": 80,
         "SE": 60
@@ -20,5 +21,6 @@
         "Bomb": "X",
         "Slow": "Shift"
     },
-    "ScreenShot": "./screen_shot"
+    "ScreenShot": "./screen_shot",
+    "Replay": "./replay"
 }

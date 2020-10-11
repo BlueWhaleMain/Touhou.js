@@ -48,6 +48,7 @@ export default function PlayerUtil() {
         inst.hitCount++;
         if (inst.indTime < 0) {
             inst.miss = true;
+            soundOfMiss.currentTime = 0;
             _ = soundOfMiss.play()
         }
         // 被弹回调

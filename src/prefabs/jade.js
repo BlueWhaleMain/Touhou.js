@@ -137,6 +137,7 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
                 }
             }
         });
+        inst.removeLayer("debug");
         inst.addLayer("debug", debug);
     };
     inst.init();
@@ -146,10 +147,12 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
     }
 
     function drop(e) {
-        if (e.type === EVENT_MAPPING.bossInit) {
-            entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "middle", true));
-        } else {
-            entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "small", true));
+        if (e.type === EVENT_MAPPING.cardEnEp || e.detail && e.detail.drop === true) {
+            if (e.type === EVENT_MAPPING.bossInit) {
+                entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "middle", true));
+            } else {
+                entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "small", true));
+            }
         }
         inst.tags.add(TAGS.death)
     }

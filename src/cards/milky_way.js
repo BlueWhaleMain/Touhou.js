@@ -12,6 +12,7 @@ const colorMapping = {
 const angleMapping = {
     1: 0, 2: 1, 4: 2, 8: 3, 16: 4
 };
+const r90 = 90 * L;
 export default function milkyWay(edit) {
     let frame = 0;
     let c = 0;
@@ -33,10 +34,14 @@ export default function milkyWay(edit) {
                     inst.Y = card.entity.Y + ys;
                     angle = Math.atan2(ys, xs);
                     if (frame > 180 && frame % 6 === 0) {
-                        entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y, Math.sin(angle),
-                            -Math.cos(angle)).rotate(0.1));
+                        entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y, Math.sin(angle + r90),
+                            -Math.cos(angle + r90)).rotate(0.1));
                         entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y,
-                            Math.sin(angle + 25 * L), -Math.cos(angle + 25 * L)).rotate(0.1));
+                            Math.sin(angle + 5 * L + r90), -Math.cos(angle + 5 * L + r90)).rotate(0.1));
+                        entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y,
+                            Math.sin(angle + 25 * L + r90), -Math.cos(angle + 25 * L + r90)).rotate(0.1));
+                        entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y,
+                            Math.sin(angle + 30 * L + r90), -Math.cos(angle + 30 * L + r90)).rotate(0.1));
                         soundOfBombShoot.currentTime = 0;
                         _ = soundOfBombShoot.play()
                     }
@@ -86,7 +91,7 @@ export default function milkyWay(edit) {
                         spawnStarMaster(card, 16)
                     }
                 }
-                yaw -= 4;
+                yaw -= 2;
                 if (yaw < 0) {
                     yaw += 360
                 }

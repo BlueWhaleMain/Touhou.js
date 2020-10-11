@@ -1,15 +1,36 @@
 import {
-    clearScreen, entities, getLayer, HEIGHT,
-    cancelAllSound, WIDTH,
-    config, TAGS, session, updateEntity, loadSaveFromFile,
-    save, EVENT_MAPPING, takeScreenShot, rendererEntity,
-    saveOrDownload, getValidTimeFileName, newAudio,
-    resources, resetAndSaveConfig, saveConfigToFile, newImage, audioObserver, GUI_SCREEN, LAYER_MAPPING, tickingEntity
+    audioObserver,
+    cancelAllSound,
+    changeBGM,
+    clearScreen,
+    config,
+    entities,
+    EVENT_MAPPING,
+    getLayer,
+    getValidTimeFileName,
+    GUI_SCREEN,
+    HEIGHT,
+    LAYER_MAPPING,
+    loadSaveFromFile,
+    newAudio,
+    newImage,
+    rendererEntity,
+    resetAndSaveConfig,
+    resources,
+    save,
+    saveConfigToFile,
+    saveOrDownload,
+    session,
+    TAGS,
+    takeScreenShot,
+    tickingEntity,
+    updateEntity,
+    WIDTH
 } from "./src/util.js";
 import MenuStar from "./src/prefabs/menu_star.js";
 import SpellPractice from "./src/stage/spell_practice.js";
 import {ob} from "./src/observer.js"
-import Menu, {MenuItem, lightMenuItem} from "./src/menu.js";
+import Menu, {lightMenuItem, MenuItem} from "./src/menu.js";
 import Rumia from "./src/prefabs/player/rumia.js";
 import bossYukariYakumo from "./src/prefabs/boss/yukari_yakumo.js";
 import test1 from "./src/cards/test_1.js";
@@ -36,7 +57,9 @@ import doubleSpark from "./src/cards/double_spark.js";
 import test from "./src/cards/test.js";
 import moonlightRay from "./src/cards/moonlight_ray.js";
 import DI from "./src/global.js";
+import darkSideOfTheMoon from "./src/cards/dark_side_of_the_moon.js";
 
+const STAGE_VER = 1;
 DI();
 const gui = require("nw" + ".gui");
 //idea划线
@@ -134,6 +157,17 @@ const ASSETS = {
                 "　即使在现在为止的角色当中，她也算是拥有形迹可疑的样子，无法信任的性格，非常识的弹\n" +
                 "　幕。因为是那样的角色的曲子，所以曲子本身也非常形迹可疑(笑)"
         },
+        th095_02: {
+            head: newAudio(resources.Sounds.th095_02.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.th095_02.loop, 100, "BGM"),
+            name: "風の循環　～ Wind Tour",
+            description: "　摄影用曲１。\n" +
+                "\n" +
+                "　这次游戏中的曲子，和往常BOSS战中的那一类不同，\n" +
+                "　为了表现出更多的日常感，做成了这种感觉。\n" +
+                "　相当沉着的感觉，实际上文也是游刃有余，\n" +
+                "　就象是自己正在逗摄影对象玩一般。"
+        },
         th095_04: {
             head: newAudio(resources.Sounds.th095_04.head, 100, "BGM"),
             loop: newAudio(resources.Sounds.th095_04.loop, 100, "BGM"),
@@ -171,51 +205,35 @@ ASSETS.IMAGE.rumia.addEventListener("load", function () {
     rumiaCtx.scale(-1, 1);
     rumiaCtx.drawImage(ASSETS.IMAGE.rumia, 0, 0);
 });
+const musics = [];
 
-const musicRoomMenu = new Menu([
-    lightMenuItem(140, 125, ASSETS.SOUND.easternNight.name),
-    lightMenuItem(140, 145, ASSETS.SOUND.easternNightPractice.name),
-    lightMenuItem(140, 165, ASSETS.SOUND.rumia.name),
-    lightMenuItem(140, 185, ASSETS.SOUND.hakureiReimu.name),
-    lightMenuItem(140, 205, ASSETS.SOUND.kirisameMarisa.name),
-    lightMenuItem(140, 225, ASSETS.SOUND.patchouliKnowledge.name),
-    lightMenuItem(140, 245, ASSETS.SOUND.yukariYakumo.name),
-    lightMenuItem(140, 265, ASSETS.SOUND.th095_04.name),
-    lightMenuItem(140, 285, ASSETS.SOUND.failure.name),
-], function (selectedIndex) {
+function addToMusicRoom(bgm) {
+    musics.push(bgm)
+}
+
+addToMusicRoom(ASSETS.SOUND.easternNight);
+addToMusicRoom(ASSETS.SOUND.easternNightPractice);
+addToMusicRoom(ASSETS.SOUND.rumia);
+addToMusicRoom(ASSETS.SOUND.hakureiReimu);
+addToMusicRoom(ASSETS.SOUND.kirisameMarisa);
+addToMusicRoom(ASSETS.SOUND.patchouliKnowledge);
+addToMusicRoom(ASSETS.SOUND.yukariYakumo);
+addToMusicRoom(ASSETS.SOUND.th095_02);
+addToMusicRoom(ASSETS.SOUND.th095_04);
+addToMusicRoom(ASSETS.SOUND.failure);
+const mrm = [];
+const ml = musics.length;
+for (let i = 0; i < ml; i++) {
+    mrm.push(lightMenuItem(140, 125 + 20 * i, musics[i].name))
+}
+const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
     let selectedBgm;
-    switch (selectedIndex) {
-        case 0:
-            selectedBgm = ASSETS.SOUND.easternNight;
-            break;
-        case 1:
-            selectedBgm = ASSETS.SOUND.easternNightPractice;
-            break;
-        case 2:
-            selectedBgm = ASSETS.SOUND.rumia;
-            break;
-        case 3:
-            selectedBgm = ASSETS.SOUND.hakureiReimu;
-            break;
-        case 4:
-            selectedBgm = ASSETS.SOUND.kirisameMarisa;
-            break;
-        case 5:
-            selectedBgm = ASSETS.SOUND.patchouliKnowledge;
-            break;
-        case 6:
-            selectedBgm = ASSETS.SOUND.yukariYakumo;
-            break;
-        case 7:
-            selectedBgm = ASSETS.SOUND.th095_04;
-            break;
-        case 8:
-            selectedBgm = ASSETS.SOUND.failure;
-            break;
-        default:
-            ASSETS.SOUND.invalid.currentTime = 0;
-            _ = ASSETS.SOUND.invalid.play();
-            return
+    if (selectedIndex < musics.length) {
+        selectedBgm = musics[selectedIndex]
+    } else {
+        ASSETS.SOUND.invalid.currentTime = 0;
+        _ = ASSETS.SOUND.invalid.play();
+        return
     }
     if (session.currentBGM) {
         session.currentBGM.dom.pause();
@@ -298,7 +316,7 @@ const musicRoomMenu = new Menu([
     };
 });
 
-function practiceStartFactory(selectedIndex) {
+function practiceStartFactory(selectedIndex, rand, eventList) {
     let stageMap = [];
     let bgm = false;
     if (selectedIndex === 0) {
@@ -799,7 +817,14 @@ function practiceStartFactory(selectedIndex) {
     }
     session.stage = SpellPractice(session.selectedPlayer, stageMap, bgm, function () {
         practiceStartFactory(selectedIndex)
-    });
+    }, rand, eventList);
+    session.stg = {
+        menu: "practiceStart",
+        player: session.selectedPlayer.name,
+        selectedIndex,
+        developerMode: config.DeveloperMode,
+        STAGE_VER
+    }
 }
 
 const practiceStartMenu = new Menu([
@@ -848,6 +873,88 @@ const practiceStartMenu = new Menu([
     };
 });
 
+function getPlayer(player) {
+    if (player === "HakureiReimu") {
+        return HakureiReimu
+    } else if (player === "Rumia") {
+        return Rumia
+    } else {
+        throw new Error("PlayerType:" + player + " is not exists!")
+    }
+}
+
+function doReplay(replay, force) {
+    if (replay.stg && replay.stg.STAGE_VER === STAGE_VER && replay.stg.DeveloperMode === config.DeveloperMode || force) {
+        session.selectedPlayer = getPlayer(replay.stg.player);
+        if (replay.stg.menu === "practiceStart") {
+            practiceStartFactory(replay.stg.selectedIndex, replay.rand, replay.eventList);
+            transitions(runSpellPractice);
+        } else if (replay.stg.menu === "spellPractice") {
+            spellPracticeFactory(replay.stg.selectedIndex, replay.rand, replay.eventList);
+            transitions(runSpellPractice);
+        } else {
+            throw new Error("Menu:" + replay.stg.menu + " is not exists!")
+        }
+    } else {
+        ASSETS.SOUND.invalid.currentTime = 0;
+        _ = ASSETS.SOUND.invalid.play()
+    }
+}
+
+let replayList = [
+    lightMenuItem(140, 100, "什么都没有")
+];
+let rpl = [];
+const fs = require("fs");
+const replayMenu = new Menu(replayList, function (selectedIndex) {
+    if (selectedIndex < rpl.length) {
+        doReplay(rpl[selectedIndex]);
+        return
+    }
+    if (rpl.length === 0) {
+        mainMenu.load();
+        return
+    }
+    ASSETS.SOUND.invalid.currentTime = 0;
+    _ = ASSETS.SOUND.invalid.play()
+}, function () {
+    mainMenu.load()
+}, function () {
+    layerTitle.save();
+    layerTitle.shadowBlur = 3;
+    layerTitle.fillStyle = "rgb(153,153,153)";
+    layerTitle.shadowColor = "black";
+    layerTitle.font = "30px Comic Sans MS";
+    layerTitle.fillText("Replay", 240, 40);
+    layerTitle.restore();
+    rendererEntity()
+}, function (self) {
+    rpl.slice(0);
+    replayList = [];
+    const files = fs.readdirSync(config.Replay);
+    const len = files.length;
+    for (let i = 0; i < len; i++) {
+        if (files[i].toLowerCase().endsWith(".json")) {
+            try {
+                const replay = JSON.parse(fs.readFileSync(config.Replay + "/" + files[i]).toString());
+                rpl.push(replay);
+                replayList.push(lightMenuItem(140, 80 + 20 * i, replay.name || files[i]))
+            } catch (e) {
+                console.warn(e)
+            }
+        }
+    }
+    if (replayList.length === 0) {
+        replayList.push(lightMenuItem(140, 100, "什么都没有"))
+    }
+    self.selectedIndex = 0;
+    replayList[0].select();
+    self.menuList = replayList;
+    handler = function () {
+        self.tick();
+        self.draw()
+    };
+});
 const sps = [];
 
 function addSpellCard(name, f, bgm) {
@@ -856,7 +963,7 @@ function addSpellCard(name, f, bgm) {
     })
 }
 
-function spellPracticeFactory(selectedIndex) {
+function spellPracticeFactory(selectedIndex, rand, eventList) {
     const player = session.selectedPlayer;
     let stageMap = [];
     let bgm = false;
@@ -871,7 +978,14 @@ function spellPracticeFactory(selectedIndex) {
     }
     session.stage = SpellPractice(player, stageMap, bgm, function () {
         spellPracticeFactory(selectedIndex)
-    });
+    }, rand, eventList);
+    session.stg = {
+        menu: "spellPractice",
+        player: session.selectedPlayer.name,
+        selectedIndex,
+        developerMode: config.DeveloperMode,
+        STAGE_VER
+    }
 }
 
 addSpellCard("Test1", function () {
@@ -903,19 +1017,7 @@ addSpellCard("境符「波与粒的境界」", function () {
         boundaryBetweenWaveAndParticle(function (cd) {
             cd.practice = true
         })]);
-    if (session.currentBGM) {
-        _ = session.currentBGM.dom.pause();
-        if (session.currentBGM.loop) {
-            _ = session.currentBGM.loop.pause();
-        }
-    }
-    ASSETS.SOUND.th095_04.head.currentTime = 0;
-    ASSETS.SOUND.th095_04.loop.currentTime = 0;
-    session.currentBGM = {
-        dom: ASSETS.SOUND.th095_04.head,
-        loop: ASSETS.SOUND.th095_04.loop,
-        name: ASSETS.SOUND.th095_04.name
-    };
+    changeBGM(ASSETS.SOUND.th095_04);
     return [boss]
 }, true);
 addSpellCard("「纯粹的弹幕测试」", function () {
@@ -995,6 +1097,15 @@ addSpellCard("深渊「空亡」", function () {
         })
     ]);
     return [boss]
+}, false);
+addSpellCard("暗符「月的阴暗面」", function () {
+    const boss = bossRumia(-50, 125, 1000, [
+        darkSideOfTheMoon(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    changeBGM(ASSETS.SOUND.th095_02);
+    return [boss]
 }, true);
 addSpellCard("金符「金属疲劳」", function () {
     const boss = bossPatchouliKnowledge(220, -60, 1000, [
@@ -1034,13 +1145,11 @@ addSpellCard("散灵「梦想封印　寂」", function () {
     boss.playBGM();
     return [boss]
 }, true);
-
 const spm = [];
 const spl = sps.length;
 for (let i = 0; i < spl; i++) {
     spm.push(lightMenuItem(280, 195 + 20 * i, sps[i].name))
 }
-
 const spellPracticeMenu = new Menu(spm, function (selectedIndex) {
     spellPracticeFactory(selectedIndex);
     transitions(runSpellPractice);
@@ -1327,6 +1436,11 @@ const mainMenu = new Menu([
             ASSETS.SOUND.ok.currentTime = 0;
             _ = ASSETS.SOUND.ok.play();
             break;
+        case 4:
+            replayMenu.load();
+            ASSETS.SOUND.ok.currentTime = 0;
+            _ = ASSETS.SOUND.ok.play();
+            break;
         case 6:
             musicRoomMenu.load();
             ASSETS.SOUND.ok.currentTime = 0;
@@ -1371,6 +1485,15 @@ const mainMenu = new Menu([
             layerStage.fillText("关卡练习", WIDTH / 2, HEIGHT - 10);
             layerStage.restore();
             break;
+        case 4:
+            layerStage.save();
+            layerStage.fillStyle = "white";
+            layerStage.shadowColor = "black";
+            layerStage.shadowBlur = 2;
+            layerStage.font = "10px Comic Sans MS";
+            layerStage.fillText("回放录像", WIDTH / 2, HEIGHT - 10);
+            layerStage.restore();
+            break;
         case 6:
             layerStage.save();
             layerStage.fillStyle = "white";
@@ -1407,6 +1530,15 @@ const mainMenu = new Menu([
             layerStage.fillText("开发中", WIDTH / 2, HEIGHT - 10);
             layerStage.restore()
     }
+    session.Idle++;
+    if (session.Idle > config.Idle) {
+        session.Idle = 0;
+        const demo = "./demo_" + [1, 2][~~(Math.random() * 2)] + ".json";
+        if (fs.existsSync(demo)) {
+            doReplay(JSON.parse(fs.readFileSync(demo).toString()), true);
+            session.demoPlay = true
+        }
+    }
     updateEntity()
 }, function (self) {
     transitions(function () {
@@ -1420,22 +1552,11 @@ const mainMenu = new Menu([
         while (entities.length < 256) {
             entities.push(MenuStar(Math.random() * WIDTH, Math.random() * HEIGHT, 0, 0.5, Math.random() * 2));
         }
-        if (session.currentBGM) {
-            _ = session.currentBGM.dom.pause();
-            if (session.currentBGM.loop) {
-                _ = session.currentBGM.loop.pause();
-            }
-        }
-        ASSETS.SOUND.easternNight.head.currentTime = 0;
-        ASSETS.SOUND.easternNight.loop.currentTime = 0;
-        session.currentBGM = {
-            dom: ASSETS.SOUND.easternNight.head,
-            loop: ASSETS.SOUND.easternNight.loop,
-            name: ASSETS.SOUND.easternNight.name,
-            description: ASSETS.SOUND.easternNight.description
-        }
+        changeBGM(ASSETS.SOUND.easternNight)
     });
 });
+
+session.Idle = 0;
 
 function runSpellPractice() {
     if (session.stage.tick(session.stage)) {
@@ -1487,15 +1608,23 @@ const img = document.createElement("img");
 img.src = "./assets/images/loading.gif";
 img.style.position = "absolute";
 img.style.zIndex = "1";
-img.style.top = window.innerWidth / 6 + "px";
-img.style.left = window.innerHeight / 3 + "px";
-img.style.width = window.innerWidth * 0.375 + "px";
-img.style.height = window.innerHeight * 11 / 24 + "px";
+img.style.top = "16.66%";
+img.style.left = "33.33%";
+img.style.width = "auto";
+img.style.height = "auto";
+img.style["max-width"] = window.innerWidth * 0.375 + "px";
+img.style["max-height"] = window.innerHeight * 11 / 24 + "px";
 document.body.appendChild(img);
 const loadingBgm = newAudio(resources.Sounds.loading, 100, "BGM");
 
 function transitions(f, callback) {
     ob.clearEventListener();
+    ob.addEventListener(EVENT_MAPPING.shift, function () {
+        session.slow = true
+    });
+    ob.addEventListener(EVENT_MAPPING.unshift, function () {
+        session.slow = false
+    });
     for (let i = 0; i < entities.length; i++) {
         entities[i].tags.add(TAGS.death)
     }
@@ -1633,10 +1762,10 @@ function nextFrame(f) {
         setTimeout(f, n / config.FrameMax)
     }
     if (session.keys.has("f2")) {
-        saveOrDownload(takeScreenShot(), config["ScreenShot"], "Touhou.JS_ScreenShot_" + getValidTimeFileName() + ".png");
+        saveOrDownload(takeScreenShot(), config.ScreenShot, "Touhou.JS_ScreenShot_" + getValidTimeFileName() + ".png");
         session.keys.delete("f2")
     }
-    ob.dispatchEvent(EVENT_MAPPING.load);
+    ob.dispatchEvent(EVENT_MAPPING.load)
 }
 
 try {
@@ -1677,14 +1806,22 @@ try {
         }, 1000);
         document.addEventListener("keydown", function (e) {
             e = e || session["event"];
+            session.Idle = 0;
+            if (session.demoPlay) {
+                if (session.stage) {
+                    session.stage.end = true
+                } else {
+                    session.demoPlay = false
+                }
+            }
             const key = e.key.toLowerCase();
             if (ignoreKeys.has(key)) {
                 return
             } else {
                 ignoreKeys.add(key)
             }
-            if (key === config.KeyBoard.Slow.toLowerCase()) {
-                session.slow = true
+            if (key === config.KeyBoard.Slow.toLowerCase() && !session.recording) {
+                ob.dispatchEvent(EVENT_MAPPING.shift)
             }
             if (restore) {
                 if (key === "z") {
@@ -1704,13 +1841,14 @@ try {
         });
         document.addEventListener("keyup", function (e) {
             e = e || session["event"];
+            session.Idle = 0;
             const key = e.key.toLowerCase();
             if (ignoreKeys.has(key)) {
                 ignoreKeys.delete(key)
             }
             session.keys.delete(key);
-            if (key === config.KeyBoard.Slow.toLowerCase()) {
-                session.slow = false
+            if (key === config.KeyBoard.Slow.toLowerCase() && !session.recording) {
+                ob.dispatchEvent(EVENT_MAPPING.unshift)
             }
         });
         mainMenu.load();

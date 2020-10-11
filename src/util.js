@@ -302,7 +302,7 @@ function resizeScreen(layer) {
     const trans = window.innerWidth / window.innerHeight;
     if (trans > WXH) {
         layer.height = window.innerHeight;
-        layer.width = window.innerWidth / WXH;
+        layer.width = window.innerHeight * WXH;
         layer.style.left = (window.innerWidth - layer.width) / 2 + "px";
         layer.style.removeProperty("top");
     } else if (trans === WXH) {
@@ -312,7 +312,7 @@ function resizeScreen(layer) {
         layer.style.removeProperty("left");
     } else {
         layer.width = window.innerWidth;
-        layer.height = window.innerHeight / WXH;
+        layer.height = window.innerWidth / WXH;
         layer.style.top = (window.innerHeight - layer.height) / 2 + "px";
         layer.style.removeProperty("left");
     }
@@ -525,15 +525,17 @@ export function saveConfigToFile() {
 export function resetAndSaveConfig() {
     config = {
         DeveloperMode: false,
-        FastStart: false,
+        FastStart: true,
+        PauseOnBlur: true,
         FrameMax: "auto",
         FullScreen: false,
         EntityCountSecMax: 1024,
         Player: 3,
         GrazeMax: 99999,
+        Idle: 3600,
         Volume: {
-            BGM: 1,
-            SE: 0.8
+            BGM: 80,
+            SE: 60
         },
         KeyBoard: {
             Up: "ArrowUp",
@@ -544,7 +546,8 @@ export function resetAndSaveConfig() {
             Bomb: "X",
             Slow: "Shift"
         },
-        ScreenShot: "F:/Sync"
+        ScreenShot: "./screen_shot",
+        Replay: "./replay",
     };
     saveConfigToFile()
 }
@@ -595,7 +598,9 @@ export const EVENT_MAPPING = {
     bossInit: "BossInit",
     miss: "Miss",
     changeBGM: "ChangeBGM",
-    volumeChange: "VolumeChange"
+    volumeChange: "VolumeChange",
+    shift: "Shift",
+    unshift: "UnShift"
 };
 // 背景-玩家-boss-弹幕(entity)/特效-符卡宣言-判定点-UI/效果/字幕-菜单-调试信息-错误/遮罩
 // ----------场景----------------------UI-------------
@@ -943,4 +948,32 @@ export function cancelAllSound() {
         sounds[i].pause();
         sounds[i].currentTime = 0
     }
+}
+
+let _;
+
+export function changeBGM(bgm, callback) {
+    if (session.currentBGM) {
+        _ = session.currentBGM.dom.pause();
+        if (session.currentBGM.loop) {
+            _ = session.currentBGM.loop.pause();
+        }
+    }
+    bgm.head.currentTime = 0;
+    bgm.loop.currentTime = 0;
+    session.currentBGM = {
+        dom: bgm.head,
+        loop: bgm.loop,
+        name: bgm.name,
+        description: bgm.description
+    };
+    if (typeof callback === "function") {
+        callback(bgm)
+    }
+}
+
+export function saveReplay(stg, rand, eventList) {
+    fs.writeFileSync(config.Replay + "/" + new Date().valueOf() + ".json", JSON.stringify({
+        stg, rand, eventList
+    }))
 }

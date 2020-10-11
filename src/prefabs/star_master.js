@@ -36,7 +36,6 @@ const layerStage = getLayer(LAYER_MAPPING.STAGE);
 export default function StarMaster(entity, x, y, rotation = 0, blood = 100) {
     const inst = new Prefab(x, y);
     inst.addComponent("health", health);
-    inst.components["health"].indestructible = session.player.tags.has(TAGS.monster);
     inst.components["health"].init(blood, blood, 0);
     inst.components["health"].callback.doDelta = function (val) {
         if (session.player.tags.has(TAGS.human)) {
@@ -105,10 +104,12 @@ export default function StarMaster(entity, x, y, rotation = 0, blood = 100) {
     }
 
     function drop(e) {
-        if (e.type === EVENT_MAPPING.bossInit) {
-            entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "middle", true));
-        } else {
-            entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "small", true));
+        if (e.type === EVENT_MAPPING.cardEnEp || e.detail && e.detail.drop === true) {
+            if (e.type === EVENT_MAPPING.bossInit) {
+                entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "middle", true));
+            } else {
+                entities.push(GreenOrb(inst.X, inst.Y, 0, -2, "small", true));
+            }
         }
         inst.tags.add(TAGS.death)
     }

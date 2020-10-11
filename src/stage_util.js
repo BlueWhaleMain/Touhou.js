@@ -9,7 +9,7 @@ import {
     WIDTH,
     newImage,
     resources,
-    LAYER_MAPPING, stopAllSound
+    LAYER_MAPPING, stopAllSound, continueAllSound
 } from "./util.js";
 import Observer from "./observer.js";
 
@@ -50,6 +50,10 @@ export default function StageUtil() {
             if (inst.loaded === false) {
                 inst.loaded = true;
                 inst.event.dispatchEvent(STAGE_EVENT.load, {origin: "Util"})
+            }
+            if (inst.paused === true && session.demoPlay === true) {
+                continueAllSound();
+                inst.paused = false
             }
             if (inst.paused === true) {
                 inst.event.dispatchEvent(STAGE_EVENT.pause, {origin: "Util"});
@@ -128,6 +132,9 @@ export default function StageUtil() {
             layerTitle.fillText(s[0] + ".", 550, 137);
             layerTitle.font = "10px Comic Sans MS";
             layerTitle.fillText(s.substr(1, 2), 564, 137);
+            if (session.demoPlay) {
+                layerTitle.fillText("Demo Play", 275, 265);
+            }
             layerTitle.restore();
             if (session.developerMode) {
                 layerTitle.save();

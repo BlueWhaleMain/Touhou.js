@@ -28,7 +28,6 @@ const layerStage = getLayer(LAYER_MAPPING.STAGE);
 export default function RumiaBall(x, y, mx, my) {
     const inst = new Prefab(x, y);
     let hf = 0;
-    let hfr = 0;
     const ht = Math.random();
     inst.addComponent("movable", movable);
     inst.tags.add(TAGS.player);
@@ -44,10 +43,7 @@ export default function RumiaBall(x, y, mx, my) {
                 if (hf > 3) {
                     inst.tags.add(TAGS.death)
                 }
-                hfr++;
-                if (hfr % 2 === 0) {
-                    hf++;
-                }
+                hf++;
                 return
             }
             const count = modifyEntity(function (entity) {

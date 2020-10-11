@@ -7,7 +7,7 @@ export default function Menu(menuList, emitHandler, cancelHandler, drawingHandle
     this.menuList = menuList;
     this.selectedIndex = 0;
     this.sline = 0;
-    this.aline = HEIGHT / 2;
+    this.aline = HEIGHT - 40;
     this.load = function () {
         this.menuList[this.selectedIndex].select();
         if (typeof callback === "function") {
@@ -174,7 +174,7 @@ export function lightMenuItem(x, y, context, drawingHandler) {
     inst.draw = function (menu) {
         if (inst.selected) {
             if (inst.Y > menu.aline) {
-                menu.sline = inst.Y - HEIGHT / 2
+                menu.sline = inst.Y - menu.aline
             } else {
                 menu.sline = 0
             }

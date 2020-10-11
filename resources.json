@@ -71,6 +71,10 @@
             "head": "th07_18_head.wav",
             "loop": "th07_18_loop.wav"
         },
+        "th095_02": {
+            "head": "th095_02_head.wav",
+            "loop": "th095_02_loop.wav"
+        },
         "th095_04": {
             "head": "th095_04_head.wav",
             "loop": "th095_04_loop.wav"

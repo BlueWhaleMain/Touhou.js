@@ -3,6 +3,12 @@
  * @constructor Public dynamic injection
  */
 export default function DI() {
+    Math.random = function () {
+        let seed = Math.seed || new Date().valueOf();
+        seed = (seed * 9301 + 49297) % 233280;
+        Math.seed = seed;
+        return seed / 233280
+    };
     Math.prefix = function (x, len = 2, ch = "0") {
         return (Array(len).join(ch) + Math.round(x)).slice(-len)
     };
