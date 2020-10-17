@@ -67,7 +67,7 @@ export default function metalFatigue(edit) {
             if (c === 4) {
                 c = 0;
                 frame = -180 * card.getTime() / 6000;
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 316) {
                         card.entity.target.X += 10
                     }
@@ -76,7 +76,7 @@ export default function metalFatigue(edit) {
                         card.entity.target.X -= 10
                     }
                 }
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.Y < 90) {
                         card.entity.target.Y += 10
                     }

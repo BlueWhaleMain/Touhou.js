@@ -51,7 +51,7 @@ export default function moonlightRay(edit) {
 
     function move(card) {
         card.entity.maxMovementSpeed = 3;
-        if (Math.random() > 0.5) {
+        if (Math.nextSeed() > 0.5) {
             if (card.entity.X < GUI_SCREEN.WIDTH - GUI_SCREEN.X) {
                 card.entity.target.X += 50
             }
@@ -60,7 +60,7 @@ export default function moonlightRay(edit) {
                 card.entity.target.X -= 50
             }
         }
-        if (Math.random() > 0.5) {
+        if (Math.nextSeed() > 0.5) {
             if (card.entity.Y < 20) {
                 card.entity.target.Y += 10
             }

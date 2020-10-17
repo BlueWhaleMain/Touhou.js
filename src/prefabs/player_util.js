@@ -15,6 +15,7 @@ import PowerOrb from "./power_orb.js";
 import {ob} from "../observer.js"
 
 let _;
+const soundOfExtend = newAudio(resources.Sounds.extend);
 const soundOfMiss = newAudio(resources.Sounds.miss);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
@@ -56,8 +57,20 @@ export default function PlayerUtil() {
             inst.callback.die(inst)
         }
     };
+    let playerScore = 20000000;
+    let psU = 20000000;
     inst.addComponent("PlayerTick", function () {
         this.tick = function () {
+            if (session.score > playerScore) {
+                playerScore += psU;
+                if (psU < 160000000) {
+                    psU *= 2
+                } else {
+                    psU = 20000000
+                }
+                _ = soundOfExtend.play();
+                inst.playerCount++
+            }
             if (inst.hideTime > 0) {
                 inst.hideTime--;
                 inst.bombUsed = false;

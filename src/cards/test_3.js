@@ -68,7 +68,7 @@ export default function test3(edit) {
                 _ = soundOfBombShoot.play()
             }
             if (frame % 360 === 0) {
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 416) {
                         card.entity.target.X += 20
                     }
@@ -77,7 +77,7 @@ export default function test3(edit) {
                         card.entity.target.X -= 20
                     }
                 }
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.Y < 140) {
                         card.entity.target.Y += 20
                     }
@@ -103,7 +103,7 @@ export default function test3(edit) {
         },
         card: function (card) {
             if (frame % 20 === 0) {
-                const color = COLOR_MAPPING[Math.floor(Math.random() * 10)];
+                const color = COLOR_MAPPING[Math.floor(Math.nextSeed() * 10)];
                 for (let i = 0; i <= 360; i += 13) {
                     let speed = transTo(2, 2, (i + frame / 30) * L);
                     entities.push(Jade("small", color, 220, 125, speed[0], speed[1], undefined, false));

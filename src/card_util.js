@@ -10,8 +10,9 @@ import {
 } from "./util.js";
 import {ob} from "./observer.js"
 import {title} from "./dialogue.js";
-// import Player1Bomb from "./prefabs/player_1bomb.js";
-// import Player1Up from "./prefabs/player_1up.js";
+import BlueOrb from "./prefabs/blue_orb.js";
+import PowerOrb from "./prefabs/power_orb.js";
+
 let _;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
@@ -108,7 +109,8 @@ export default function CardUtil(option) {
                 option.noCard(this, time)
             }
             if (this.entity.components["health"].getValue() <= this.entity.components["health"].getMax() / 8) {
-                this.entity.components["health"].init(this.entity.components["health"].getMax(), this.entity.components["health"].getMax() * 8, 1);
+                this.entity.components["health"].init(this.entity.components["health"].getMax(),
+                    this.entity.components["health"].getMax() * 8, 1);
                 this.open()
             }
         } else {
@@ -155,7 +157,8 @@ export default function CardUtil(option) {
             } else {
                 if (this.isOpen) {
                     if (this.isTimeSpell) {
-                        this.entity.components["health"].init(this.entity.components["health"].getMin(), this.entity.components["health"].getMax(), 1);
+                        this.entity.components["health"].init(this.entity.components["health"].getMin(),
+                            this.entity.components["health"].getMax(), 1);
                         bonus = option.bonus
                     } else {
                         if (this.entity.components["health"].getValue() > this.entity.components["health"].getMin()) {
@@ -181,6 +184,20 @@ export default function CardUtil(option) {
                             option.end(this)
                         }
                         if (bonus > 0) {
+                            let spawnPoint;
+                            for (let i = 0; i < 50; i++) {
+                                spawnPoint = [Math.nextSeed() * 100, Math.nextSeed() * 100];
+                                entities.push(BlueOrb(this.entity.X + spawnPoint[0],
+                                    this.entity.Y + spawnPoint[1], 0, -2))
+                            }
+                            for (let i = 0; i < 5; i++) {
+                                spawnPoint = [Math.nextSeed() * 100, Math.nextSeed() * 100];
+                                entities.push(PowerOrb(this.entity.X + spawnPoint[0],
+                                    this.entity.Y + spawnPoint[1], 0, -2))
+                            }
+                            spawnPoint = [Math.nextSeed() * 50, Math.nextSeed() * 50];
+                            entities.push(PowerOrb(this.entity.X + spawnPoint[0],
+                                this.entity.Y + spawnPoint[1], 0, -2, "big"));
                             soundOfBonus.currentTime = 0;
                             _ = soundOfBonus.play();
                             // if (typeof option.bonusCallback === "function") {

@@ -5,15 +5,13 @@ import {
     ABox,
     RBox,
     getLayer,
-    clearEntity,
     session,
     entities,
-    TAGS,
-    newImage,
+    newImage, EVENT_MAPPING,
     resources, newAudio, LAYER_MAPPING
 } from "../util.js";
-import GreenOrb from "./green_orb.js";
 import {title} from "../dialogue.js";
+import {ob} from "../observer.js";
 
 const big = document.createElement("canvas");
 big.width = 20;
@@ -72,11 +70,7 @@ export default function PowerOrb(x, y, mx, my, size = "middle") {
                 };
                 return self
             }));
-            clearEntity(function (entity) {
-                if (entity.tags.has(TAGS.hostile)) {
-                    entities.push(GreenOrb(entity.X, entity.Y, 0, -2, "small", true));
-                }
-            }, entities.length)
+            ob.dispatchEvent(EVENT_MAPPING.clearEntity, {drop: true})
         }
         if (session.player.power / 100 - old >= 1) {
             soundOfPowerUp.currentTime = 0;

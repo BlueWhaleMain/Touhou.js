@@ -47,8 +47,8 @@ export default function nightBird(edit) {
             }
             if (c === 4) {
                 c = 0;
-                frame = -180 * card.getTime() / 4000;
-                if (Math.random() > 0.5) {
+                frame = -180 * card.getTime() / 3000;
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 300) {
                         card.entity.target.X += 40
                     }
@@ -57,7 +57,7 @@ export default function nightBird(edit) {
                         card.entity.target.X -= 40
                     }
                 }
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.Y < 120) {
                         card.entity.target.Y += 40
                     }

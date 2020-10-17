@@ -2,17 +2,63 @@ import {entities, L, session, transTo, newAudio, resources} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import CardUtil from "../card_util.js";
 import Laser from "../prefabs/laser.js";
+import StarMaster from "../prefabs/star_master.js";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const soundOfPower0 = newAudio(resources.Sounds.power0);
+const soundOfOption = newAudio(resources.Sounds.option);
 const colorMapping = [
     "red", "purple", "blue", "green", "water", "gold"
 ];
+const bitColorMapping = {
+    1: "red", 2: "gold", 4: "green", 8: "blue", 16: "purple"
+};
+const angleMapping = {
+    1: 0, 2: 1, 4: 2, 8: 3, 16: 4
+};
+const r90 = 90 * L;
 export default function doubleSpark(edit) {
     let frame = 0;
     let bombed = false;
     let colorIndex = 0;
+    const meta = Math.random();
+    let yaw = 360;
+    let yp = 1;
+
+    function spawnStarMaster(card, bit) {
+        entities.push(StarMaster(card.entity, card.entity.X, card.entity.Y).edit(function (inst) {
+            inst.tags.add(meta);
+            inst.bit = bit;
+            inst.addComponent("masterSpark", function () {
+                let angle, ys, xs, ry, r;
+                this.tick = function (inst) {
+                    r = Math.min((frame - 60) * 2, 120);
+                    ry = (yaw + 72 * angleMapping[bit]) * L;
+                    xs = r * Math.cos(ry);
+                    ys = r * Math.sin(ry);
+                    inst.X = card.entity.X + xs;
+                    inst.Y = card.entity.Y + ys;
+                    angle = Math.atan2(ys, xs);
+                    if (frame > 180 && frame % 5 === 0) {
+                        entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y, Math.sin(angle + r90),
+                            -Math.cos(angle + r90)).rotate(0.1));
+                        entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y,
+                            Math.sin(angle + 5 * L + r90), -Math.cos(angle + 5 * L + r90)).rotate(0.1));
+                        entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y,
+                            Math.sin(angle + 25 * L + r90), -Math.cos(angle + 25 * L + r90)).rotate(0.1));
+                        entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y,
+                            Math.sin(angle + 30 * L + r90), -Math.cos(angle + 30 * L + r90)).rotate(0.1));
+                        soundOfBombShoot.currentTime = 0;
+                        _ = soundOfBombShoot.play()
+                    }
+                }
+            })
+        }));
+        soundOfOption.currentTime = 0;
+        _ = soundOfOption.play()
+    }
+
     const cardData = {
         // 恋心「二重火花」 rtl的bug
         name: "「恋心「二重火花",
@@ -21,9 +67,54 @@ export default function doubleSpark(edit) {
         startFrame: 120,
         time: 4500,
         bonus: 1000000,
+        noCardFrame: 2400,
+        noCard: function (card) {
+            if (frame === 60) {
+                spawnStarMaster(card, 1);
+                spawnStarMaster(card, 2);
+                spawnStarMaster(card, 4);
+                spawnStarMaster(card, 8);
+                spawnStarMaster(card, 16);
+            }
+            if (frame > 60) {
+                if (frame % 30 === 0) {
+                    let envoys = 0;
+                    const len = entities.length;
+                    for (let i = 0; i < len; i++) {
+                        if (entities[i].tags.has(meta)) {
+                            envoys += entities[i].bit
+                        }
+                    }
+                    //1 2 4 8 16 五个使魔
+                    if ((envoys & 1) !== 1) {
+                        spawnStarMaster(card, 1)
+                    } else if ((envoys & 2) !== 2) {
+                        spawnStarMaster(card, 2)
+                    } else if ((envoys & 4) !== 4) {
+                        spawnStarMaster(card, 4)
+                    } else if ((envoys & 8) !== 8) {
+                        spawnStarMaster(card, 8)
+                    } else if ((envoys & 16) !== 16) {
+                        spawnStarMaster(card, 16)
+                    }
+                }
+                yaw -= yp;
+                yp += 0.2;
+                if (yaw < 0) {
+                    yaw += 360
+                }
+                if (yp > 360) {
+                    yp -= 360
+                }
+            }
+            frame++
+        },
+        open: function () {
+            frame = 0
+        },
         card: function (card) {
             if (frame % 480 === 0) {
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 316) {
                         card.entity.target.X += 15
                     }

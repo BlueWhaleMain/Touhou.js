@@ -1,4 +1,4 @@
-# Touhou.js
+# [Touhou.js](https://github.com/BlueWhaleMain/Touhou.js)
 使用Canvas实现的东方二次创作
 
 [![Contributors](https://img.shields.io/github/contributors/bluewhalemain/Touhou.js.svg)](https://github.com/bluewhalemain/Touhou.js/graphs/contributors)![GitHub repo size in bytes](https://img.shields.io/github/repo-size/bluewhalemain/Touhou.js.svg)
@@ -8,11 +8,7 @@ asset文件夹内部有许多未授权引用的外部文件，来源将后续在
 
 需要慢速切换场景时，设置 config.json `"FastStart": false`
 
-将WebGL封装为2d的想法已放弃，差别过大，实际渲染时性能还不如2d
-
-功能更新会减缓，主要攻克架构问题，考虑使用pixi.js重构
-
-由于功能已经较多，重构会非常困难
+准备重构为新项目
 
 ## 如何使用
 release版本可以直接运行EXE，开发环境使用npm启动

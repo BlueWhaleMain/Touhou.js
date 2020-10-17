@@ -42,7 +42,7 @@ const layerUI = getLayer(LAYER_MAPPING.UI);
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
 const layerShade = getLayer(LAYER_MAPPING.SHADE);
-export default function SpellPractice(player, stageMap, stageBGM, restartCallBack, seed, record) {
+export default function SpellPractice(player, stageMap, stageBGM, restartCallBack, seed, record, dialogue = {}, dialogueCloseTimes = []) {
     const inst = StageUtil();
     const pausedMenu = new Menu([
         MenuItem(50, 275, "解除暂停"),
@@ -84,9 +84,11 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         if (seed) {
             Math.seed = seed
         } else {
-            Math.random()
+            Math.nextSeed()
         }
         session.record = {};
+        session.stg.dialogue = {};
+        session.stg.dialogueCloseTimes = [];
         session.recording = !!record;
         session.rand = Math.seed;
         session.score = 0;
@@ -138,7 +140,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     });
     inst.event.addEventListener(STAGE_EVENT.out, function () {
         if (record === undefined) {
-            session.record[runningFrames] = runningFrames;
+            session.record[runningFrames + 180] = runningFrames + 180;
             saveReplay(session.stg, session.rand, session.record)
         }
     });
@@ -198,25 +200,6 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                         }
                     }
                     tickingEntity();
-                    const kb = config.KeyBoard;
-                    if (inst.dialogueScript.length > 0) {
-                        if (session.keys.has(kb.Bomb.toLowerCase())) {
-                            session.keys.delete(kb.Bomb.toLowerCase())
-                        }
-                        if (session.keys.has("z")) {
-                            session.keys.delete("z");
-                            inst.dialogueScript[0].next()
-                        }
-                        if (session.keys.has("control")) {
-                            inst.dialogueScript[0].skip()
-                        }
-                        if (inst.dialogueScript[0].tick() && inst.dialogueScript.length > 0) {
-                            inst.dialogueScript.shift()
-                        }
-                        if (entities.length > 0) {
-                            ob.dispatchEvent(EVENT_MAPPING.clearEntity);
-                        }
-                    }
                     if (session.keys.has("escape")) {
                         session.keys.delete("escape");
                         inst.pause();
@@ -230,12 +213,74 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                             inst.tags.add(TAGS.death);
                             return
                         }
+                        if (inst.dialogueScript.length > 0) {
+                            session.dialogue = true;
+                            if (dialogueCloseTimes[0] === runningFrames) {
+                                dialogueCloseTimes.shift();
+                                inst.dialogueScript[0].skip();
+                                // 快速执行完对话任务，最大程度避免不确定因素造成的回放错误
+                                while (inst.dialogueScript.length > 0) {
+                                    if (inst.dialogueScript[0].tick()) {
+                                        inst.dialogueScript.shift()
+                                    }
+                                }
+                                session.dialogue = false
+                            } else {
+                                const d = dialogue[runningFrames];
+                                if (d) {
+                                    if (d.indexOf("next") !== -1) {
+                                        inst.dialogueScript[0].next()
+                                    }
+                                    if (d.indexOf("skip") !== -1) {
+                                        inst.dialogueScript[0].skip()
+                                    }
+                                }
+                                if (inst.dialogueScript[0].tick() && inst.dialogueScript.length > 0) {
+                                    inst.dialogueScript.shift()
+                                }
+                                if (entities.length > 0) {
+                                    ob.dispatchEvent(EVENT_MAPPING.clearEntity);
+                                }
+                            }
+                        } else if (session.dialogue === true) {
+                            session.dialogue = false
+                        }
                         if (e) {
                             for (const event of e) {
                                 ob.dispatchEvent(event)
                             }
                         }
                     } else {
+                        const kb = config.KeyBoard;
+                        if (inst.dialogueScript.length > 0) {
+                            session.dialogue = true;
+                            const dialogue = [];
+                            if (session.keys.has(kb.Bomb.toLowerCase())) {
+                                session.keys.delete(kb.Bomb.toLowerCase())
+                            }
+                            if (session.keys.has("z")) {
+                                session.keys.delete("z");
+                                dialogue.push("next");
+                                inst.dialogueScript[0].next()
+                            }
+                            if (session.keys.has("control")) {
+                                dialogue.push("skip");
+                                inst.dialogueScript[0].skip()
+                            }
+                            if (inst.dialogueScript[0].tick() && inst.dialogueScript.length > 0) {
+                                inst.dialogueScript.shift()
+                            }
+                            if (entities.length > 0) {
+                                ob.dispatchEvent(EVENT_MAPPING.clearEntity);
+                            }
+                            if (dialogue && dialogue.length > 0) {
+                                session.stg.dialogue[runningFrames] = JSON.parse(JSON.stringify(dialogue))
+                            }
+                        } else if (session.dialogue === true) {
+                            session.dialogue = false;
+                            // 对话退出校验戳，用于强制退出Replay对话
+                            session.stg.dialogueCloseTimes.push(runningFrames)
+                        }
                         events = [];
                         if (shift !== session.slow) {
                             events.push(session.slow ? EVENT_MAPPING.shift : EVENT_MAPPING.unshift);

@@ -316,7 +316,7 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
     };
 });
 
-function practiceStartFactory(selectedIndex, rand, eventList) {
+function practiceStartFactory(selectedIndex, rand, eventList, dialogue = {}, dialogueCloseTimes = []) {
     let stageMap = [];
     let bgm = false;
     if (selectedIndex === 0) {
@@ -817,12 +817,12 @@ function practiceStartFactory(selectedIndex, rand, eventList) {
     }
     session.stage = SpellPractice(session.selectedPlayer, stageMap, bgm, function () {
         practiceStartFactory(selectedIndex)
-    }, rand, eventList);
+    }, rand, eventList, dialogue, dialogueCloseTimes);
     session.stg = {
         menu: "practiceStart",
         player: session.selectedPlayer.name,
         selectedIndex,
-        developerMode: config.DeveloperMode,
+        DeveloperMode: config.DeveloperMode,
         STAGE_VER
     }
 }
@@ -887,10 +887,10 @@ function doReplay(replay, force) {
     if (replay.stg && replay.stg.STAGE_VER === STAGE_VER && replay.stg.DeveloperMode === config.DeveloperMode || force) {
         session.selectedPlayer = getPlayer(replay.stg.player);
         if (replay.stg.menu === "practiceStart") {
-            practiceStartFactory(replay.stg.selectedIndex, replay.rand, replay.eventList);
+            practiceStartFactory(replay.stg.selectedIndex, replay.rand, replay.eventList, replay.stg.dialogue, replay.stg.dialogueCloseTimes);
             transitions(runSpellPractice);
         } else if (replay.stg.menu === "spellPractice") {
-            spellPracticeFactory(replay.stg.selectedIndex, replay.rand, replay.eventList);
+            spellPracticeFactory(replay.stg.selectedIndex, replay.rand, replay.eventList, replay.stg.dialogue, replay.stg.dialogueCloseTimes);
             transitions(runSpellPractice);
         } else {
             throw new Error("Menu:" + replay.stg.menu + " is not exists!")
@@ -963,7 +963,7 @@ function addSpellCard(name, f, bgm) {
     })
 }
 
-function spellPracticeFactory(selectedIndex, rand, eventList) {
+function spellPracticeFactory(selectedIndex, rand, eventList, dialogue = {}, dialogueCloseTimes = []) {
     const player = session.selectedPlayer;
     let stageMap = [];
     let bgm = false;
@@ -978,12 +978,12 @@ function spellPracticeFactory(selectedIndex, rand, eventList) {
     }
     session.stage = SpellPractice(player, stageMap, bgm, function () {
         spellPracticeFactory(selectedIndex)
-    }, rand, eventList);
+    }, rand, eventList, dialogue, dialogueCloseTimes);
     session.stg = {
         menu: "spellPractice",
         player: session.selectedPlayer.name,
         selectedIndex,
-        developerMode: config.DeveloperMode,
+        DeveloperMode: config.DeveloperMode,
         STAGE_VER
     }
 }

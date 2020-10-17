@@ -73,7 +73,7 @@ export function makeMovableRotate(inst, speed, yaw = 45, m = 1) {
 // }
 
 export function generateRandomSpeed(m = 2, max = 1, min = -1, abMax, abMin, spMax, spMin) {
-    let rand1 = Math.random() * m - m / 2;
+    let rand1 = Math.nextSeed() * m - m / 2;
     if (rand1 > max) {
         rand1 = max
     } else if (rand1 < min) {
@@ -93,7 +93,7 @@ export function generateRandomSpeed(m = 2, max = 1, min = -1, abMax, abMin, spMa
             rand1 = abMin
         }
     }
-    let rand2 = Math.random() * m - m / 2;
+    let rand2 = Math.nextSeed() * m - m / 2;
     if (rand2 > max) {
         rand2 = max
     } else if (rand2 < min) {

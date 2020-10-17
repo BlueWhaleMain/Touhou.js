@@ -182,7 +182,6 @@ export default function HakureiReimu() {
             }
         }
         inst.shootDelay = 6;
-        session.score += 100;
         soundOfShoot.currentTime = 0;
         _ = soundOfShoot.play()
     };

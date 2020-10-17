@@ -22,7 +22,7 @@ export default function masterSpark(edit) {
     let frame = 0;
     let bombed = false;
     let colorIndex = 0;
-    let meta = Math.random();
+    const meta = Math.random();
     let yaw = 360;
     let yp = 1;
 
@@ -109,9 +109,12 @@ export default function masterSpark(edit) {
             }
             frame++
         },
+        open: function () {
+            frame = 0
+        },
         card: function (card) {
             if (frame % 480 === 0) {
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 316) {
                         card.entity.target.X += 15
                     }

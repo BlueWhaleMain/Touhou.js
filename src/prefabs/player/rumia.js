@@ -197,7 +197,6 @@ export default function Rumia() {
             entities.push(RumiaBall(inst.X - 10, inst.Y + 5, temp[0], temp[1]));
         }
         inst.shootDelay = 6;
-        session.score += 100;
         soundOfShoot.currentTime = 0;
         _ = soundOfShoot.play()
     };

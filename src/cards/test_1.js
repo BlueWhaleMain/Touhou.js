@@ -66,7 +66,7 @@ export default function test1(edit) {
                 _ = soundOfBombShoot.play()
             }
             if (frame % 360 === 0) {
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 416) {
                         card.entity.target.X += 20
                     }
@@ -75,7 +75,7 @@ export default function test1(edit) {
                         card.entity.target.X -= 20
                     }
                 }
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.Y < 140) {
                         card.entity.target.Y += 20
                     }
@@ -111,7 +111,7 @@ export default function test1(edit) {
                 })
             }
             if (frame % 12 === 0) {
-                const color = COLOR_MAPPING[Math.floor(Math.random() * 10)];
+                const color = COLOR_MAPPING[Math.floor(Math.nextSeed() * 10)];
                 let speed = transTo(0, 2, 90 * L);
                 entities.push(Jade("bill", color, 20, 5, speed[0], speed[1], undefined, false).addTag("Spy" + meta));
                 entities.push(Jade("bill", color, 20, 5, 0, 3, undefined, false).addTag("Spy" + meta));

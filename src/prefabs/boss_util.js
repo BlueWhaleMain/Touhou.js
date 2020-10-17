@@ -11,6 +11,7 @@ import {
 import EnEpBall from "./en_ep_ball.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
+import BlueOrb from "./blue_orb.js";
 
 let _;
 export const HEALTH_DELTA_MAX = 80;
@@ -76,6 +77,7 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
         if (healthDeltaMax < 0 || inst.tags.has(TAGS.death)) {
             return false
         }
+        session.score -= val;
         if (value / blood < 0.05) {
             soundOfDamage1.currentTime = 0;
             _ = soundOfDamage1.play()
@@ -98,11 +100,13 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
 
     function reflex() {
         cancelBonus();
+        healthDeltaMax += 100;
         inst.components["health"].doDelta(-100)
     }
 
     function hurt(e) {
-        if (e.detail && e.detail.isPlayer) {
+        if (e.detail && e.detail.isPlayer === true) {
+            healthDeltaMax += 100;
             inst.components["health"].doDelta(-100)
         }
     }
@@ -170,9 +174,15 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
                                 inst.dead = true;
                                 entities.push(GreenOrb(inst.X, inst.Y, 0, -2))
                             }
-                            entities.push(EnEpBall(inst.X, inst.Y, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10))
+                            entities.push(EnEpBall(inst.X, inst.Y, (Math.random() - 0.5) * 10,
+                                (Math.random() - 0.5) * 10))
                         }
                     } else if (inst.dieFrame === 0) {
+                        let spawnPoint;
+                        for (let i = 0; i < 50; i++) {
+                            spawnPoint = [Math.nextSeed() * 100, Math.nextSeed() * 100];
+                            entities.push(BlueOrb(inst.X + spawnPoint[0], inst.Y + spawnPoint[1], 0, -2))
+                        }
                         soundOfEnEp2.currentTime = 0;
                         _ = soundOfEnEp2.play();
                     }
@@ -224,7 +234,9 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
             layerUI.strokeStyle = "rgb(255,255,255)";
             layerUI.lineWidth = 3;
             layerUI.beginPath();
-            layerUI.arc(0, 0, 60, Math.PI * 2, Math.PI * 2 * (1 - (inst.components["health"].getValue() / inst.components["health"].getMax())), true);
+            layerUI.arc(0, 0, 60, Math.PI * 2,
+                Math.PI * 2 * (1 - (inst.components["health"].getValue()
+                / inst.components["health"].getMax())), true);
             layerUI.stroke();
             if (inst.card && inst.card.option.noCardFrame > 0) {
                 layerUI.beginPath();
@@ -235,10 +247,12 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
             }
             layerUI.restore();
             if (inst.dieFrame > 0 && inst.dieFrame < 60) {
-                layerUI.drawImage(bossEffect, inst.X - inst.dieFrame * 8, inst.Y - inst.dieFrame * 8, inst.dieFrame * 16, inst.dieFrame * 16)
+                layerUI.drawImage(bossEffect, inst.X - inst.dieFrame * 8, inst.Y - inst.dieFrame * 8,
+                    inst.dieFrame * 16, inst.dieFrame * 16)
             }
             if (inst.dieFrame > 120 && inst.dieFrame < 180) {
-                layerUI.drawImage(bossEffect, inst.X - (inst.dieFrame - 120) * 8, inst.Y - (inst.dieFrame - 120) * 8, (inst.dieFrame - 120) * 16, (inst.dieFrame - 120) * 16)
+                layerUI.drawImage(bossEffect, inst.X - (inst.dieFrame - 120) * 8, inst.Y - (inst.dieFrame - 120) * 8,
+                    (inst.dieFrame - 120) * 16, (inst.dieFrame - 120) * 16)
             }
             if (inst.card) {
                 inst.card.draw()

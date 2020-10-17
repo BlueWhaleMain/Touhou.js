@@ -16,7 +16,7 @@ const r90 = 90 * L;
 export default function milkyWay(edit) {
     let frame = 0;
     let c = 0;
-    let meta = Math.random();
+    const meta = Math.random();
     let yaw = 360;
 
     function spawnStarMaster(card, bit) {
@@ -121,7 +121,7 @@ export default function milkyWay(edit) {
                 if (frame === 20 * i + 50) {
                     for (let j = 0; j < 3; j++) {
                         const speed = transTo(0, 0.5, spyAngle - 90 * L);
-                        const spawnPoint = [20, (Math.random() * HEIGHT)];
+                        const spawnPoint = [20, (Math.nextSeed() * HEIGHT)];
                         entities.push(Jade("star", "gold", spawnPoint[0], spawnPoint[1], speed[0],
                             speed[1], undefined, false).rotate(0.1))
                     }
@@ -129,7 +129,7 @@ export default function milkyWay(edit) {
                 if (frame === 20 * i + 50) {
                     for (let j = 0; j < 3; j++) {
                         const speed = transTo(0, 0.5, spyAngle + 90 * L);
-                        const spawnPoint = [410, (Math.random() * HEIGHT)];
+                        const spawnPoint = [410, (Math.nextSeed() * HEIGHT)];
                         entities.push(Jade("star", "green", spawnPoint[0], spawnPoint[1], speed[0],
                             speed[1], undefined, false).rotate(0.1))
                     }
@@ -143,7 +143,7 @@ export default function milkyWay(edit) {
             if (c === 4) {
                 c = 0;
                 frame = -120 * card.getTime() / 6000;
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 316) {
                         card.entity.target.X += 15
                     }
@@ -152,7 +152,7 @@ export default function milkyWay(edit) {
                         card.entity.target.X -= 15
                     }
                 }
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.Y < 90) {
                         card.entity.target.Y += 15
                     }

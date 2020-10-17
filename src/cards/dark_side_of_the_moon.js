@@ -11,9 +11,9 @@ const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 export default function darkSideOfTheMoon(edit) {
     function moveTo(card) {
         card.entity.maxMovementSpeed = 1;
-        const W = Math.random() * 100;
-        const H = Math.random() * 20;
-        if (Math.random() > 0.5) {
+        const W = Math.nextSeed() * 100;
+        const H = Math.nextSeed() * 20;
+        if (Math.nextSeed() > 0.5) {
             if (card.entity.X < GUI_SCREEN.WIDTH - GUI_SCREEN.X - W) {
                 card.entity.target.X += W
             }
@@ -22,7 +22,7 @@ export default function darkSideOfTheMoon(edit) {
                 card.entity.target.X -= W
             }
         }
-        if (Math.random() > 0.5) {
+        if (Math.nextSeed() > 0.5) {
             if (card.entity.Y < 20 - H) {
                 card.entity.target.Y += H
             }
@@ -55,7 +55,7 @@ export default function darkSideOfTheMoon(edit) {
                 moveTo(card)
             }
             if (frame > 60 && frame < 200 && frame % delay === 0) {
-                let spawnPoint = [Math.random() * 50, Math.random() * 50];
+                let spawnPoint = [Math.nextSeed() * 50, Math.nextSeed() * 50];
                 let speed;
                 for (let i = 0; i < 3 + c; i++) {
                     speed = generateRandomSpeed(8, 8, -8, undefined, undefined,

@@ -60,7 +60,7 @@ export default function test2(edit) {
                 _ = soundOfBombShoot.play()
             }
             if (frame % 360 === 0) {
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 416) {
                         card.entity.target.X += 20
                     }
@@ -69,7 +69,7 @@ export default function test2(edit) {
                         card.entity.target.X -= 20
                     }
                 }
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.Y < 140) {
                         card.entity.target.Y += 20
                     }

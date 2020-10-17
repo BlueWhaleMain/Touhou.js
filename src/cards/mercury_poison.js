@@ -78,7 +78,7 @@ export default function mercuryPoison(edit) {
             if (c === 4) {
                 c = 0;
                 frame = -180 * card.getTime() / 6000;
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.X < 316) {
                         card.entity.target.X += 20
                     }
@@ -87,7 +87,7 @@ export default function mercuryPoison(edit) {
                         card.entity.target.X -= 20
                     }
                 }
-                if (Math.random() > 0.5) {
+                if (Math.nextSeed() > 0.5) {
                     if (card.entity.Y < 90) {
                         card.entity.target.Y += 20
                     }

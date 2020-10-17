@@ -133,7 +133,13 @@ export default function StageUtil() {
             layerTitle.font = "10px Comic Sans MS";
             layerTitle.fillText(s.substr(1, 2), 564, 137);
             if (session.demoPlay) {
-                layerTitle.fillText("Demo Play", 275, 265);
+                layerTitle.font = "20px sans-serif";
+                if (t) {
+                    layerTitle.fillStyle = "rgba(255,255,255," + (1 / t) + ")"
+                } else {
+                    layerTitle.fillStyle = "white"
+                }
+                layerTitle.fillText("Demo Play", 275, 255)
             }
             layerTitle.restore();
             if (session.developerMode) {
@@ -143,14 +149,6 @@ export default function StageUtil() {
                     layerTitle.fillStyle = "rgba(255,255,255," + (1 / t) + ")"
                 } else {
                     layerTitle.fillStyle = "white"
-                }
-                t += tsp;
-                if (t > 2) {
-                    tsp = -0.05
-                } else {
-                    if (t < 0.5) {
-                        tsp = 0.05
-                    }
                 }
                 layerTitle.fillText("Developer Mode", 475, 365);
                 layerTitle.restore();
@@ -169,6 +167,14 @@ export default function StageUtil() {
                     layerTitle.fillText("Miss " + session.player.miss, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 90);
                     layerTitle.fillText("HideTime " + session.player.hideTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 100);
                     layerTitle.restore()
+                }
+            }
+            t += tsp;
+            if (t > 2) {
+                tsp = -0.05
+            } else {
+                if (t < 0.5) {
+                    tsp = 0.05
                 }
             }
         }

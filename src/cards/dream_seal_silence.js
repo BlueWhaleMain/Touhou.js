@@ -37,7 +37,7 @@ export default function dreamSealSilence(edit) {
                 soundOfBombShoot.volume = volumeOfBombShoot;
                 soundOfBombShoot.currentTime = 0;
                 _ = soundOfBombShoot.play();
-                rand = Math.random();
+                rand = Math.nextSeed();
                 frame++
             }
             if (20 < frame && frame < 120) {
