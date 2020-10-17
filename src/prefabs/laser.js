@@ -185,13 +185,22 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
     }
     ob.addEventListener(EVENT_MAPPING.cardEnEp, drop);
     ob.addEventListener(EVENT_MAPPING.load, load);
+    if (inst.type === "master_spark") {
+        inst.addComponent("MasterSparkInit", function () {
+            this.tick = function (inst) {
+                soundOfLaser.currentTime = 0;
+                _ = soundOfLaser.play();
+                inst.removeComponent("MasterSparkInit")
+            }
+        })
+    }
     inst.start = function () {
         if (inst.type === "master_spark") {
             soundOfNep00.currentTime = 0;
             _ = soundOfNep00.play()
         } else {
             soundOfLaser.currentTime = 0;
-            _ = soundOfLaser.play();
+            _ = soundOfLaser.play()
         }
     };
     inst.rotate = function (b, a, l = 256) {

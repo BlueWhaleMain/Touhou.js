@@ -35,3 +35,5 @@ build/
 
 # Default ignored files
 /workspace.xml
+/replay/
+demo_*.json

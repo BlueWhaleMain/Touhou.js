@@ -9,7 +9,7 @@ import {
     rendererEntity,
     TAGS, tickingEntity,
     updateEntity, saveReplay,
-    WIDTH, newAudio, resources, newImage, LAYER_MAPPING
+    WIDTH, newAudio, resources, newImage, LAYER_MAPPING, changeBGM
 } from "../util.js";
 import StageUtil, {STAGE_EVENT} from "../stage_util.js";
 import {ob} from "../observer.js";
@@ -32,7 +32,13 @@ const enemyMarker = newImage(resources.Images.enemyMarker);
 const borderLine = newImage(resources.Images.borderLine);
 const bgm = {
     head: newAudio(resources.Sounds.easternNightPractice.head, 100, "BGM"),
-    loop: newAudio(resources.Sounds.easternNightPractice.loop, 100, "BGM")
+    loop: newAudio(resources.Sounds.easternNightPractice.loop, 100, "BGM"),
+    name: "東方妖怪小町"
+};
+const failure = {
+    head: newAudio(resources.Sounds.failure.head, 100, "BGM"),
+    loop: newAudio(resources.Sounds.failure.loop, 100, "BGM"),
+    name: "プレイヤーズスコア",
 };
 const soundOfInvalid = newAudio(resources.Sounds.invalid);
 const soundOfOK = newAudio(resources.Sounds.ok);
@@ -96,22 +102,12 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         session.player.power = 400;
         session.practice = false;
         inst.stageMap = stageMap();
-        if (session.currentBGM) {
-            _ = session.currentBGM.dom.pause();
-            _ = session.currentBGM.loop.pause();
-        }
         if (stageBGM) {
             if (stageBGM !== true) {
-                session.currentBGM = stageBGM
+                changeBGM(stageBGM)
             }
         } else {
-            bgm.head.currentTime = 0;
-            bgm.loop.currentTime = 0;
-            session.currentBGM = {
-                dom: bgm.head,
-                loop: bgm.loop,
-                name: "東方妖怪小町"
-            }
+            changeBGM(bgm)
         }
     });
     inst.event.addEventListener(STAGE_EVENT.end, function () {
@@ -139,24 +135,28 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         }
     });
     inst.event.addEventListener(STAGE_EVENT.out, function () {
-        if (record === undefined) {
+        if (record === undefined && confirm("Save replay?")) {
+            session.stg.score = session.score;
+            session.stg.totalFrames = runningFrames;
+            session.stg.totalTs = new Date().valueOf() - ts;
             session.record[runningFrames + 180] = runningFrames + 180;
-            saveReplay(session.stg, session.rand, session.record)
+            saveReplay(prompt("ReplayName:"), session.stg, session.rand, session.record)
         }
     });
+    let ts;
     let events = [];
     let shift = session.slow;
     inst.addComponent("SpellPractice", function () {
         this.tick = function (inst) {
+            if (!ts) {
+                ts = new Date().valueOf()
+            }
             if (inst.end === true) {
                 return
             }
             if (session.player.tags.has(TAGS.death)) {
-                // if (Sounds.failure.paused) {
-                //     cancelAllSound();
-                //     Sounds.failure.currentTime = 0;
-                //     _ = Sounds.failure.play()
-                // }
+                changeBGM(failure);
+                session.keys.delete("z");
                 inst.end = true;
                 layerShade.save();
                 layerShade.fillStyle = "rgba(255,255,255," + shade + ")";
@@ -371,7 +371,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
             for (let i = 0; i < inst.boss.length; i++) {
                 const boss = inst.boss[i];
                 boss.draw();
-                layerUI.drawImage(enemyMarker, boss.X - enemyMarker.width / 2, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT);
+                layerTitle.drawImage(enemyMarker, boss.X - enemyMarker.width / 2, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT);
                 if (session.debugFlag === true) {
                     if (boss.atkBox && !boss.hide) {
                         if (boss.atkBox.name === "RBox") {
@@ -450,8 +450,13 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         session.demoPlay = false;
     };
     inst.callback.pause = function () {
-        pausedMenu.load();
-        _ = soundOfPause.play()
+        if (record) {
+            inst.ending();
+            inst.tags.add(TAGS.death)
+        } else {
+            pausedMenu.load();
+            _ = soundOfPause.play()
+        }
     };
     return inst
 }

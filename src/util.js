@@ -1,6 +1,8 @@
 import Observer from "./observer.js";
+import DI from "./global.js";
 
 const fs = require("fs");
+DI();
 
 /**
  * HSL颜色值转换为RGB.
@@ -225,9 +227,13 @@ export function joinPath(l, r) {
     return pathEscape(l) + pathEscape(r)
 }
 
+export const loadingScreenCache = [];
+
 const images = {};
 
 export function newImage(src, width, height) {
+    const imageName = "image:" + src + "(" + (width || "auto") + "X" + (height || "auto") + ")";
+    loadingScreenCache.push(consoleTime() + " loading " + imageName);
     let img = images[src];
     if (!img) {
         img = new Image();
@@ -236,6 +242,7 @@ export function newImage(src, width, height) {
             if (session.loadingCount < session.loadingTotal) {
                 session.loadingCount++
             }
+            loadingScreenCache.push(consoleTime() + " " + imageName + " load success!")
         });
         session.loadingTotal++;
         images[src] = img
@@ -250,12 +257,15 @@ const sounds = [];
 export const audioObserver = new Observer();
 
 export function newAudio(name, volume = 100, type = "SE") {
+    const audioName = "audio:" + name + "(" + volume + "," + type + ")";
+    loadingScreenCache.push(consoleTime() + " loading " + audioName);
     const audio = new Audio("./assets/sounds/" + name);
     audio.addEventListener("canplay", function () {
         if (session.loadingCount < session.loadingTotal) {
             session.loadingCount++
         }
-        audio.volume = volume * config.Volume[type] / 10000
+        audio.volume = volume * config.Volume[type] / 10000;
+        loadingScreenCache.push(consoleTime() + " " + audioName + " load success!")
     });
 
     function onVolumeChange(e) {
@@ -972,8 +982,60 @@ export function changeBGM(bgm, callback) {
     }
 }
 
-export function saveReplay(stg, rand, eventList) {
+export function saveReplay(name, stg, rand, eventList) {
     fs.writeFileSync(config.Replay + "/" + new Date().valueOf() + ".json", JSON.stringify({
-        stg, rand, eventList
+        name, stg, rand, eventList
     }))
+}
+
+export function timeEscape(t = 0., iteration = false, option = {}) {
+    option.ms = option.ms || "";
+    option.s = option.s || "";
+    option.min = option.min || ":";
+    option.hour = option.hour || ":";
+    option.day = option.day || " ";
+    option.current = option.current || "0";
+    option.outdate = option.outdate || "-";
+    if (t < 1) {
+        if (t > 0 && !iteration) {
+            return Math.prefix(t * 1000, 3) + (option.ms)
+        } else if (t === 0) {
+            if (iteration) {
+                return ""
+            } else {
+                return option.current
+            }
+        } else {
+            return option.outdate + timeEscape(-t)
+        }
+    } else if (t < 60) {
+        return Math.prefix(t) + option.s
+    } else if (t < 3600) {
+        return Math.prefix(t / 60) + option.min + timeEscape(t % 60, true)
+    } else if (t < 86400) {
+        return Math.prefix(t / 3600) + option.hour + timeEscape(t % 3600, true)
+    } else {
+        return Math.prefix(t / 86400) + option.day + timeEscape(t % 86400, true)
+    }
+}
+
+function consoleTime(t) {
+    if (t === undefined) {
+        t = new Date().valueOf() % 86400000 - new Date().getTimezoneOffset() * 60000
+    }
+    if (t < 1000) {
+        if (t >= 0) {
+            return Math.prefix(t, 3)
+        } else {
+            return "-" + consoleTime(-t)
+        }
+    } else if (t < 60000) {
+        return Math.prefix(t / 1000) + "." + consoleTime(t % 1000)
+    } else if (t < 3600000) {
+        return Math.prefix(t / 60000) + ":" + consoleTime(t % 60000)
+    } else if (t < 86400000) {
+        return Math.prefix(t / 3600000) + ":" + consoleTime(t % 3600000)
+    } else {
+        return consoleTime(t % 86400000)
+    }
 }

@@ -25,7 +25,7 @@ import {
     takeScreenShot,
     tickingEntity,
     updateEntity,
-    WIDTH
+    WIDTH, timeEscape, continueAllSound, stopAllSound, loadingScreenCache
 } from "./src/util.js";
 import MenuStar from "./src/prefabs/menu_star.js";
 import SpellPractice from "./src/stage/spell_practice.js";
@@ -56,19 +56,21 @@ import dreamSealSilence from "./src/cards/dream_seal_silence.js";
 import doubleSpark from "./src/cards/double_spark.js";
 import test from "./src/cards/test.js";
 import moonlightRay from "./src/cards/moonlight_ray.js";
-import DI from "./src/global.js";
 import darkSideOfTheMoon from "./src/cards/dark_side_of_the_moon.js";
 
 const STAGE_VER = 1;
-DI();
 const gui = require("nw" + ".gui");
 //idea划线
 const win = gui["Window"].get();
 if (config.PauseOnBlur === true) {
+    win.on("focus", function () {
+        continueAllSound();
+        window.paused = false;
+        nextFrame(run)
+    });
     win.on("blur", function () {
-        if (session.stage && session.stage.paused === false && session.stage.end === false) {
-            session.stage.pause()
-        }
+        stopAllSound();
+        window.paused = true
     });
 }
 let _;
@@ -901,6 +903,16 @@ function doReplay(replay, force) {
     }
 }
 
+function getStageStr(menu, selectedIndex) {
+    if (menu === "practiceStart") {
+        return "TestStage"
+    } else if (menu === "spellPractice") {
+        return sps[selectedIndex].name
+    } else {
+        return "Unknown"
+    }
+}
+
 let replayList = [
     lightMenuItem(140, 100, "什么都没有")
 ];
@@ -919,16 +931,35 @@ const replayMenu = new Menu(replayList, function (selectedIndex) {
     _ = ASSETS.SOUND.invalid.play()
 }, function () {
     mainMenu.load()
-}, function () {
+}, function (self) {
     layerTitle.save();
     layerTitle.shadowBlur = 3;
     layerTitle.fillStyle = "rgb(153,153,153)";
     layerTitle.shadowColor = "black";
     layerTitle.font = "30px Comic Sans MS";
     layerTitle.fillText("Replay", 240, 40);
+    layerTitle.fillStyle = "white";
+    layerTitle.font = "16px Comic Sans MS";
+    if (rpl.length > 0) {
+        const replay = rpl[self.selectedIndex];
+        layerTitle.fillText("Detail:" + getStageStr(replay.stg.menu, replay.stg.selectedIndex), 40, 420);
+        layerTitle.fillText("Player:" + replay.stg.player, 40, 436);
+        if (replay.stg.DeveloperMode !== config.DeveloperMode) {
+            layerTitle.fillStyle = "red"
+        }
+        layerTitle.fillText("Mode:" + (replay.stg.DeveloperMode ? "Developer" : "Player"), 40, 452);
+        layerTitle.fillText("Total:" + (replay.stg.totalFrames ? replay.stg.totalFrames + " (Frames)" : "N/A")
+            + " " + (replay.stg.totalTs ? timeEscape(replay.stg.totalTs / 1000) + " (Time)" : "N/A")
+            , 200, 452);
+        layerTitle.fillText("LagRate:" + (replay.stg.totalFrames && replay.stg.totalTs
+            ? ((1 - replay.stg.totalFrames * 50 / 3 / replay.stg.totalTs) * 100).toFixed(4) + "%" : "N/A")
+            , 40, 468);
+        layerTitle.fillText("Score:" + (replay.stg.score ? replay.stg.score : "N/A"), 200, 468)
+    }
     layerTitle.restore();
     rendererEntity()
 }, function (self) {
+    self.aline = 400;
     rpl.slice(0);
     replayList = [];
     const files = fs.readdirSync(config.Replay);
@@ -938,7 +969,9 @@ const replayMenu = new Menu(replayList, function (selectedIndex) {
             try {
                 const replay = JSON.parse(fs.readFileSync(config.Replay + "/" + files[i]).toString());
                 rpl.push(replay);
-                replayList.push(lightMenuItem(140, 80 + 20 * i, replay.name || files[i]))
+                replayList.push(lightMenuItem(40, 80 + 20 * i, "No." + (i + 1) + " "
+                    + (replay.name || files[i]).substr(0, 18) + " "
+                    + (replay.stg.STAGE_VER === STAGE_VER ? "" : "NotSupport!")))
             } catch (e) {
                 console.warn(e)
             }
@@ -990,7 +1023,6 @@ function spellPracticeFactory(selectedIndex, rand, eventList, dialogue = {}, dia
 
 addSpellCard("Test1", function () {
     const boss = bossYukariYakumo(480, -60, 1000, [test1(function (card) {
-        card.noCardFrame = null;
         card.practice = true
     })]);
     boss.playBGM();
@@ -998,7 +1030,6 @@ addSpellCard("Test1", function () {
 }, true);
 addSpellCard("Test2", function () {
     const boss = bossYukariYakumo(480, -60, 1000, [test2(function (card) {
-        card.noCardFrame = null;
         card.practice = true
     })]);
     boss.playBGM();
@@ -1006,7 +1037,6 @@ addSpellCard("Test2", function () {
 }, true);
 addSpellCard("Test3", function () {
     const boss = bossYukariYakumo(480, -60, 1000, [test3(function (card) {
-        card.noCardFrame = null;
         card.practice = true
     })]);
     boss.playBGM();
@@ -1065,7 +1095,6 @@ addSpellCard("恋心「二重火花」", function () {
 addSpellCard("月符「月亮光」", function () {
     const boss = bossRumia(-50, 125, 900, [
         moonlightRay(function (cd) {
-            cd.noCardFrame = null;
             cd.practice = true
         })
     ]);
@@ -1138,7 +1167,6 @@ addSpellCard("灵符「梦想封印　散」", function () {
 addSpellCard("散灵「梦想封印　寂」", function () {
     const boss = bossHakureiReimu(480, -60, 1000, [
         dreamSealSilence(function (cd) {
-            cd.noCardFrame = null;
             cd.practice = true
         })
     ]);
@@ -1636,8 +1664,13 @@ function transitions(f, callback) {
         callback()
     }
     cancelAllSound();
+    loadingScreenCache.slice(0);
     if (typeof f === "function") {
-        img.style.display = "block";
+        if (config.DeveloperMode === false) {
+            img.style.display = "block"
+        } else {
+            img.style.display = "none"
+        }
         handler = function () {
             loading(f)
         };
@@ -1651,6 +1684,9 @@ let handler, frames = 0;
 
 function run() {
     try {
+        if (window.paused) {
+            return
+        }
         if (session.slowRunning === true) {
             session.slowRunning = false
         } else {
@@ -1711,6 +1747,21 @@ let t = 2, tsp = 0.1;
 function loading(f) {
     try {
         clearScreen();
+        if (config.DeveloperMode === true) {
+            layerTitle.save();
+            layerTitle.fillStyle = "white";
+            layerTitle.font = "16px sans-serif";
+            layerTitle.shadowColor = "black";
+            layerTitle.shadowBlur = 1;
+            const len = Math.min(loadingScreenCache.length, Math.ceil(HEIGHT / 18));
+            while (len < loadingScreenCache.length) {
+                loadingScreenCache.shift()
+            }
+            for (let i = len - 1; i >= 0; i--) {
+                layerTitle.fillText(loadingScreenCache[i], 0, i * 18)
+            }
+            layerTitle.restore();
+        }
         layerStage.save();
         layerStage.font = "17px sans-serif";
         layerStage.shadowColor = "black";
@@ -1751,15 +1802,26 @@ function loading(f) {
 }
 
 let n = 1000;
+let mutex = false;
 
 function nextFrame(f) {
+    if (mutex) {
+        return
+    }
+    mutex = true;
     // 配置文件为整数时idea划线==
     if (config.FrameMax === "auto") {
-        requestAnimationFrame(f)
+        requestAnimationFrame(function () {
+            mutex = false;
+            f();
+        })
     } else if (typeof config.FrameMax !== "number") {
         throw Error("FrameMax muse be an integer or 'auto'.")
     } else {
-        setTimeout(f, n / config.FrameMax)
+        setTimeout(function () {
+            mutex = false;
+            f();
+        }, n / config.FrameMax)
     }
     if (session.keys.has("f2")) {
         saveOrDownload(takeScreenShot(), config.ScreenShot, "Touhou.JS_ScreenShot_" + getValidTimeFileName() + ".png");
