@@ -1,0 +1,103 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema",
+    "type": "object",
+    "properties": {
+        "DeveloperMode": {
+            "type": "boolean"
+        },
+        "FastStart": {
+            "type": "boolean"
+        },
+        "PauseOnBlur": {
+            "type": "boolean"
+        },
+        "FrameMax": {
+            "type": [
+                "number",
+                "string"
+            ]
+        },
+        "FullScreen": {
+            "type": "boolean"
+        },
+        "EntityCountSecMax": {
+            "type": "number"
+        },
+        "Player": {
+            "type": "number",
+            "multipleOf": 1,
+            "exclusiveMinimum": 0,
+            "exclusiveMaximum": 7
+        },
+        "GrazeMax": {
+            "type": "number"
+        },
+        "ShootSlow": {
+            "type": "boolean"
+        },
+        "Idle": {
+            "type": "number"
+        },
+        "MaxMutex": {
+            "type": "number",
+            "multipleOf": 1,
+            "exclusiveMinimum": 1,
+            "exclusiveMaximum": 8
+        },
+        "Volume": {
+            "BGM": {
+                "type": "number",
+                "multipleOf": 1,
+                "exclusiveMinimum": 0,
+                "exclusiveMaximum": 100
+            },
+            "SE": {
+                "type": "number",
+                "multipleOf": 1,
+                "exclusiveMinimum": 0,
+                "exclusiveMaximum": 100
+            }
+        },
+        "KeyBoard": {
+            "Up": {
+                "type": "string"
+            },
+            "Down": {
+                "type": "string"
+            },
+            "Left": {
+                "type": "string"
+            },
+            "Right": {
+                "type": "string"
+            },
+            "Shoot": {
+                "type": "string"
+            },
+            "Bomb": {
+                "type": "string"
+            },
+            "Slow": {
+                "type": "string"
+            }
+        },
+        "ScreenShot": {
+            "type": "string"
+        },
+        "Replay": {
+            "type": "string"
+        },
+        "Hint": {
+            "mode": {
+                "enum": [
+                    "off",
+                    "on",
+                    "auto"
+                ]
+            },
+            "path": {
+                "type": "string"
+            }
+        }
+    }
+}

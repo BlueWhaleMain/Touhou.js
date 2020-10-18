@@ -1,4 +1,5 @@
 {
+    "$schema": "resources.config.json",
     "Images": {
         "background": {
             "11o26": "background/11o26.jpg",
@@ -94,6 +95,7 @@
         "changeTrack": "change_track.wav",
         "graze": "graze.wav",
         "gun": "gun.wav",
+        "hint": "hint.wav",
         "timeout": "timeout.wav",
         "timeout1": "timeout_1.wav",
         "damage": "damage.wav",

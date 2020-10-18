@@ -10,7 +10,7 @@ cache.height = 12;
 const cacheCtx = cache.getContext("2d");
 const eBullet2 = newImage(resources.Images.eBullet2);
 eBullet2.addEventListener("load", function () {
-    cacheCtx.drawImage(eBullet2, 96, 416, 12, 12, 0, 0, 12, 12);
+    cacheCtx.drawImage(eBullet2, 98, 418, 12, 12, 0, 0, 12, 12);
 });
 const soundOfItemPickUp = newAudio(resources.Sounds.item);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);

@@ -1,4 +1,5 @@
 {
+    "$schema": "config.config.json",
     "DeveloperMode": false,
     "FastStart": true,
     "PauseOnBlur": true,
@@ -7,7 +8,9 @@
     "EntityCountSecMax": 1024,
     "Player": 3,
     "GrazeMax": 99999,
-    "Idle": 3600,
+    "ShootSlow": false,
+    "Idle": 360,
+    "MaxMutex": 4,
     "Volume": {
         "BGM": 80,
         "SE": 60
@@ -22,5 +25,9 @@
         "Slow": "Shift"
     },
     "ScreenShot": "./screen_shot",
-    "Replay": "./replay"
+    "Replay": "./replay",
+    "Hint": {
+        "mode": "off",
+        "path": "./hint"
+    }
 }

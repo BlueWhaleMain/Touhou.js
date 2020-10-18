@@ -37,3 +37,4 @@ build/
 /workspace.xml
 /replay/
 demo_*.json
+/hint/

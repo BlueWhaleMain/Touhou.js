@@ -55,7 +55,7 @@ export default function StageUtil() {
                 continueAllSound();
                 inst.paused = false
             }
-            if (inst.paused === true) {
+            if (inst.paused === true && inst.end === false) {
                 inst.event.dispatchEvent(STAGE_EVENT.pause, {origin: "Util"});
                 return
             }

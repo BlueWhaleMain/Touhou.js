@@ -6,12 +6,13 @@ import {
     session,
     L,
     entities,
-    EVENT_MAPPING, newImage, resources, newAudio, LAYER_MAPPING
+    EVENT_MAPPING, newImage, resources, newAudio, LAYER_MAPPING, changeBGM
 } from "../util.js";
 import EnEpBall from "./en_ep_ball.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
 import BlueOrb from "./blue_orb.js";
+import {generateRandomSpeed} from "../components/movable.js";
 
 let _;
 export const HEALTH_DELTA_MAX = 80;
@@ -22,7 +23,7 @@ const soundOfEnEp1 = newAudio(resources.Sounds.en_ep_1);
 const soundOfEnEp2 = newAudio(resources.Sounds.en_ep_2);
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const layerUI = getLayer(LAYER_MAPPING.UI);
-export default function BossUtil(x, y, blood, cards, dialogue) {
+export default function BossUtil(x, y, blood, cards, dialogue = []) {
     const inst = new Prefab(x, y);
     inst.dieFrame = 0;
     inst.dead = false;
@@ -135,12 +136,10 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
             }
             if (inst.loaded === false) {
                 inst.loaded = true;
-                if (dialogue) {
-                    while (dialogue.length > 0) {
-                        const d = dialogue.shift();
-                        d.entity = inst;
-                        session.stage.dialogueScript.push(d)
-                    }
+                while (dialogue.length > 0) {
+                    const d = dialogue.shift();
+                    d.entity = inst;
+                    session.stage.dialogueScript.push(d)
                 }
                 if (typeof inst.callback.load === "function") {
                     inst.callback.load()
@@ -180,7 +179,7 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
                     } else if (inst.dieFrame === 0) {
                         let spawnPoint;
                         for (let i = 0; i < 50; i++) {
-                            spawnPoint = [Math.nextSeed() * 100, Math.nextSeed() * 100];
+                            spawnPoint = generateRandomSpeed(100, 50, -50, undefined, undefined, undefined, 20);
                             entities.push(BlueOrb(inst.X + spawnPoint[0], inst.Y + spawnPoint[1], 0, -2))
                         }
                         soundOfEnEp2.currentTime = 0;
@@ -266,21 +265,15 @@ export default function BossUtil(x, y, blood, cards, dialogue) {
         }
     });
     inst.playBGM = function () {
-        if (session.currentBGM) {
-            session.currentBGM.dom.pause();
-            if (session.currentBGM.loop) {
-                session.currentBGM.loop.pause()
-            }
-        }
-        inst.bgm.currentTime = 0;
-        session.currentBGM = {
-            dom: inst.bgm,
+        changeBGM({
+            head: inst.bgm,
             loop: inst.loop,
-            leaveTime: inst.leaveTime,
-            loopTime: inst.loopTime,
             name: inst.bgmName
-        };
-        ob.dispatchEvent(EVENT_MAPPING.changeBGM)
+        }, function (bgm) {
+            bgm.leaveTime = inst.leaveTime;
+            bgm.loopTime = inst.loopTime;
+            ob.dispatchEvent(EVENT_MAPPING.changeBGM)
+        });
     };
     return inst
 }

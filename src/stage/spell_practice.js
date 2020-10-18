@@ -9,13 +9,14 @@ import {
     rendererEntity,
     TAGS, tickingEntity,
     updateEntity, saveReplay,
-    WIDTH, newAudio, resources, newImage, LAYER_MAPPING, changeBGM
+    WIDTH, newAudio, resources, newImage, LAYER_MAPPING, changeBGM, AUTO_HINT, saveHint, cancelAllSound, HINT_VER
 } from "../util.js";
 import StageUtil, {STAGE_EVENT} from "../stage_util.js";
 import {ob} from "../observer.js";
 import Menu, {MenuItem} from "../menu.js";
 import {isStopped} from "../prefabs/boss_util.js";
 
+const fs = require("fs");
 let step = 0;
 let _;
 const stageMenuEntities = [];
@@ -43,12 +44,16 @@ const failure = {
 const soundOfInvalid = newAudio(resources.Sounds.invalid);
 const soundOfOK = newAudio(resources.Sounds.ok);
 const soundOfPause = newAudio(resources.Sounds.pause);
+const soundOfHint = newAudio(resources.Sounds.hint);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
 const layerShade = getLayer(LAYER_MAPPING.SHADE);
-export default function SpellPractice(player, stageMap, stageBGM, restartCallBack, seed, record, dialogue = {}, dialogueCloseTimes = []) {
+export default function SpellPractice(menu, selectedIndex, player, stageMap, stageBGM, restartCallBack, replayOption) {
+    const rand = replayOption?.rand, eventList = replayOption?.eventList ?? [],
+        dialogue = replayOption?.stg?.dialogue ?? [],
+        dialogueCloseTimes = replayOption?.stg?.dialogueCloseTimes ?? [];
     const inst = StageUtil();
     const pausedMenu = new Menu([
         MenuItem(50, 275, "解除暂停"),
@@ -61,14 +66,14 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                 inst.paused = false;
                 break;
             case 1:
-                inst.ending();
-                inst.tags.add(TAGS.death);
+                inst.end = true;
+                session.keys.add("z");
                 soundOfOK.currentTime = 0;
                 _ = soundOfOK.play();
                 return;
             case 2:
-                inst.ending();
-                inst.tags.add(TAGS.death);
+                inst.end = true;
+                session.keys.add("z");
                 inst.restart = true;
                 inst.restartCallBack = restartCallBack;
                 return;
@@ -82,21 +87,50 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
     let runningFrames = 0;
     let timestamp = 0;
     let shade = 0;
+    let hints = [];
+    let record;
     inst.loaded = false;
     inst.failure = false;
     inst.dialogueScript = [];
     inst.boss = [];
     inst.event.addEventListener(STAGE_EVENT.load, function () {
-        if (seed) {
-            Math.seed = seed
+        if (config.Hint.mode === "auto" && !replayOption) {
+            ob.addEventListener(EVENT_MAPPING.miss, autoSaveHint);
+        }
+        ob.addEventListener(EVENT_MAPPING.changeBGM, showBGM);
+        if (config.Hint.mode === "auto" || config.Hint.mode === "on") {
+            const files = fs.readdirSync(config.Hint.path);
+            const filesLen = files.length;
+            for (let i = 0; i < filesLen; i++) {
+                if (/^.+\.json$/.test(files[i].toLowerCase())) {
+                    let hint = JSON.parse(fs.readFileSync(config.Hint.path + "/" + files[i]).toString());
+                    if (hint.HINT_VER === HINT_VER) {
+                        hint = hint.hint;
+                        if (menu === hint.menu && selectedIndex === hint.selectedIndex) {
+                            hints.push(hint)
+                        }
+                    }
+                }
+            }
+        }
+        if (rand) {
+            Math.seed = rand
         } else {
             Math.nextSeed()
         }
-        session.record = {};
-        session.stg.dialogue = {};
-        session.stg.dialogueCloseTimes = [];
-        session.recording = !!record;
-        session.rand = Math.seed;
+        record = {
+            rand: Math.seed,
+            stg: {
+                menu,
+                selectedIndex,
+                player: player.name,
+                DeveloperMode: config.DeveloperMode,
+                dialogue: {},
+                dialogueCloseTimes: []
+            },
+            eventList: []
+        };
+        session.replaying = !!replayOption;
         session.score = 0;
         session.player = player();
         session.player.power = 400;
@@ -123,8 +157,9 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
             session.player.tick();
         }
         if (session.demoPlay === true) {
-            inst.ending();
-            inst.tags.add(TAGS.death)
+            inst.end = true;
+            session.keys.add("z");
+            return
         } else if (isStopped()) {
             inst.ending();
             return
@@ -135,17 +170,22 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         }
     });
     inst.event.addEventListener(STAGE_EVENT.out, function () {
-        if (record === undefined && confirm("Save replay?")) {
-            session.stg.score = session.score;
-            session.stg.totalFrames = runningFrames;
-            session.stg.totalTs = new Date().valueOf() - ts;
-            session.record[runningFrames + 180] = runningFrames + 180;
-            saveReplay(prompt("ReplayName:"), session.stg, session.rand, session.record)
+        if (replayOption === undefined && confirm("Save replay?")) {
+            record.stg.score = session.score;
+            record.stg.totalFrames = runningFrames;
+            record.stg.totalTs = new Date().valueOf() - ts;
+            record.eventList[runningFrames + 1] = runningFrames + 1;
+            saveReplay(prompt("ReplayName:"), record.stg, record.rand, record.eventList)
         }
+        if (session.demoPlay) {
+            session.demoPlay = false
+        } else {
+            cancelAllSound()
+        }
+        ob.removeEventListener(EVENT_MAPPING.miss, autoSaveHint);
+        ob.removeEventListener(EVENT_MAPPING.changeBGM, showBGM)
     });
-    let ts;
-    let events = [];
-    let shift = session.slow;
+    let ts, shift = session.slow;
     inst.addComponent("SpellPractice", function () {
         this.tick = function (inst) {
             if (!ts) {
@@ -177,6 +217,16 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                     pausedMenu.tick();
                     pausedMenu.draw()
                 } else {
+                    const length = hints.length;
+                    for (let i = 0; i < length; i++) {
+                        const hint = hints[i];
+                        if (runningFrames >= hint.runningFrames && runningFrames < hint.runningFrames + hint.Delay) {
+                            if (soundOfHint.paused) {
+                                _ = soundOfHint.play();
+                            }
+                            break
+                        }
+                    }
                     if (session.fake) {
                         session.fake = false;
                         session.fakeRect = [Math.random() * 10 - 5, Math.random() * 10 - 5]
@@ -206,44 +256,50 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                         return
                     }
                     runningFrames++;
-                    if (record) {
-                        const e = record[runningFrames];
+                    if (replayOption) {
+                        if (session.keys.has("control")) {
+                            if (session.maxMutex < config.MaxMutex) {
+                                session.maxMutex++
+                            }
+                        } else {
+                            session.maxMutex = 1
+                        }
+                        const e = eventList[runningFrames];
                         if (e === runningFrames) {
-                            inst.ending();
-                            inst.tags.add(TAGS.death);
+                            inst.end = true;
+                            session.keys.add("z");
                             return
                         }
                         if (inst.dialogueScript.length > 0) {
-                            session.dialogue = true;
-                            if (dialogueCloseTimes[0] === runningFrames) {
+                            const d = dialogue[runningFrames];
+                            if (d) {
+                                if (d.indexOf("next") >= 0) {
+                                    inst.dialogueScript[0].next()
+                                }
+                                if (d.indexOf("skip") >= 0) {
+                                    inst.dialogueScript[0].skip()
+                                }
+                            }
+                            if (inst.dialogueScript[0].tick() && inst.dialogueScript.length > 0) {
+                                inst.dialogueScript.shift()
+                            }
+                            if (entities.length > 0) {
+                                ob.dispatchEvent(EVENT_MAPPING.clearEntity);
+                            }
+                            if (dialogueCloseTimes[0] <= runningFrames) {
                                 dialogueCloseTimes.shift();
-                                inst.dialogueScript[0].skip();
                                 // 快速执行完对话任务，最大程度避免不确定因素造成的回放错误
+                                // 回放问题待解决
                                 while (inst.dialogueScript.length > 0) {
+                                    inst.dialogueScript[0].skip();
                                     if (inst.dialogueScript[0].tick()) {
                                         inst.dialogueScript.shift()
                                     }
                                 }
-                                session.dialogue = false
-                            } else {
-                                const d = dialogue[runningFrames];
-                                if (d) {
-                                    if (d.indexOf("next") !== -1) {
-                                        inst.dialogueScript[0].next()
-                                    }
-                                    if (d.indexOf("skip") !== -1) {
-                                        inst.dialogueScript[0].skip()
-                                    }
-                                }
-                                if (inst.dialogueScript[0].tick() && inst.dialogueScript.length > 0) {
-                                    inst.dialogueScript.shift()
-                                }
-                                if (entities.length > 0) {
-                                    ob.dispatchEvent(EVENT_MAPPING.clearEntity);
-                                }
                             }
-                        } else if (session.dialogue === true) {
-                            session.dialogue = false
+                        } else if (dialogueCloseTimes[0] <= runningFrames) {
+                            // runningFrames = dialogueCloseTimes[0];
+                            dialogueCloseTimes.shift()
                         }
                         if (e) {
                             for (const event of e) {
@@ -274,18 +330,14 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                                 ob.dispatchEvent(EVENT_MAPPING.clearEntity);
                             }
                             if (dialogue && dialogue.length > 0) {
-                                session.stg.dialogue[runningFrames] = JSON.parse(JSON.stringify(dialogue))
+                                record.stg.dialogue[runningFrames] = dialogue
                             }
                         } else if (session.dialogue === true) {
                             session.dialogue = false;
                             // 对话退出校验戳，用于强制退出Replay对话
-                            session.stg.dialogueCloseTimes.push(runningFrames)
+                            record.stg.dialogueCloseTimes.push(runningFrames)
                         }
-                        events = [];
-                        if (shift !== session.slow) {
-                            events.push(session.slow ? EVENT_MAPPING.shift : EVENT_MAPPING.unshift);
-                            shift = session.slow
-                        }
+                        const events = [];
                         if (session.keys.has(kb.Up.toLowerCase())) {
                             if (session.keys.has(kb.Left.toLowerCase())) {
                                 events.push(EVENT_MAPPING.upperLeft);
@@ -322,14 +374,31 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                         }
                         if (session.keys.has(kb.Shoot.toLowerCase())) {
                             events.push(EVENT_MAPPING.shoot);
-                            ob.dispatchEvent(EVENT_MAPPING.shoot)
+                            ob.dispatchEvent(EVENT_MAPPING.shoot);
+                            if (config.ShootSlow === true && session.slow === false) {
+                                session.slow = true;
+                                if (events.indexOf(EVENT_MAPPING.shift) >= 0) {
+                                    events.push(EVENT_MAPPING.shift)
+                                }
+                            }
+                        } else {
+                            if (config.ShootSlow === true && session.slow === true) {
+                                session.slow = false;
+                                if (events.indexOf(EVENT_MAPPING.unshift) >= 0) {
+                                    events.push(EVENT_MAPPING.unshift)
+                                }
+                            }
                         }
                         if (!session.practice && session.keys.has(kb.Bomb.toLowerCase())) {
                             events.push(EVENT_MAPPING.bomb);
                             ob.dispatchEvent(EVENT_MAPPING.bomb)
                         }
+                        if (shift !== session.slow) {
+                            events.push(session.slow ? EVENT_MAPPING.shift : EVENT_MAPPING.unshift);
+                            shift = session.slow
+                        }
                         if (events && events.length > 0) {
-                            session.record[runningFrames] = JSON.parse(JSON.stringify(events))
+                            record.eventList[runningFrames] = events
                         }
                     }
                     if (inst.boss.length === 0) {
@@ -359,6 +428,7 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
             if (session.fakeRect) {
                 layerStage.translate(session.fakeRect[0], session.fakeRect[1])
             }
+            layerStage.drawImage(cache, 12.8, 9.6 + step);
             if (session.flashValue) {
                 layerEffect.save();
                 layerEffect.fillStyle = "white";
@@ -366,7 +436,6 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                 layerEffect.fillRect(0, 0, WIDTH, HEIGHT);
                 layerEffect.restore()
             }
-            layerStage.drawImage(cache, 12.8, 9.6 + step);
             session.player.draw();
             for (let i = 0; i < inst.boss.length; i++) {
                 const boss = inst.boss[i];
@@ -377,7 +446,8 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                         if (boss.atkBox.name === "RBox") {
                             layerUI.save();
                             layerUI.strokeStyle = "red";
-                            layerUI.strokeRect(boss.X - boss.atkBox.xs / 2, boss.Y - boss.atkBox.ys / 2, boss.atkBox.xs, boss.atkBox.ys);
+                            layerUI.strokeRect(boss.X - boss.atkBox.xs / 2, boss.Y - boss.atkBox.ys / 2,
+                                boss.atkBox.xs, boss.atkBox.ys);
                             layerUI.restore()
                         } else if (boss.atkBox.name === "ABox") {
                             layerUI.save();
@@ -408,7 +478,8 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                 layerTitle.fillText("SpellPractice", 174, 144);
                 layerTitle.font = "8px Comic Sans MS";
                 layerTitle.direction = "rtl";
-                layerTitle.fillText("BGM - " + session.currentBGM.name, GUI_SCREEN.X + GUI_SCREEN.WIDTH, 470);
+                layerTitle.fillText("BGM - " + session.currentBGM?.name ?? "N/A",
+                    GUI_SCREEN.X + GUI_SCREEN.WIDTH, 470);
                 layerTitle.restore();
             }
             if (inst.paused) {
@@ -428,6 +499,19 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
                     stageMenuEntities[i].draw(stageMenuEntities[i])
                 }
             }
+            layerUI.save();
+            const length = hints.length;
+            for (let i = 0; i < length; i++) {
+                const hint = hints[i];
+                if (runningFrames >= hint.runningFrames && runningFrames < hint.runningFrames + hint.Delay) {
+                    layerUI.fillStyle = hint.fillStyle;
+                    layerUI.font = hint.font || "8px sans-serif";
+                    const t = layerUI.measureText(hint.Text);
+                    layerUI.fillText(hint.Text, hint.X - t.width / 2, hint.Y)
+                }
+            }
+            layerUI.restore();
+            // 语境作用域，不要随便移动
             layerStage.restore()
         }
     });
@@ -436,23 +520,36 @@ export default function SpellPractice(player, stageMap, stageBGM, restartCallBac
         timestamp = 0
     }
 
-    ob.addEventListener(EVENT_MAPPING.changeBGM, showBGM);
+    function autoSaveHint() {
+        saveHint(AUTO_HINT, new Date().valueOf(), {
+            menu,
+            selectedIndex,
+            runningFrames,
+            __comment: "This file is generated automatically and will be overwritten automatically.\n" +
+                "Use a different file name when you need to build your own attack using Hint.",
+            Text: "Caution!",
+            X: session.player.X,
+            Y: session.player.Y,
+            Delay: 300,
+            fillStyle: "rgb(255,128,128)"
+        })
+    }
+
     inst.clear = function () {
-        if (session.developerMode === true || record) {
+        if (session.developerMode === true || replayOption) {
             return
         }
         save.highScore = session.highScore;
         saveToFile(save)
     };
     inst.ending = function () {
-        entities.slice(0);
-        ob.removeEventListener(EVENT_MAPPING.changeBGM, showBGM);
-        session.demoPlay = false;
+        session.maxMutex = 1;
+        entities.slice(0)
     };
     inst.callback.pause = function () {
-        if (record) {
-            inst.ending();
-            inst.tags.add(TAGS.death)
+        if (replayOption) {
+            inst.end = true;
+            session.keys.add("z")
         } else {
             pausedMenu.load();
             _ = soundOfPause.play()

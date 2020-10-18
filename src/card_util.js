@@ -12,6 +12,7 @@ import {ob} from "./observer.js"
 import {title} from "./dialogue.js";
 import BlueOrb from "./prefabs/blue_orb.js";
 import PowerOrb from "./prefabs/power_orb.js";
+import {generateRandomSpeed} from "./components/movable.js";
 
 let _;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
@@ -186,16 +187,16 @@ export default function CardUtil(option) {
                         if (bonus > 0) {
                             let spawnPoint;
                             for (let i = 0; i < 50; i++) {
-                                spawnPoint = [Math.nextSeed() * 100, Math.nextSeed() * 100];
+                                spawnPoint = generateRandomSpeed(100, 50, -50, undefined, undefined, undefined, 20);
                                 entities.push(BlueOrb(this.entity.X + spawnPoint[0],
                                     this.entity.Y + spawnPoint[1], 0, -2))
                             }
                             for (let i = 0; i < 5; i++) {
-                                spawnPoint = [Math.nextSeed() * 100, Math.nextSeed() * 100];
+                                spawnPoint = generateRandomSpeed(100, 50, -50, undefined, undefined, undefined, 20);
                                 entities.push(PowerOrb(this.entity.X + spawnPoint[0],
                                     this.entity.Y + spawnPoint[1], 0, -2))
                             }
-                            spawnPoint = [Math.nextSeed() * 50, Math.nextSeed() * 50];
+                            spawnPoint = generateRandomSpeed(50, 25, -25);
                             entities.push(PowerOrb(this.entity.X + spawnPoint[0],
                                 this.entity.Y + spawnPoint[1], 0, -2, "big"));
                             soundOfBonus.currentTime = 0;

@@ -542,7 +542,9 @@ export function resetAndSaveConfig() {
         EntityCountSecMax: 1024,
         Player: 3,
         GrazeMax: 99999,
-        Idle: 3600,
+        ShootSlow: false,
+        Idle: 360,
+        MaxMutex: 4,
         Volume: {
             BGM: 80,
             SE: 60
@@ -558,6 +560,10 @@ export function resetAndSaveConfig() {
         },
         ScreenShot: "./screen_shot",
         Replay: "./replay",
+        Hint: {
+            mode: "off",
+            path: "./hint"
+        }
     };
     saveConfigToFile()
 }
@@ -939,6 +945,11 @@ export function stopAllSound() {
     for (let i = 0, length = sounds.length; i < length; i++) {
         if (!sounds[i].paused) {
             sounds[i].pause();
+            sounds[i].onplay = function () {
+                sounds[i].onplay = null;
+                sounds[i].pause();
+                return false
+            };
             stopSounds.push(sounds[i])
         }
     }
@@ -954,37 +965,71 @@ export function continueAllSound() {
 }
 
 export function cancelAllSound() {
+    stopSounds.slice(0);
     for (let i = 0, length = sounds.length; i < length; i++) {
-        sounds[i].pause();
+        if (!sounds[i].paused) {
+            sounds[i].pause();
+            sounds[i].onplay = function () {
+                sounds[i].onplay = null;
+                sounds[i].pause();
+                sounds[i].currentTime = 0;
+                return false
+            }
+        }
         sounds[i].currentTime = 0
     }
 }
 
 let _;
 
-export function changeBGM(bgm, callback) {
+export function changeBGM(bgm, callback, force = false) {
+    if (session.demoPlay === true) {
+        return
+    }
+    let work = false;
     if (session.currentBGM) {
-        _ = session.currentBGM.dom.pause();
-        if (session.currentBGM.loop) {
-            _ = session.currentBGM.loop.pause();
+        if (bgm) {
+            if (session.currentBGM.dom?.src !== bgm.head?.src || force) {
+                work = true;
+                _ = session.currentBGM.dom.pause()
+            }
+            if (session.currentBGM.loop?.src !== bgm.loop?.src || force) {
+                work = true;
+                _ = session.currentBGM.loop.pause()
+            }
+            session.currentBGM.dom = bgm.head;
+            session.currentBGM.loop = bgm.loop;
+            session.currentBGM.name = bgm.name;
+            session.currentBGM.description = bgm.description
+        } else {
+            if (session.currentBGM.dom) {
+                _ = session.currentBGM.dom.pause()
+            }
+            if (session.currentBGM.loop) {
+                _ = session.currentBGM.loop.pause()
+            }
+        }
+    } else {
+        work = true
+    }
+    if (work) {
+        session.currentBGM = {
+            dom: bgm.head,
+            loop: bgm.loop,
+            name: bgm.name,
+            description: bgm.description
         }
     }
-    bgm.head.currentTime = 0;
-    bgm.loop.currentTime = 0;
-    session.currentBGM = {
-        dom: bgm.head,
-        loop: bgm.loop,
-        name: bgm.name,
-        description: bgm.description
-    };
     if (typeof callback === "function") {
-        callback(bgm)
+        callback(session.currentBGM, work)
     }
 }
 
+export const STAGE_VER = 1;
+
 export function saveReplay(name, stg, rand, eventList) {
     fs.writeFileSync(config.Replay + "/" + new Date().valueOf() + ".json", JSON.stringify({
-        name, stg, rand, eventList
+        name, stg, rand, eventList, STAGE_VER
     }))
 }
 
@@ -1019,9 +1064,9 @@ export function timeEscape(t = 0., iteration = false, option = {}) {
     }
 }
 
-function consoleTime(t) {
+export function consoleTime(t) {
     if (t === undefined) {
-        t = new Date().valueOf() % 86400000 - new Date().getTimezoneOffset() * 60000
+        t = getTimeZoneWithTime()
     }
     if (t < 1000) {
         if (t >= 0) {
@@ -1038,4 +1083,17 @@ function consoleTime(t) {
     } else {
         return consoleTime(t % 86400000)
     }
+}
+
+export function getTimeZoneWithTime() {
+    return new Date().valueOf() % 86400000 - new Date().getTimezoneOffset() * 60000
+}
+
+export const HINT_VER = 1;
+export const AUTO_HINT = "hint_auto";
+
+export function saveHint(name, timestamp, hint) {
+    fs.writeFileSync(config.Hint.path + "/" + name + ".json", JSON.stringify({
+        HINT_VER, timestamp, hint
+    }))
 }

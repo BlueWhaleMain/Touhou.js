@@ -25,7 +25,7 @@ import {
     takeScreenShot,
     tickingEntity,
     updateEntity,
-    WIDTH, timeEscape, continueAllSound, stopAllSound, loadingScreenCache
+    WIDTH, timeEscape, continueAllSound, stopAllSound, loadingScreenCache, STAGE_VER
 } from "./src/util.js";
 import MenuStar from "./src/prefabs/menu_star.js";
 import SpellPractice from "./src/stage/spell_practice.js";
@@ -58,7 +58,6 @@ import test from "./src/cards/test.js";
 import moonlightRay from "./src/cards/moonlight_ray.js";
 import darkSideOfTheMoon from "./src/cards/dark_side_of_the_moon.js";
 
-const STAGE_VER = 1;
 const gui = require("nw" + ".gui");
 //idea划线
 const win = gui["Window"].get();
@@ -318,7 +317,7 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
     };
 });
 
-function practiceStartFactory(selectedIndex, rand, eventList, dialogue = {}, dialogueCloseTimes = []) {
+function practiceStartFactory(selectedIndex, replayOption) {
     let stageMap = [];
     let bgm = false;
     if (selectedIndex === 0) {
@@ -817,16 +816,9 @@ function practiceStartFactory(selectedIndex, rand, eventList, dialogue = {}, dia
         _ = ASSETS.SOUND.invalid.play();
         return
     }
-    session.stage = SpellPractice(session.selectedPlayer, stageMap, bgm, function () {
+    session.stage = SpellPractice("practiceStart", selectedIndex, session.selectedPlayer, stageMap, bgm, function () {
         practiceStartFactory(selectedIndex)
-    }, rand, eventList, dialogue, dialogueCloseTimes);
-    session.stg = {
-        menu: "practiceStart",
-        player: session.selectedPlayer.name,
-        selectedIndex,
-        DeveloperMode: config.DeveloperMode,
-        STAGE_VER
-    }
+    }, replayOption)
 }
 
 const practiceStartMenu = new Menu([
@@ -886,16 +878,16 @@ function getPlayer(player) {
 }
 
 function doReplay(replay, force) {
-    if (replay.stg && replay.stg.STAGE_VER === STAGE_VER && replay.stg.DeveloperMode === config.DeveloperMode || force) {
-        session.selectedPlayer = getPlayer(replay.stg.player);
-        if (replay.stg.menu === "practiceStart") {
-            practiceStartFactory(replay.stg.selectedIndex, replay.rand, replay.eventList, replay.stg.dialogue, replay.stg.dialogueCloseTimes);
+    if (replay.stg?.DeveloperMode === config.DeveloperMode && replay.STAGE_VER === STAGE_VER || force) {
+        session.selectedPlayer = getPlayer(replay.stg?.player);
+        if (replay.stg?.menu === "practiceStart") {
+            practiceStartFactory(replay.stg?.selectedIndex, replay);
             transitions(runSpellPractice);
-        } else if (replay.stg.menu === "spellPractice") {
-            spellPracticeFactory(replay.stg.selectedIndex, replay.rand, replay.eventList, replay.stg.dialogue, replay.stg.dialogueCloseTimes);
+        } else if (replay.stg?.menu === "spellPractice") {
+            spellPracticeFactory(replay.stg?.selectedIndex, replay);
             transitions(runSpellPractice);
         } else {
-            throw new Error("Menu:" + replay.stg.menu + " is not exists!")
+            throw new Error("Menu:" + replay.stg?.menu + " is not exists!")
         }
     } else {
         ASSETS.SOUND.invalid.currentTime = 0;
@@ -971,7 +963,7 @@ const replayMenu = new Menu(replayList, function (selectedIndex) {
                 rpl.push(replay);
                 replayList.push(lightMenuItem(40, 80 + 20 * i, "No." + (i + 1) + " "
                     + (replay.name || files[i]).substr(0, 18) + " "
-                    + (replay.stg.STAGE_VER === STAGE_VER ? "" : "NotSupport!")))
+                    + (replay.STAGE_VER === STAGE_VER ? "" : "NotSupport!")))
             } catch (e) {
                 console.warn(e)
             }
@@ -986,7 +978,7 @@ const replayMenu = new Menu(replayList, function (selectedIndex) {
     handler = function () {
         self.tick();
         self.draw()
-    };
+    }
 });
 const sps = [];
 
@@ -996,7 +988,7 @@ function addSpellCard(name, f, bgm) {
     })
 }
 
-function spellPracticeFactory(selectedIndex, rand, eventList, dialogue = {}, dialogueCloseTimes = []) {
+function spellPracticeFactory(selectedIndex, replayOption) {
     const player = session.selectedPlayer;
     let stageMap = [];
     let bgm = false;
@@ -1009,16 +1001,9 @@ function spellPracticeFactory(selectedIndex, rand, eventList, dialogue = {}, dia
         _ = ASSETS.SOUND.invalid.play();
         return
     }
-    session.stage = SpellPractice(player, stageMap, bgm, function () {
+    session.stage = SpellPractice("spellPractice", selectedIndex, player, stageMap, bgm, function () {
         spellPracticeFactory(selectedIndex)
-    }, rand, eventList, dialogue, dialogueCloseTimes);
-    session.stg = {
-        menu: "spellPractice",
-        player: session.selectedPlayer.name,
-        selectedIndex,
-        DeveloperMode: config.DeveloperMode,
-        STAGE_VER
-    }
+    }, replayOption)
 }
 
 addSpellCard("Test1", function () {
@@ -1232,7 +1217,7 @@ const spellPracticeMenu = new Menu(spm, function (selectedIndex) {
     handler = function () {
         self.tick();
         self.draw()
-    };
+    }
 });
 const keyBoardOptionMenu = new Menu([
     MenuItem(380, 275, "Up"),
@@ -1263,7 +1248,7 @@ const keyBoardOptionMenu = new Menu([
     handler = function () {
         self.tick();
         self.draw()
-    };
+    }
 });
 const optionMenu = new Menu([
     MenuItem(380, 275, "Player"),
@@ -1561,10 +1546,18 @@ const mainMenu = new Menu([
     session.Idle++;
     if (session.Idle > config.Idle) {
         session.Idle = 0;
-        const demo = "./demo_" + [1, 2][~~(Math.random() * 2)] + ".json";
+        const files = fs.readdirSync("./");
+        const table = [];
+        const filesLen = files.length;
+        for (let i = 0; i < filesLen; i++) {
+            if (/^demo_\d+\.json$/.test(files[i].toLowerCase())) {
+                table.push(files[i].toLowerCase())
+            }
+        }
+        const demo = "./" + table[~~(Math.random() * table.length)];
         if (fs.existsSync(demo)) {
-            doReplay(JSON.parse(fs.readFileSync(demo).toString()), true);
-            session.demoPlay = true
+            session.demoPlay = true;
+            doReplay(JSON.parse(fs.readFileSync(demo).toString()), true)
         }
     }
     updateEntity()
@@ -1581,7 +1574,7 @@ const mainMenu = new Menu([
             entities.push(MenuStar(Math.random() * WIDTH, Math.random() * HEIGHT, 0, 0.5, Math.random() * 2));
         }
         changeBGM(ASSETS.SOUND.easternNight)
-    });
+    })
 });
 
 session.Idle = 0;
@@ -1589,13 +1582,11 @@ session.Idle = 0;
 function runSpellPractice() {
     if (session.stage.tick(session.stage)) {
         session.stage.draw(session.stage)
+    } else if (session.stage.restart) {
+        transitions(runSpellPractice, session.stage.restartCallBack)
     } else {
-        if (session.stage.restart) {
-            transitions(runSpellPractice, session.stage.restartCallBack)
-        } else {
-            mainMenu.load();
-            session.stage = null
-        }
+        mainMenu.load();
+        session.stage = null
     }
 }
 
@@ -1663,7 +1654,6 @@ function transitions(f, callback) {
     if (typeof callback === "function") {
         callback()
     }
-    cancelAllSound();
     loadingScreenCache.slice(0);
     if (typeof f === "function") {
         if (config.DeveloperMode === false) {
@@ -1674,8 +1664,6 @@ function transitions(f, callback) {
         handler = function () {
             loading(f)
         };
-        session.canceldBGM = session.currentBGM;
-        session.currentBGM = null;
         _ = loadingBgm.play();
     }
 }
@@ -1687,51 +1675,51 @@ function run() {
         if (window.paused) {
             return
         }
-        if (session.slowRunning === true) {
-            session.slowRunning = false
-        } else {
-            clearScreen();
-            if (session.keys.has("f3")) {
-                session.debugFlag = !session.debugFlag;
-                session.keys.delete("f3")
-            }
-            if (session.debugFlag) {
-                layerEffect.save();
-                layerEffect.font = "10px Comic Sans MS";
-                layerEffect.fillStyle = "white";
-                layerEffect.fillText("调试屏幕已开启", 0, HEIGHT - 1);
-                layerEffect.restore()
-            }
-            if (session.keys.has("f11")) {
-                // idea 挨打
-                session.keys.delete("f11");
-                win["toggleFullscreen"]()
-            }
-            if (win["isFullscreen"]) {
-                document.body.style.cursor = "none"
-            } else if (document.body.style) {
-                document.body.style = null
-            }
-            handler();
-            if (entities.length > entityCountSecMax) {
-                entities.length = entityCountSecMax
-            }
-            if (!session.stage || !session.stage.paused) {
-                const currentBGM = session.currentBGM;
-                if (currentBGM) {
-                    if (currentBGM.dom.paused || currentBGM.dom.currentTime + 0.12 > currentBGM.dom.duration) {
-                        if (currentBGM.loop && currentBGM.paused > 1) {
-                            if (currentBGM.loop.paused || currentBGM.loop.currentTime + 0.1 > currentBGM.loop.duration) {
-                                currentBGM.loop.currentTime = 0;
-                                _ = currentBGM.loop.play()
-                            }
-                        } else {
-                            _ = currentBGM.dom.play();
-                            currentBGM.paused = currentBGM.paused + 1 || 2;
+        clearScreen();
+        if (session.keys.has("f3")) {
+            session.debugFlag = !session.debugFlag;
+            session.keys.delete("f3")
+        }
+        if (session.keys.has("f5")) {
+            location.reload();
+            session.keys.delete("f5")
+        }
+        if (session.debugFlag) {
+            layerEffect.save();
+            layerEffect.font = "10px Comic Sans MS";
+            layerEffect.fillStyle = "white";
+            layerEffect.fillText("调试屏幕已开启", 0, HEIGHT - 1);
+            layerEffect.restore()
+        }
+        if (session.keys.has("f11")) {
+            // idea 挨打
+            session.keys.delete("f11");
+            win["toggleFullscreen"]()
+        }
+        if (win["isFullscreen"]) {
+            document.body.style.cursor = "none"
+        } else if (document.body.style) {
+            document.body.style = null
+        }
+        handler();
+        if (entities.length > entityCountSecMax) {
+            entities.length = entityCountSecMax
+        }
+        if (!session.stage || session.stage.paused === false && session.stage.end === false) {
+            const currentBGM = session.currentBGM;
+            if (currentBGM) {
+                if (currentBGM.dom.paused || currentBGM.dom.currentTime + 0.12 > currentBGM.dom.duration) {
+                    if (currentBGM.loop && currentBGM.paused > 1) {
+                        if (currentBGM.loop.paused || currentBGM.loop.currentTime + 0.1 > currentBGM.loop.duration) {
+                            currentBGM.loop.currentTime = 0;
+                            _ = currentBGM.loop.play()
                         }
-                    } else if (currentBGM.dom.currentTime > currentBGM.leaveTime) {
-                        currentBGM.dom.currentTime = currentBGM.loopTime
+                    } else {
+                        _ = currentBGM.dom.play();
+                        currentBGM.paused = currentBGM.paused + 1 || 2;
                     }
+                } else if (currentBGM.dom.currentTime > currentBGM.leaveTime) {
+                    currentBGM.dom.currentTime = currentBGM.loopTime
                 }
             }
         }
@@ -1774,10 +1762,8 @@ function loading(f) {
         t += tsp;
         if (t > 4) {
             tsp = -0.1
-        } else {
-            if (t < 2) {
-                tsp = 0.1
-            }
+        } else if (t < 2) {
+            tsp = 0.1
         }
         layerStage.fillText("少女祈祷中...", 525, 465);
         layerStage.font = "10px Comic Sans MS";
@@ -1792,8 +1778,6 @@ function loading(f) {
                 loadingBgm.currentTime = 0;
             }
             img.style.display = "none";
-            session.currentBGM = session.canceldBGM;
-            session.canceldBGM = null;
             handler = f
         }
     } catch (e) {
@@ -1802,32 +1786,39 @@ function loading(f) {
 }
 
 let n = 1000;
-let mutex = false;
+let mutex = 0;
+session.maxMutex = 1;
 
 function nextFrame(f) {
-    if (mutex) {
+    if (session.slowRunning === true) {
+        session.slowRunning = false;
+        setTimeout(function () {
+            nextFrame(f)
+        }, 50);
         return
     }
-    mutex = true;
-    // 配置文件为整数时idea划线==
-    if (config.FrameMax === "auto") {
-        requestAnimationFrame(function () {
-            mutex = false;
-            f();
-        })
-    } else if (typeof config.FrameMax !== "number") {
-        throw Error("FrameMax muse be an integer or 'auto'.")
-    } else {
-        setTimeout(function () {
-            mutex = false;
-            f();
-        }, n / config.FrameMax)
+    while (mutex < session.maxMutex) {
+        mutex++;
+        // 配置文件为整数时idea划线==
+        if (config.FrameMax === "auto") {
+            requestAnimationFrame(function () {
+                mutex--;
+                f();
+            })
+        } else if (typeof config.FrameMax !== "number") {
+            throw Error("FrameMax muse be an integer or 'auto'.")
+        } else {
+            setTimeout(function () {
+                mutex--;
+                f();
+            }, n / config.FrameMax)
+        }
+        ob.dispatchEvent(EVENT_MAPPING.load)
     }
     if (session.keys.has("f2")) {
         saveOrDownload(takeScreenShot(), config.ScreenShot, "Touhou.JS_ScreenShot_" + getValidTimeFileName() + ".png");
         session.keys.delete("f2")
     }
-    ob.dispatchEvent(EVENT_MAPPING.load)
 }
 
 try {
@@ -1882,7 +1873,7 @@ try {
             } else {
                 ignoreKeys.add(key)
             }
-            if (key === config.KeyBoard.Slow.toLowerCase() && !session.recording) {
+            if (key === config.KeyBoard.Slow.toLowerCase() && !session.replaying) {
                 ob.dispatchEvent(EVENT_MAPPING.shift)
             }
             if (restore) {
@@ -1892,10 +1883,8 @@ try {
                     ASSETS.SOUND.ok.currentTime = 0;
                     _ = ASSETS.SOUND.ok.play();
                     nextFrame(run)
-                } else {
-                    if (key === "escape") {
-                        win.close()
-                    }
+                } else if (key === "escape") {
+                    win.close()
                 }
                 return
             }
@@ -1909,7 +1898,7 @@ try {
                 ignoreKeys.delete(key)
             }
             session.keys.delete(key);
-            if (key === config.KeyBoard.Slow.toLowerCase() && !session.recording) {
+            if (key === config.KeyBoard.Slow.toLowerCase() && !session.replaying) {
                 ob.dispatchEvent(EVENT_MAPPING.unshift)
             }
         });
