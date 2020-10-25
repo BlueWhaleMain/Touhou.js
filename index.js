@@ -25,7 +25,7 @@ import {
     takeScreenShot,
     tickingEntity,
     updateEntity,
-    WIDTH, timeEscape, continueAllSound, stopAllSound, loadingScreenCache, STAGE_VER
+    WIDTH, timeEscape, continueAllSound, stopAllSound, loadingScreenCache, STAGE_VER, killAnotherBGM, L
 } from "./src/util.js";
 import MenuStar from "./src/prefabs/menu_star.js";
 import SpellPractice from "./src/stage/spell_practice.js";
@@ -87,6 +87,17 @@ const ASSETS = {
         yukariYakumo: newImage(resources.Images.bossYukariYakumo)
     },
     SOUND: {
+        th1001: {
+            head: newAudio(resources.Sounds.th10_01.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.th10_01.loop, 100, "BGM"),
+            name: "被封印的众神",
+            description: "　标题画面的主题曲。\n" +
+                "　\n" +
+                "　一如以往的曲子……呢。\n" +
+                "　因为是具有和风的神灵们的曲子，所以做得稍显大气。\n" +
+                "　虽然是感觉具有异常奇妙的韵律的曲子，多听听的话便会觉得很合拍。\n" +
+                "　尤其是在调试中。"
+        },
         easternNight: {
             head: newAudio(resources.Sounds.easternNight.head, 100, "BGM"),
             loop: newAudio(resources.Sounds.easternNight.loop, 100, "BGM"),
@@ -213,6 +224,7 @@ function addToMusicRoom(bgm) {
 }
 
 addToMusicRoom(ASSETS.SOUND.easternNight);
+addToMusicRoom(ASSETS.SOUND.th1001);
 addToMusicRoom(ASSETS.SOUND.easternNightPractice);
 addToMusicRoom(ASSETS.SOUND.rumia);
 addToMusicRoom(ASSETS.SOUND.hakureiReimu);
@@ -236,21 +248,12 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
         _ = ASSETS.SOUND.invalid.play();
         return
     }
-    if (session.currentBGM) {
-        session.currentBGM.dom.pause();
-        if (session.currentBGM.loop) {
-            session.currentBGM.loop.pause()
+    changeBGM(selectedBgm, function (bgm, work) {
+        if (work) {
+            bgm.leaveTime = selectedBgm.leaveTime;
+            bgm.loopTime = selectedBgm.loopTime
         }
-    }
-    selectedBgm.head.currentTime = 0;
-    session.currentBGM = {
-        dom: selectedBgm.head,
-        loop: selectedBgm.loop,
-        leaveTime: selectedBgm.leaveTime,
-        loopTime: selectedBgm.loopTime,
-        name: selectedBgm.name,
-        description: selectedBgm.description
-    }
+    }, true)
 }, function () {
     mainMenu.load()
 }, function (self) {
@@ -281,6 +284,7 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
             layerTitle.strokeStyle = "rgb(153,153,153)";
             layerTitle.strokeRect(400, 90, 120, 10);
             layerTitle.fillRect(400, 90, 120 * current / total, 10);
+            current = Math.round(current);
             layerTitle.fillText(Math.floor(current / 60) + ":" + Math.prefix(current % 60) + "/" + Math.floor(total / 60) + ":" + Math.prefix(total % 60), 522, 100);
             if (session.currentBGM.loop) {
                 layerTitle.fillStyle = "red";
@@ -1427,6 +1431,7 @@ const optionMenu = new Menu([
         self.draw()
     };
 });
+let style;
 const mainMenu = new Menu([
     MenuItem(480, 275, "Game Start"),
     MenuItem(480, 295, "Extra Start"),
@@ -1479,6 +1484,21 @@ const mainMenu = new Menu([
         return 8
     }
 }, function (self) {
+    const layers = session.title?.layers;
+    if (layers) {
+        for (let layer of layers) {
+            layerStage.save();
+            layerStage.drawImage(layer.img, layer.current.X, layer.current.Y, layer.width ?? WIDTH, layer.height ?? HEIGHT);
+            if (layer.speed) {
+                layer.current.X += layer.speed.x;
+                layer.current.Y += layer.speed.y;
+                if (layer.current.Y >= 0) {
+                    layer.current.Y -= layer.loop
+                }
+            }
+            layerStage.restore()
+        }
+    }
     switch (self.selectedIndex) {
         case 2:
             layerStage.save();
@@ -1562,6 +1582,19 @@ const mainMenu = new Menu([
     }
     updateEntity()
 }, function (self) {
+    if (config.Style === "auto") {
+        const keys = [];
+        for (const key in resources.Style) {
+            if (resources.Style.hasOwnProperty(key)) {
+                keys.push(key)
+            }
+        }
+        style = resources.Style[keys[~~(Math.random() * keys.length)]];
+        session.loading = newImage(style.loading);
+        session.loadingBg = newImage(style.loadingBg);
+        session.title.bgm.head = newAudio(style.title.bgm.head);
+        session.title.bgm.loop = newAudio(style.title.bgm.loop);
+    }
     transitions(function () {
         self.tick();
         self.draw()
@@ -1570,10 +1603,12 @@ const mainMenu = new Menu([
         for (let i = 0; i < length; i++) {
             self.menuList[i].fake = 150;
         }
-        while (entities.length < 256) {
-            entities.push(MenuStar(Math.random() * WIDTH, Math.random() * HEIGHT, 0, 0.5, Math.random() * 2));
+        if (style?.title?.effect === "StarSky") {
+            while (entities.length < 256) {
+                entities.push(MenuStar(Math.random() * WIDTH, Math.random() * HEIGHT, 0, 0.5, Math.random() * 2))
+            }
         }
-        changeBGM(ASSETS.SOUND.easternNight)
+        changeBGM(session.title.bgm)
     })
 });
 
@@ -1623,17 +1658,6 @@ function error(e, fatal = false) {
     _ = soundOfError.play()
 }
 
-const img = document.createElement("img");
-img.src = "./assets/images/loading.gif";
-img.style.position = "absolute";
-img.style.zIndex = "1";
-img.style.top = "16.66%";
-img.style.left = "33.33%";
-img.style.width = "auto";
-img.style.height = "auto";
-img.style["max-width"] = window.innerWidth * 0.375 + "px";
-img.style["max-height"] = window.innerHeight * 11 / 24 + "px";
-document.body.appendChild(img);
 const loadingBgm = newAudio(resources.Sounds.loading, 100, "BGM");
 
 function transitions(f, callback) {
@@ -1656,11 +1680,6 @@ function transitions(f, callback) {
     }
     loadingScreenCache.slice(0);
     if (typeof f === "function") {
-        if (config.DeveloperMode === false) {
-            img.style.display = "block"
-        } else {
-            img.style.display = "none"
-        }
         handler = function () {
             loading(f)
         };
@@ -1718,11 +1737,18 @@ function run() {
                         _ = currentBGM.dom.play();
                         currentBGM.paused = currentBGM.paused + 1 || 2;
                     }
-                } else if (currentBGM.dom.currentTime > currentBGM.leaveTime) {
-                    currentBGM.dom.currentTime = currentBGM.loopTime
+                } else {
+                    if (currentBGM.dom.currentTime > currentBGM.leaveTime) {
+                        currentBGM.dom.currentTime = currentBGM.loopTime
+                    }
+                    if (!currentBGM.loop.paused) {
+                        _ = currentBGM.loop.pause();
+                        currentBGM.loop.currentTime = 0
+                    }
                 }
             }
         }
+        killAnotherBGM();
         frames++;
         nextFrame(run)
     } catch (e) {
@@ -1731,10 +1757,15 @@ function run() {
 }
 
 let t = 2, tsp = 0.1;
+let deg = 0;
 
 function loading(f) {
     try {
         clearScreen();
+        try {
+            layerStage.drawImage(session.loadingBg, 0, 0)
+        } catch (e) {
+        }
         if (config.DeveloperMode === true) {
             layerTitle.save();
             layerTitle.fillStyle = "white";
@@ -1751,37 +1782,37 @@ function loading(f) {
             layerTitle.restore();
         }
         layerStage.save();
-        layerStage.font = "17px sans-serif";
-        layerStage.shadowColor = "black";
-        layerStage.shadowBlur = 2;
-        if (t) {
-            layerStage.fillStyle = "rgba(255,255,255," + (1 / t) + ")"
-        } else {
-            layerStage.fillStyle = "white"
-        }
+        layerStage.globalAlpha = 1 / t;
         t += tsp;
         if (t > 4) {
             tsp = -0.1
         } else if (t < 2) {
             tsp = 0.1
         }
-        layerStage.fillText("少女祈祷中...", 525, 465);
+        layerStage.drawImage(session.loading, 0, 0, 128, 64, 480, 400, 128, 64);
+        layerStage.translate(580, 433);
+        layerStage.rotate(deg);
+        layerStage.drawImage(session.loading, 0, 64, 64, 64, -32, -32, 64, 64);
+        deg += 6 * L;
+        layerStage.restore();
+        layerStage.save();
         layerStage.font = "10px Comic Sans MS";
         layerStage.shadowColor = "black";
         layerStage.shadowBlur = 2;
         layerStage.fillStyle = "white";
         layerStage.fillText((session.loadingCount / session.loadingTotal * 100).toFixed() + "%", 0, 479);
         layerStage.restore();
-        if (session.loadingCount === session.loadingTotal && loadingBgm.currentTime > 0 && (loadingBgm.paused || config.FastStart)) {
+        if (session.loadingCount === session.loadingTotal && loadingBgm.currentTime > 0 && (loadingBgm.paused || config.FastStart) || session?.currentBGM?.dom?.currentTime > 0) {
             if (!loadingBgm.paused) {
                 loadingBgm.pause();
                 loadingBgm.currentTime = 0;
             }
-            img.style.display = "none";
             handler = f
         }
     } catch (e) {
-        error(e)
+        error(e);
+        handler = function () {
+        }
     }
 }
 
@@ -1831,6 +1862,41 @@ try {
     status.style.fontSize = "large";
     status.style.zIndex = "65535";
     document.body.append(status);
+    if (config.Style === "random" || config.Style === "auto") {
+        const keys = [];
+        for (const key in resources.Style) {
+            if (resources.Style.hasOwnProperty(key)) {
+                keys.push(key)
+            }
+        }
+        style = resources.Style[keys[~~(Math.random() * keys.length)]]
+    } else {
+        style = resources.Style[config.Style]
+    }
+    session.loading = newImage(style.loading);
+    session.loadingBg = newImage(style.loadingBg);
+    session.title = {bgm: {}, layers: []};
+    for (const layer of style.title?.layers ?? []) {
+        const obj = layer;
+        obj.img = newImage(layer.img);
+        if (typeof obj["patten"] === "string") {
+            const bg = document.createElement("canvas");
+            bg.width = WIDTH;
+            bg.height = HEIGHT * 2;
+            obj.img.addEventListener("load", function () {
+                const bgCtx = bg.getContext("2d");
+                bgCtx.fillStyle = layerStage.createPattern(obj.img, obj["patten"]);
+                bgCtx.fillRect(0, 0, WIDTH, HEIGHT * 2);
+                obj.img = bg
+            })
+        }
+        obj.current = layer.current ?? {
+            X: 0, Y: 0
+        };
+        session.title.layers.push(obj)
+    }
+    session.title.bgm.head = newAudio(style.title.bgm.head);
+    session.title.bgm.loop = newAudio(style.title.bgm.loop);
     let timestamp = 0;
     if (entityCountSecMax && entityCountSecMax >= requireECS && entityCountSecMax <= 4294967295) {
         setInterval(function () {

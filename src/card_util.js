@@ -184,21 +184,13 @@ export default function CardUtil(option) {
                         if (option.end) {
                             option.end(this)
                         }
+                        let spawnPoint;
                         if (bonus > 0) {
-                            let spawnPoint;
                             for (let i = 0; i < 50; i++) {
                                 spawnPoint = generateRandomSpeed(100, 50, -50, undefined, undefined, undefined, 20);
                                 entities.push(BlueOrb(this.entity.X + spawnPoint[0],
                                     this.entity.Y + spawnPoint[1], 0, -2))
                             }
-                            for (let i = 0; i < 5; i++) {
-                                spawnPoint = generateRandomSpeed(100, 50, -50, undefined, undefined, undefined, 20);
-                                entities.push(PowerOrb(this.entity.X + spawnPoint[0],
-                                    this.entity.Y + spawnPoint[1], 0, -2))
-                            }
-                            spawnPoint = generateRandomSpeed(50, 25, -25);
-                            entities.push(PowerOrb(this.entity.X + spawnPoint[0],
-                                this.entity.Y + spawnPoint[1], 0, -2, "big"));
                             soundOfBonus.currentTime = 0;
                             _ = soundOfBonus.play();
                             // if (typeof option.bonusCallback === "function") {
@@ -239,6 +231,14 @@ export default function CardUtil(option) {
                                 return self
                             }))
                         }
+                        for (let i = 0; i < 5; i++) {
+                            spawnPoint = generateRandomSpeed(100, 50, -50, undefined, undefined, undefined, 20);
+                            entities.push(PowerOrb(this.entity.X + spawnPoint[0],
+                                this.entity.Y + spawnPoint[1], 0, -2))
+                        }
+                        spawnPoint = generateRandomSpeed(50, 25, -25);
+                        entities.push(PowerOrb(this.entity.X + spawnPoint[0],
+                            this.entity.Y + spawnPoint[1], 0, -2, "big"));
                         this.entity.components["health"].indestructible = false;
                         return true
                     }

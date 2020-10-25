@@ -253,19 +253,30 @@ export function newImage(src, width, height) {
     return img
 }
 
+const bgm = new Set();
+const bgmIndex = {};
 const sounds = [];
 export const audioObserver = new Observer();
 
 export function newAudio(name, volume = 100, type = "SE") {
+    if (type === "BGM") {
+        if (bgm.has(name)) {
+            return sounds[bgmIndex[name]]
+        } else {
+            bgmIndex[name] = sounds.length;
+            bgm.add(name)
+        }
+    }
     const audioName = "audio:" + name + "(" + volume + "," + type + ")";
     loadingScreenCache.push(consoleTime() + " loading " + audioName);
     const audio = new Audio("./assets/sounds/" + name);
-    audio.addEventListener("canplay", function () {
+    audio.addEventListener("canplay", function canplay() {
         if (session.loadingCount < session.loadingTotal) {
             session.loadingCount++
         }
         audio.volume = volume * config.Volume[type] / 10000;
-        loadingScreenCache.push(consoleTime() + " " + audioName + " load success!")
+        loadingScreenCache.push(consoleTime() + " " + audioName + " load success!");
+        audio.removeEventListener("canplay", canplay)
     });
 
     function onVolumeChange(e) {
@@ -536,7 +547,8 @@ export function resetAndSaveConfig() {
     config = {
         DeveloperMode: false,
         FastStart: true,
-        PauseOnBlur: true,
+        Style: "random",
+        PauseOnBlur: false,
         FrameMax: "auto",
         FullScreen: false,
         EntityCountSecMax: 1024,
@@ -945,11 +957,6 @@ export function stopAllSound() {
     for (let i = 0, length = sounds.length; i < length; i++) {
         if (!sounds[i].paused) {
             sounds[i].pause();
-            sounds[i].onplay = function () {
-                sounds[i].onplay = null;
-                sounds[i].pause();
-                return false
-            };
             stopSounds.push(sounds[i])
         }
     }
@@ -968,15 +975,18 @@ export function cancelAllSound() {
     stopSounds.slice(0);
     for (let i = 0, length = sounds.length; i < length; i++) {
         if (!sounds[i].paused) {
-            sounds[i].pause();
-            sounds[i].onplay = function () {
-                sounds[i].onplay = null;
-                sounds[i].pause();
-                sounds[i].currentTime = 0;
-                return false
-            }
+            sounds[i].pause()
         }
         sounds[i].currentTime = 0
+    }
+}
+
+export function killAnotherBGM() {
+    for (const key in bgmIndex) {
+        if (sounds[bgmIndex[key]] !== session?.currentBGM?.dom && sounds[bgmIndex[key]] !== session?.currentBGM?.loop) {
+            sounds[bgmIndex[key]].pause();
+            sounds[bgmIndex[key]].currentTime = 0
+        }
     }
 }
 

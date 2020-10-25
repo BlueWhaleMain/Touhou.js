@@ -3,6 +3,7 @@
 ```text
     "DeveloperMode": 开发者模式
     "FastStart": 快速启动（跳过加载界面）
+    "Style": 主题，可指定resource.json内置项目，也可random或者auto
     "PauseOnBlur": 窗体失去焦点时自动暂停
     "FrameMax": 帧数（每秒）
     "FullScreen": 全屏
@@ -34,7 +35,8 @@
 {
     "DeveloperMode": false,
     "FastStart": true,
-    "PauseOnBlur": true,
+    "Style": "random",
+    "PauseOnBlur": false,
     "FrameMax": "auto",
     "FullScreen": false,
     "EntityCountSecMax": 1024,

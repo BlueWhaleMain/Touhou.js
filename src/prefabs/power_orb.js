@@ -14,17 +14,17 @@ import {title} from "../dialogue.js";
 import {ob} from "../observer.js";
 
 const big = document.createElement("canvas");
-big.width = 20;
-big.height = 20;
+big.width = 16;
+big.height = 16;
 const bigCtx = big.getContext("2d");
 const middle = document.createElement("canvas");
-middle.width = 16;
-middle.height = 16;
+middle.width = 12;
+middle.height = 12;
 const middleCtx = middle.getContext("2d");
 const texture = newImage(resources.Images.powerOrb);
 texture.addEventListener("load", function () {
-    bigCtx.drawImage(texture, 0, 0, 20, 20);
-    middleCtx.drawImage(texture, 0, 0, 16, 16);
+    bigCtx.drawImage(texture, 15, 1, 16, 16, 0, 0, 16, 16);
+    middleCtx.drawImage(texture, 1, 3, 12, 12, 0, 0, 12, 12);
 });
 const soundOfItemPickUp = newAudio(resources.Sounds.item);
 const soundOfPowerUp = newAudio(resources.Sounds.powerUp);
@@ -35,11 +35,11 @@ let _;
 export default function PowerOrb(x, y, mx, my, size = "middle") {
     const inst = new Prefab(x, y);
     if (size === "big") {
-        inst.sizeBox = new RBox(20, 20);
-    } else if (size === "middle") {
         inst.sizeBox = new RBox(16, 16);
+    } else if (size === "middle") {
+        inst.sizeBox = new RBox(12, 12);
     }
-    inst.pickBox = new ABox(10);
+    inst.pickBox = new ABox(8);
     inst.addComponent("movable", movable);
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;

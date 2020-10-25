@@ -20,7 +20,7 @@ const soundOfMiss = newAudio(resources.Sounds.miss);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerUI = getLayer(LAYER_MAPPING.UI);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
-const spellName = newImage(resources.Images.spellName);
+const playerSpellName = newImage(resources.Images.playerSpellName);
 export default function PlayerUtil() {
     const inst = new Prefab(GUI_SCREEN.X + GUI_SCREEN.WIDTH / 2, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT);
     inst.shootDelay = 0;
@@ -198,7 +198,7 @@ export default function PlayerUtil() {
                 if (layout < -300) {
                     layout = -300
                 }
-                layerTitle.drawImage(spellName, 0, 600 + layout);
+                layerTitle.drawImage(playerSpellName, 30, 600 + layout);
                 layerTitle.save();
                 layerTitle.font = "10px Comic Sans MS";
                 layerTitle.fillStyle = "white";

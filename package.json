@@ -24,7 +24,10 @@
     "author": "BlueWhaleMain <BlueWhaleMain@outlook.com>",
     "license": "ISC",
     "build": {
-        "nwVersion": "0.48.1"
+        "nwVersion": "0.49.0",
+        "win": {
+            "copyright": "BlueWhaleMain <BlueWhaleMain@outlook.com>"
+        }
     },
     "dependencies": {},
     "devDependencies": {

@@ -83,6 +83,12 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
         }
     }, function () {
         return 2
+    }, function (self) {
+        if (session.keys.has("r")) {
+            session.keys.delete("r");
+            self.selectedIndex = 2;
+            session.keys.add("z")
+        }
     });
     let runningFrames = 0;
     let timestamp = 0;
@@ -145,6 +151,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
         }
     });
     inst.event.addEventListener(STAGE_EVENT.end, function () {
+        session.maxMutex = 1;
         layerTitle.save();
         layerTitle.font = "19px sans-serif";
         layerTitle.fillStyle = "rgb(255,255,255)";
@@ -161,7 +168,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
             session.keys.add("z");
             return
         } else if (isStopped()) {
-            inst.ending();
+            entities.slice(0);
             return
         }
         updateEntity();
@@ -330,7 +337,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                                 ob.dispatchEvent(EVENT_MAPPING.clearEntity);
                             }
                             if (dialogue && dialogue.length > 0) {
-                                record.stg.dialogue[runningFrames] = dialogue
+                                record.stg.dialogue[runningFrames] = JSON.parse(JSON.stringify(dialogue))
                             }
                         } else if (session.dialogue === true) {
                             session.dialogue = false;
@@ -398,7 +405,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                             shift = session.slow
                         }
                         if (events && events.length > 0) {
-                            record.eventList[runningFrames] = events
+                            record.eventList[runningFrames] = JSON.parse(JSON.stringify(events))
                         }
                     }
                     if (inst.boss.length === 0) {
@@ -440,7 +447,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
             for (let i = 0; i < inst.boss.length; i++) {
                 const boss = inst.boss[i];
                 boss.draw();
-                layerTitle.drawImage(enemyMarker, boss.X - enemyMarker.width / 2, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT);
+                layerTitle.drawImage(enemyMarker, boss.hide ? 0 : 48, 0, 48, 16, boss.X - 15, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT, 30, 10);
                 if (session.debugFlag === true) {
                     if (boss.atkBox && !boss.hide) {
                         if (boss.atkBox.name === "RBox") {
@@ -541,10 +548,6 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
         }
         save.highScore = session.highScore;
         saveToFile(save)
-    };
-    inst.ending = function () {
-        session.maxMutex = 1;
-        entities.slice(0)
     };
     inst.callback.pause = function () {
         if (replayOption) {

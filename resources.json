@@ -18,6 +18,7 @@
         "borderLine": "border_line.png",
         "playerBorder": "ply_border_01.png",
         "spellName": "spell_name.png",
+        "playerSpellName": "player_spell_name.png",
         "spellPractice": "spell_practice.png",
         "enemyMarker": "enemy_marker.png",
         "enemy": "enemy.png",
@@ -42,6 +43,10 @@
         "easternNight": {
             "head": "th08_01_head.wav",
             "loop": "th08_01_loop.wav"
+        },
+        "th10_01": {
+            "head": "th10_01_head.wav",
+            "loop": "th10_01_loop.wav"
         },
         "easternNightPractice": {
             "head": "th08_21_head.wav",
@@ -110,5 +115,42 @@
         "nep00": "nep00.wav",
         "bombShoot": "bomb_shoot.wav",
         "bombShoot1": "bomb_shoot_1.wav"
+    },
+    "Style": {
+        "th_08": {
+            "loading": "loading/th08_loading.png",
+            "loadingBg": "loading/th08_loading_bg.png",
+            "title": {
+                "effect": "StarSky",
+                "bgm": {
+                    "head": "th08_01_head.wav",
+                    "loop": "th08_01_loop.wav"
+                }
+            }
+        },
+        "th_10": {
+            "loading": "loading/th10_loading.png",
+            "loadingBg": "loading/th10_loading_bg.png",
+            "title": {
+                "effect": "Layer",
+                "bgm": {
+                    "head": "th10_01_head.wav",
+                    "loop": "th10_01_loop.wav"
+                },
+                "layers": [
+                    {
+                        "img": "background/th10_stg3bg2.png",
+                        "patten": "repeat",
+                        "speed": {
+                            "x": 0,
+                            "y": 1
+                        },
+                        "width": 640,
+                        "height": 608,
+                        "loop": 82
+                    }
+                ]
+            }
+        }
     }
 }

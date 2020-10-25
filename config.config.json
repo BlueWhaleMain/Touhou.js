@@ -8,6 +8,9 @@
         "FastStart": {
             "type": "boolean"
         },
+        "Style": {
+            "type": "string"
+        },
         "PauseOnBlur": {
             "type": "boolean"
         },
