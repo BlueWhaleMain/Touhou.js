@@ -16,9 +16,17 @@ simpleDialogCtx.fillRect(0, 0, 350, 50);
 const soundOfShoot = newAudio(resources.Sounds.shoot);
 
 export function SimpleDialogue(textObjs, imageObjs, doSth, callback) {
-    let o = 1, oa = 0, loaded = false;
+    let o = 1, oa = 0, loaded = false, timestamp = 0;
     const inst = {};
+    inst.maxDelayTime = 300;
     inst.tick = function () {
+        if (timestamp >= 0) {
+            timestamp++
+        }
+        if (timestamp > inst.maxDelayTime) {
+            timestamp = -1;
+            inst.next()
+        }
         if (loaded === false) {
             loaded = true;
             if (typeof doSth === "function") {
