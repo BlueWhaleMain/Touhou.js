@@ -3,65 +3,73 @@ import {
     cancelAllSound,
     changeBGM,
     clearScreen,
-    config,
+    continueAllSound,
     entities,
     EVENT_MAPPING,
     getLayer,
     getValidTimeFileName,
     GUI_SCREEN,
     HEIGHT,
+    killAnotherBGM,
+    L,
     LAYER_MAPPING,
+    loadingScreenCache,
     loadSaveFromFile,
     newAudio,
     newImage,
+    options,
+    profile,
     rendererEntity,
     resetAndSaveConfig,
     resources,
-    save,
     saveConfigToFile,
     saveOrDownload,
     session,
+    STAGE_VER,
+    stopAllSound,
     TAGS,
     takeScreenShot,
     tickingEntity,
+    timeEscape,
     updateEntity,
-    WIDTH, timeEscape, continueAllSound, stopAllSound, loadingScreenCache, STAGE_VER, killAnotherBGM, L
-} from "./src/util.js";
-import MenuStar from "./src/prefabs/menu_star.js";
-import SpellPractice from "./src/stage/spell_practice.js";
-import {ob} from "./src/observer.js"
-import Menu, {lightMenuItem, MenuItem} from "./src/menu.js";
-import Rumia from "./src/prefabs/player/rumia.js";
-import bossYukariYakumo from "./src/prefabs/boss/yukari_yakumo.js";
-import test1 from "./src/cards/test_1.js";
-import test2 from "./src/cards/test_2.js";
-import test3 from "./src/cards/test_3.js";
-import boundaryBetweenWaveAndParticle from "./src/cards/boundary_between_wave_and_particle.js";
-import {SimpleDialogue, title} from "./src/dialogue.js";
-import bossKirisameMarisa from "./src/prefabs/boss/kirisame_marisa.js";
-import milkyWay from "./src/cards/milky_way.js";
-import bossRumia from "./src/prefabs/boss/rumia.js";
-import nightBird from "./src/cards/night_bird.js";
-import demarcation from "./src/cards/demarcation.js";
-import voidDeath from "./src/cards/void_death.js";
-import bossPatchouliKnowledge from "./src/prefabs/boss/patchouli_knowledge.js";
-import metalFatigue from "./src/cards/metal_fatigue.js";
-import mercuryPoison from "./src/cards/mercury_poison.js";
-import HakureiReimu from "./src/prefabs/player/hakurei_reimu.js";
-import asteroidBelt from "./src/cards/asteroid_belt.js";
-import masterSpark from "./src/cards/master_spark.js";
-import bossHakureiReimu from "./src/prefabs/boss/hakurei_reimu.js";
-import dreamSealLoose from "./src/cards/dream_seal_loose.js";
-import dreamSealSilence from "./src/cards/dream_seal_silence.js";
-import doubleSpark from "./src/cards/double_spark.js";
-import test from "./src/cards/test.js";
-import moonlightRay from "./src/cards/moonlight_ray.js";
-import darkSideOfTheMoon from "./src/cards/dark_side_of_the_moon.js";
+    WIDTH
+} from "./util.js";
+import MenuStar from "./prefabs/menu_star.js";
+import SpellPractice from "./stage/spell_practice.js";
+import {ob} from "./observer.js"
+import Menu, {lightMenuItem, MenuItem} from "./menu.js";
+import Rumia from "./prefabs/player/rumia.js";
+import bossYukariYakumo from "./prefabs/boss/yukari_yakumo.js";
+import test1 from "./cards/test_1.js";
+import test2 from "./cards/test_2.js";
+import test3 from "./cards/test_3.js";
+import boundaryBetweenWaveAndParticle from "./cards/boundary_between_wave_and_particle.js";
+import {SimpleDialogue, title} from "./dialogue.js";
+import bossKirisameMarisa from "./prefabs/boss/kirisame_marisa.js";
+import milkyWay from "./cards/milky_way.js";
+import bossRumia from "./prefabs/boss/rumia.js";
+import nightBird from "./cards/night_bird.js";
+import demarcation from "./cards/demarcation.js";
+import voidDeath from "./cards/void_death.js";
+import bossPatchouliKnowledge from "./prefabs/boss/patchouli_knowledge.js";
+import metalFatigue from "./cards/metal_fatigue.js";
+import mercuryPoison from "./cards/mercury_poison.js";
+import HakureiReimu from "./prefabs/player/hakurei_reimu.js";
+import asteroidBelt from "./cards/asteroid_belt.js";
+import masterSpark from "./cards/master_spark.js";
+import bossHakureiReimu from "./prefabs/boss/hakurei_reimu.js";
+import dreamSealLoose from "./cards/dream_seal_loose.js";
+import dreamSealSilence from "./cards/dream_seal_silence.js";
+import doubleSpark from "./cards/double_spark.js";
+import test from "./cards/test.js";
+import moonlightRay from "./cards/moonlight_ray.js";
+import darkSideOfTheMoon from "./cards/dark_side_of_the_moon.js";
+import rumiaThink from "./cards/rumia_think.js";
 
 const gui = require("nw" + ".gui");
 //idea划线
 const win = gui["Window"].get();
-if (config.PauseOnBlur === true) {
+if (options.PauseOnBlur === true) {
     win.on("focus", function () {
         continueAllSound();
         window.paused = false;
@@ -73,7 +81,7 @@ if (config.PauseOnBlur === true) {
     });
 }
 let _;
-const ignoreKeys = new Set(), entityCountSecMax = config.EntityCountSecMax;
+const ignoreKeys = new Set(), entityCountSecMax = options.EntityCountSecMax;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const layerTitle = getLayer(128);
@@ -87,7 +95,7 @@ const ASSETS = {
         yukariYakumo: newImage(resources.Images.bossYukariYakumo)
     },
     SOUND: {
-        th1001: {
+        th10_01: {
             head: newAudio(resources.Sounds.th10_01.head, 100, "BGM"),
             loop: newAudio(resources.Sounds.th10_01.loop, 100, "BGM"),
             name: "被封印的众神",
@@ -205,7 +213,7 @@ const ASSETS = {
         invalid: newAudio(resources.Sounds.invalid),
         ok: newAudio(resources.Sounds.ok),
         timeout: newAudio(resources.Sounds.timeout),
-        timeout1: newAudio(resources.Sounds.timeout1, 100, "BGM")
+        timeout1: newAudio(resources.Sounds.timeout1, 100, "TEST")
     }
 };
 const transRumia = document.createElement("canvas");
@@ -224,7 +232,7 @@ function addToMusicRoom(bgm) {
 }
 
 addToMusicRoom(ASSETS.SOUND.easternNight);
-addToMusicRoom(ASSETS.SOUND.th1001);
+addToMusicRoom(ASSETS.SOUND.th10_01);
 addToMusicRoom(ASSETS.SOUND.easternNightPractice);
 addToMusicRoom(ASSETS.SOUND.rumia);
 addToMusicRoom(ASSETS.SOUND.hakureiReimu);
@@ -293,6 +301,9 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
         }
         let y = 0;
         for (let i = 0; i < self.menuList.length; i++) {
+            if (!self.canDraw(i)) {
+                continue
+            }
             layerTitle.fillStyle = "rgb(153,153,153)";
             layerTitle.shadowColor = "black";
             if (self.selectedIndex === i) {
@@ -882,7 +893,7 @@ function getPlayer(player) {
 }
 
 function doReplay(replay, force) {
-    if (replay.stg?.DeveloperMode === config.DeveloperMode && replay.STAGE_VER === STAGE_VER || force) {
+    if (replay.stg?.DeveloperMode === options.DeveloperMode && replay.STAGE_VER === STAGE_VER || force) {
         session.selectedPlayer = getPlayer(replay.stg?.player);
         if (replay.stg?.menu === "practiceStart") {
             practiceStartFactory(replay.stg?.selectedIndex, replay);
@@ -940,7 +951,7 @@ const replayMenu = new Menu(replayList, function (selectedIndex) {
         const replay = rpl[self.selectedIndex];
         layerTitle.fillText("Detail:" + getStageStr(replay.stg.menu, replay.stg.selectedIndex), 40, 420);
         layerTitle.fillText("Player:" + replay.stg.player, 40, 436);
-        if (replay.stg.DeveloperMode !== config.DeveloperMode) {
+        if (replay.stg.DeveloperMode !== options.DeveloperMode) {
             layerTitle.fillStyle = "red"
         }
         layerTitle.fillText("Mode:" + (replay.stg.DeveloperMode ? "Developer" : "Player"), 40, 452);
@@ -958,12 +969,12 @@ const replayMenu = new Menu(replayList, function (selectedIndex) {
     self.aline = 400;
     rpl.slice(0);
     replayList = [];
-    const files = fs.readdirSync(config.Replay);
+    const files = fs.readdirSync(options.Replay);
     const len = files.length;
     for (let i = 0; i < len; i++) {
         if (files[i].toLowerCase().endsWith(".json")) {
             try {
-                const replay = JSON.parse(fs.readFileSync(config.Replay + "/" + files[i]).toString());
+                const replay = JSON.parse(fs.readFileSync(options.Replay + "/" + files[i]).toString());
                 rpl.push(replay);
                 replayList.push(lightMenuItem(40, 80 + 20 * i, "No." + (i + 1) + " "
                     + (replay.name || files[i]).substr(0, 18) + " "
@@ -1146,7 +1157,6 @@ addSpellCard("金&水符「水银之毒」", function () {
 addSpellCard("灵符「梦想封印　散」", function () {
     const boss = bossHakureiReimu(480, -60, 1000, [
         dreamSealLoose(function (cd) {
-            cd.noCardFrame = null;
             cd.practice = true
         })
     ]);
@@ -1162,6 +1172,14 @@ addSpellCard("散灵「梦想封印　寂」", function () {
     boss.playBGM();
     return [boss]
 }, true);
+addSpellCard("RUMIA「THINK」", function () {
+    const boss = bossRumia(-50, 125, 1000, [
+        rumiaThink(function (cd) {
+            cd.practice = true
+        })
+    ]);
+    return [boss]
+}, false);
 const spm = [];
 const spl = sps.length;
 for (let i = 0; i < spl; i++) {
@@ -1206,6 +1224,9 @@ const spellPracticeMenu = new Menu(spm, function (selectedIndex) {
     layerTitle.font = "12px Comic Sans MS";
     layerTitle.shadowBlur = 3;
     for (let i = 0; i < self.menuList.length; i++) {
+        if (!self.canDraw(i)) {
+            continue
+        }
         layerTitle.fillStyle = "rgb(153,153,153)";
         layerTitle.shadowColor = "black";
         if (self.selectedIndex === i) {
@@ -1239,13 +1260,13 @@ const keyBoardOptionMenu = new Menu([
     layerTitle.shadowBlur = 3;
     layerTitle.fillStyle = "rgb(168,24,33)";
     layerTitle.shadowColor = "black";
-    layerTitle.fillText(config.KeyBoard.Up, 500, 275);
-    layerTitle.fillText(config.KeyBoard.Down, 500, 295);
-    layerTitle.fillText(config.KeyBoard.Left, 500, 315);
-    layerTitle.fillText(config.KeyBoard.Right, 500, 335);
-    layerTitle.fillText(config.KeyBoard.Shoot, 500, 355);
-    layerTitle.fillText(config.KeyBoard.Bomb, 500, 375);
-    layerTitle.fillText(config.KeyBoard.Slow, 500, 395);
+    layerTitle.fillText(options.KeyBoard.Up, 500, 275);
+    layerTitle.fillText(options.KeyBoard.Down, 500, 295);
+    layerTitle.fillText(options.KeyBoard.Left, 500, 315);
+    layerTitle.fillText(options.KeyBoard.Right, 500, 335);
+    layerTitle.fillText(options.KeyBoard.Shoot, 500, 355);
+    layerTitle.fillText(options.KeyBoard.Bomb, 500, 375);
+    layerTitle.fillText(options.KeyBoard.Slow, 500, 395);
     layerTitle.restore();
     rendererEntity()
 }, function (self) {
@@ -1256,22 +1277,8 @@ const keyBoardOptionMenu = new Menu([
 });
 const optionMenu = new Menu([
     MenuItem(380, 275, "Player"),
-    MenuItem(380, 295, "BGM Volume", 150, function (inst) {
-        if (inst.selected) {
-            if (ASSETS.SOUND.timeout1.paused) {
-                ASSETS.SOUND.timeout1.currentTime = 0;
-                _ = ASSETS.SOUND.timeout1.play()
-            }
-        }
-    }),
-    MenuItem(380, 315, "S.E.Volume", 150, function (inst) {
-        if (inst.selected) {
-            if (ASSETS.SOUND.timeout.paused) {
-                ASSETS.SOUND.timeout.currentTime = 0;
-                _ = ASSETS.SOUND.timeout.play()
-            }
-        }
-    }),
+    MenuItem(380, 295, "BGM Volume", 150),
+    MenuItem(380, 315, "S.E.Volume", 150),
     MenuItem(380, 335, "KeyBoard Options"),
     MenuItem(380, 355, "Reset"),
     MenuItem(380, 375, "Save"),
@@ -1327,7 +1334,7 @@ const optionMenu = new Menu([
     for (let i = 1; i < 8; i++) {
         layerTitle.fillStyle = "rgb(168,24,33)";
         layerTitle.shadowColor = "black";
-        if (config.Player === i) {
+        if (options.Player === i) {
             layerTitle.fillStyle = "rgb(255,255,255)";
             layerTitle.shadowColor = "red";
         }
@@ -1340,7 +1347,7 @@ const optionMenu = new Menu([
         layerTitle.fillStyle = "rgb(168,24,33)";
         layerTitle.shadowColor = "black";
     }
-    layerTitle.fillText(config.Volume.BGM + "%", 500, 295);
+    layerTitle.fillText(options.Volume.BGM + "%", 500, 295);
     if (self.selectedIndex === 2) {
         layerTitle.fillStyle = "rgb(255,255,255)";
         layerTitle.shadowColor = "red";
@@ -1348,14 +1355,14 @@ const optionMenu = new Menu([
         layerTitle.fillStyle = "rgb(168,24,33)";
         layerTitle.shadowColor = "black";
     }
-    layerTitle.fillText(config.Volume.SE + "%", 500, 315);
+    layerTitle.fillText(options.Volume.SE + "%", 500, 315);
     layerTitle.restore();
     switch (self.selectedIndex) {
         case 0:
             if (session.keys.has("ArrowLeft".toLowerCase())) {
                 session.keys.delete("ArrowLeft".toLowerCase());
-                if (config.Player > 1) {
-                    config.Player--;
+                if (options.Player > 1) {
+                    options.Player--;
                     ASSETS.SOUND.ok.currentTime = 0;
                     _ = ASSETS.SOUND.ok.play()
                 } else {
@@ -1364,8 +1371,8 @@ const optionMenu = new Menu([
                 }
             } else if (session.keys.has("ArrowRight".toLowerCase())) {
                 session.keys.delete("ArrowRight".toLowerCase());
-                if (config.Player < 7) {
-                    config.Player++;
+                if (options.Player < 7) {
+                    options.Player++;
                     ASSETS.SOUND.ok.currentTime = 0;
                     _ = ASSETS.SOUND.ok.play()
                 } else {
@@ -1377,8 +1384,8 @@ const optionMenu = new Menu([
         case 1:
             if (session.keys.has("ArrowLeft".toLowerCase())) {
                 session.keys.delete("ArrowLeft".toLowerCase());
-                if (config.Volume.BGM >= 5) {
-                    config.Volume.BGM -= 5;
+                if (options.Volume.BGM >= 5) {
+                    options.Volume.BGM -= 5;
                     audioObserver.dispatchEvent(EVENT_MAPPING.volumeChange, {type: "BGM"});
                     ASSETS.SOUND.ok.currentTime = 0;
                     _ = ASSETS.SOUND.ok.play()
@@ -1388,8 +1395,8 @@ const optionMenu = new Menu([
                 }
             } else if (session.keys.has("ArrowRight".toLowerCase())) {
                 session.keys.delete("ArrowRight".toLowerCase());
-                if (config.Volume.BGM <= 95) {
-                    config.Volume.BGM += 5;
+                if (options.Volume.BGM <= 95) {
+                    options.Volume.BGM += 5;
                     audioObserver.dispatchEvent(EVENT_MAPPING.volumeChange, {type: "BGM"});
                     ASSETS.SOUND.ok.currentTime = 0;
                     _ = ASSETS.SOUND.ok.play()
@@ -1402,8 +1409,8 @@ const optionMenu = new Menu([
         case 2:
             if (session.keys.has("ArrowLeft".toLowerCase())) {
                 session.keys.delete("ArrowLeft".toLowerCase());
-                if (config.Volume.SE >= 5) {
-                    config.Volume.SE -= 5;
+                if (options.Volume.SE >= 5) {
+                    options.Volume.SE -= 5;
                     audioObserver.dispatchEvent(EVENT_MAPPING.volumeChange, {type: "SE"});
                     ASSETS.SOUND.ok.currentTime = 0;
                     _ = ASSETS.SOUND.ok.play()
@@ -1413,8 +1420,8 @@ const optionMenu = new Menu([
                 }
             } else if (session.keys.has("ArrowRight".toLowerCase())) {
                 session.keys.delete("ArrowRight".toLowerCase());
-                if (config.Volume.SE <= 95) {
-                    config.Volume.SE += 5;
+                if (options.Volume.SE <= 95) {
+                    options.Volume.SE += 5;
                     audioObserver.dispatchEvent(EVENT_MAPPING.volumeChange, {type: "SE"});
                     ASSETS.SOUND.ok.currentTime = 0;
                     _ = ASSETS.SOUND.ok.play()
@@ -1564,17 +1571,17 @@ const mainMenu = new Menu([
             layerStage.restore()
     }
     session.Idle++;
-    if (session.Idle > config.Idle) {
+    if (session.Idle > options.Idle) {
         session.Idle = 0;
-        const files = fs.readdirSync("./");
+        const files = fs.readdirSync("./assets/demos/");
         const table = [];
         const filesLen = files.length;
         for (let i = 0; i < filesLen; i++) {
-            if (/^demo_\d+\.json$/.test(files[i].toLowerCase())) {
+            if (/^\d+\.json$/.test(files[i].toLowerCase())) {
                 table.push(files[i].toLowerCase())
             }
         }
-        const demo = "./" + table[~~(Math.random() * table.length)];
+        const demo = "./assets/demos/" + table[~~(Math.random() * table.length)];
         if (fs.existsSync(demo)) {
             session.demoPlay = true;
             doReplay(JSON.parse(fs.readFileSync(demo).toString()), true)
@@ -1582,7 +1589,7 @@ const mainMenu = new Menu([
     }
     updateEntity()
 }, function (self) {
-    if (config.Style === "auto") {
+    if (options.Style === "auto") {
         const keys = [];
         for (const key in resources.Style) {
             if (resources.Style.hasOwnProperty(key)) {
@@ -1627,7 +1634,6 @@ function runSpellPractice() {
 
 let restore = false;
 const imageOfError = newImage(resources.Images.error);
-const soundOfError = newAudio(resources.Sounds.failure.all, config.Volume.BGM, "BGM");
 
 function error(e, fatal = false) {
     console.error(e);
@@ -1653,9 +1659,6 @@ function error(e, fatal = false) {
         layerStage.fillText(s, 2, y)
     });
     layerStage.restore();
-    // 10 37
-    soundOfError.currentTime = 0;
-    _ = soundOfError.play()
 }
 
 const loadingBgm = newAudio(resources.Sounds.loading, 100, "BGM");
@@ -1674,7 +1677,7 @@ function transitions(f, callback) {
     tickingEntity();
     entities.length = 0;
     loadSaveFromFile();
-    session.highScore = save.highScore;
+    session.highScore = profile.highScore;
     if (typeof callback === "function") {
         callback()
     }
@@ -1704,11 +1707,11 @@ function run() {
             session.keys.delete("f5")
         }
         if (session.debugFlag) {
-            layerEffect.save();
-            layerEffect.font = "10px Comic Sans MS";
-            layerEffect.fillStyle = "white";
-            layerEffect.fillText("调试屏幕已开启", 0, HEIGHT - 1);
-            layerEffect.restore()
+            layerTitle.save();
+            layerTitle.font = "10px Comic Sans MS";
+            layerTitle.fillStyle = "white";
+            layerTitle.fillText("调试屏幕已开启", 0, HEIGHT - 1);
+            layerTitle.restore()
         }
         if (session.keys.has("f11")) {
             // idea 挨打
@@ -1766,7 +1769,7 @@ function loading(f) {
             layerStage.drawImage(session.loadingBg, 0, 0)
         } catch (e) {
         }
-        if (config.DeveloperMode === true) {
+        if (options.DeveloperMode === true) {
             layerTitle.save();
             layerTitle.fillStyle = "white";
             layerTitle.font = "16px sans-serif";
@@ -1802,7 +1805,7 @@ function loading(f) {
         layerStage.fillStyle = "white";
         layerStage.fillText((session.loadingCount / session.loadingTotal * 100).toFixed() + "%", 0, 479);
         layerStage.restore();
-        if (session.loadingCount === session.loadingTotal && loadingBgm.currentTime > 0 && (loadingBgm.paused || config.FastStart) || session?.currentBGM?.dom?.currentTime > 0) {
+        if (session.loadingCount === session.loadingTotal && loadingBgm.currentTime > 0 && (loadingBgm.paused || options.FastStart) || session?.currentBGM?.dom?.currentTime > 0) {
             if (!loadingBgm.paused) {
                 loadingBgm.pause();
                 loadingBgm.currentTime = 0;
@@ -1818,7 +1821,14 @@ function loading(f) {
 
 let n = 1000;
 let mutex = 0;
+let dc = 0;
 session.maxMutex = 1;
+
+setInterval(function () {
+    if (dc < mutex) {
+        dc += mutex
+    }
+}, Math.round(n / options.FrameMax))
 
 function nextFrame(f) {
     if (session.slowRunning === true) {
@@ -1831,155 +1841,181 @@ function nextFrame(f) {
     while (mutex < session.maxMutex) {
         mutex++;
         // 配置文件为整数时idea划线==
-        if (config.FrameMax === "auto") {
+        if (options.FrameMax === "auto") {
             requestAnimationFrame(function () {
                 mutex--;
                 f();
             })
-        } else if (typeof config.FrameMax !== "number") {
+        } else if (typeof options.FrameMax !== "number") {
             throw Error("FrameMax muse be an integer or 'auto'.")
         } else {
-            setTimeout(function () {
-                mutex--;
-                f();
-            }, n / config.FrameMax)
+            function lock(f) {
+                if (dc > 0) {
+                    dc--
+                    mutex--;
+                    f();
+                } else {
+                    requestAnimationFrame(function () {
+                        lock(f)
+                    })
+                }
+            }
+
+            requestAnimationFrame(function () {
+                lock(f)
+            })
         }
         ob.dispatchEvent(EVENT_MAPPING.load)
     }
     if (session.keys.has("f2")) {
-        saveOrDownload(takeScreenShot(), config.ScreenShot, "Touhou.JS_ScreenShot_" + getValidTimeFileName() + ".png");
+        saveOrDownload(takeScreenShot(), options.ScreenShot, "Touhou.JS_ScreenShot_" + getValidTimeFileName() + ".png");
         session.keys.delete("f2")
     }
 }
 
-try {
-    const requireECS = 768;
-    const status = document.createElement("div");
-    status.style.position = "absolute";
-    status.style.bottom = "0";
-    status.style.right = "0";
-    status.style.fontFamily = "Comic Sans MS";
-    status.style.fontSize = "large";
-    status.style.zIndex = "65535";
-    document.body.append(status);
-    if (config.Style === "random" || config.Style === "auto") {
-        const keys = [];
-        for (const key in resources.Style) {
-            if (resources.Style.hasOwnProperty(key)) {
-                keys.push(key)
-            }
+function main() {
+    try {
+        if (document.getElementById('status')) {
+            return;
         }
-        style = resources.Style[keys[~~(Math.random() * keys.length)]]
-    } else {
-        style = resources.Style[config.Style]
-    }
-    session.loading = newImage(style.loading);
-    session.loadingBg = newImage(style.loadingBg);
-    session.title = {bgm: {}, layers: []};
-    for (const layer of style.title?.layers ?? []) {
-        const obj = layer;
-        obj.img = newImage(layer.img);
-        if (typeof obj["patten"] === "string") {
-            const bg = document.createElement("canvas");
-            bg.width = WIDTH;
-            bg.height = HEIGHT * 2;
-            obj.img.addEventListener("load", function () {
-                const bgCtx = bg.getContext("2d");
-                bgCtx.fillStyle = layerStage.createPattern(obj.img, obj["patten"]);
-                bgCtx.fillRect(0, 0, WIDTH, HEIGHT * 2);
-                obj.img = bg
-            })
+        const icon = document.createElement('link')
+        icon.rel = 'shortcut icon'
+        icon.href = 'assets/index.png'
+        document.head.appendChild(icon)
+        const stylesheet = document.createElement('link')
+        icon.rel = 'stylesheet'
+        icon.href = 'assets/index.css'
+        document.head.appendChild(stylesheet)
+        const requireECS = 768;
+        const status = document.createElement("div");
+        status.id = 'status';
+        status.style.position = "absolute";
+        status.style.bottom = "0";
+        status.style.right = "0";
+        status.style.fontFamily = "Comic Sans MS";
+        status.style.fontSize = "large";
+        status.style.zIndex = "65535";
+        document.body.append(status);
+        if (options.Style === "random" || options.Style === "auto") {
+            const keys = [];
+            for (const key in resources.Style) {
+                if (resources.Style.hasOwnProperty(key)) {
+                    keys.push(key)
+                }
+            }
+            style = resources.Style[keys[~~(Math.random() * keys.length)]]
+        } else {
+            style = resources.Style[options.Style]
         }
-        obj.current = layer.current ?? {
-            X: 0, Y: 0
-        };
-        session.title.layers.push(obj)
-    }
-    session.title.bgm.head = newAudio(style.title.bgm.head);
-    session.title.bgm.loop = newAudio(style.title.bgm.loop);
-    let timestamp = 0;
-    if (entityCountSecMax && entityCountSecMax >= requireECS && entityCountSecMax <= 4294967295) {
-        setInterval(function () {
-            const time = new Date().getTime();
-            let fps = Math.floor(frames / ((time - timestamp) / 1000)), fpsColor = "white",
-                bcs = entities.length, bcsColor = "white";
-            if (fps < 20) {
-                fpsColor = "orange"
-            } else if (fps < 40) {
-                fpsColor = "blue"
+        session.loading = newImage(style.loading);
+        session.loadingBg = newImage(style.loadingBg);
+        session.title = {bgm: {}, layers: []};
+        for (const layer of style.title?.layers ?? []) {
+            const obj = layer;
+            obj.img = newImage(layer.img);
+            if (typeof obj["patten"] === "string") {
+                const bg = document.createElement("canvas");
+                bg.width = WIDTH;
+                bg.height = HEIGHT * 2;
+                obj.img.addEventListener("load", function () {
+                    const bgCtx = bg.getContext("2d");
+                    bgCtx.fillStyle = layerStage.createPattern(obj.img, obj["patten"]);
+                    bgCtx.fillRect(0, 0, WIDTH, HEIGHT * 2);
+                    obj.img = bg
+                })
             }
-            if (bcs > entityCountSecMax * 3 / 4) {
-                bcsColor = "orange"
-            } else if (bcs > entityCountSecMax / 2) {
-                bcsColor = "blue"
-            }
-            status.innerHTML =
-                "<span style='color:" + fpsColor + "'>" + fps + "FPS</span>" +
-                "<span style='color:black'>|</span>" +
-                "<span style='color:" + bcsColor + "'>" + bcs + "ECS</span>";
-            timestamp = time;
-            if (config.FrameMax !== frames) {
-                n = 1000 * frames / config.FrameMax
-            }
-            frames = 0;
-        }, 1000);
-        document.addEventListener("keydown", function (e) {
-            e = e || session["event"];
-            session.Idle = 0;
-            if (session.demoPlay) {
-                if (session.stage) {
-                    session.stage.end = true
+            obj.current = layer.current ?? {
+                X: 0, Y: 0
+            };
+            session.title.layers.push(obj)
+        }
+        session.title.bgm = ASSETS.SOUND[style.title.bgm]
+        let timestamp = 0;
+        if (entityCountSecMax && entityCountSecMax >= requireECS && entityCountSecMax <= 4294967295) {
+            setInterval(function () {
+                const time = new Date().getTime();
+                let fps = Math.floor(frames / ((time - timestamp) / 1000)), fpsColor = "white",
+                    bcs = entities.length, bcsColor = "white";
+                if (fps < 20) {
+                    fpsColor = "orange"
+                } else if (fps < 40) {
+                    fpsColor = "blue"
+                }
+                if (bcs > entityCountSecMax * 3 / 4) {
+                    bcsColor = "orange"
+                } else if (bcs > entityCountSecMax / 2) {
+                    bcsColor = "blue"
+                }
+                status.innerHTML =
+                    "<span style='color:" + fpsColor + "'>" + fps + "FPS</span>" +
+                    "<span style='color:black'>|</span>" +
+                    "<span style='color:" + bcsColor + "'>" + bcs + "ECS</span>";
+                timestamp = time;
+                if (options.FrameMax !== frames) {
+                    n = 1000 * frames / options.FrameMax
+                }
+                frames = 0;
+            }, 1000);
+            document.addEventListener("keydown", function (e) {
+                e = e || window["event"];
+                session.Idle = 0;
+                if (session.demoPlay) {
+                    if (session.stage) {
+                        session.stage.end = true
+                    } else {
+                        session.demoPlay = false
+                    }
+                }
+                const key = e.key.toLowerCase();
+                if (ignoreKeys.has(key)) {
+                    return
                 } else {
-                    session.demoPlay = false
+                    ignoreKeys.add(key)
                 }
-            }
-            const key = e.key.toLowerCase();
-            if (ignoreKeys.has(key)) {
-                return
-            } else {
-                ignoreKeys.add(key)
-            }
-            if (key === config.KeyBoard.Slow.toLowerCase() && !session.replaying) {
-                ob.dispatchEvent(EVENT_MAPPING.shift)
-            }
-            if (restore) {
-                if (key === "z") {
-                    restore = false;
-                    mainMenu.load();
-                    ASSETS.SOUND.ok.currentTime = 0;
-                    _ = ASSETS.SOUND.ok.play();
-                    nextFrame(run)
-                } else if (key === "escape") {
-                    win.close()
+                if (key === options.KeyBoard.Slow.toLowerCase() && !session.replaying) {
+                    ob.dispatchEvent(EVENT_MAPPING.shift)
                 }
-                return
+                if (restore) {
+                    if (key === "z") {
+                        restore = false;
+                        mainMenu.load();
+                        ASSETS.SOUND.ok.currentTime = 0;
+                        _ = ASSETS.SOUND.ok.play();
+                        nextFrame(run)
+                    } else if (key === "escape") {
+                        win.close()
+                    }
+                    return
+                }
+                session.keys.add(key)
+            });
+            document.addEventListener("keyup", function (e) {
+                e = e || window["event"];
+                session.Idle = 0;
+                const key = e.key.toLowerCase();
+                if (ignoreKeys.has(key)) {
+                    ignoreKeys.delete(key)
+                }
+                session.keys.delete(key);
+                if (key === options.KeyBoard.Slow.toLowerCase() && !session.replaying) {
+                    ob.dispatchEvent(EVENT_MAPPING.unshift)
+                }
+            });
+            mainMenu.load();
+            // 仅用于启动
+            if (options.FullScreen === true) {
+                win["enterFullscreen"]()
             }
-            session.keys.add(key)
-        });
-        document.addEventListener("keyup", function (e) {
-            e = e || session["event"];
-            session.Idle = 0;
-            const key = e.key.toLowerCase();
-            if (ignoreKeys.has(key)) {
-                ignoreKeys.delete(key)
-            }
-            session.keys.delete(key);
-            if (key === config.KeyBoard.Slow.toLowerCase() && !session.replaying) {
-                ob.dispatchEvent(EVENT_MAPPING.unshift)
-            }
-        });
-        mainMenu.load();
-        // 仅用于启动
-        if (config.FullScreen === true) {
-            win["enterFullscreen"]()
+            nextFrame(run)
+        } else {
+            error(new Error("ConfigValueError: 'EntityCountSecMax' must be an integer from " + requireECS + "~4294967295."), true)
         }
-        nextFrame(run)
-    } else {
-        error(new Error("ConfigValueError: 'EntityCountSecMax' must be an integer from " + requireECS + "~4294967295."), true)
-    }
-} catch (e) {
-    console.error(e);
-    if (confirm(e.message)) {
-        win.close();
+    } catch (e) {
+        console.error(e);
+        if (confirm(e.message)) {
+            win.close();
+        }
     }
 }
+
+main();

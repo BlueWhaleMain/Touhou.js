@@ -1,10 +1,10 @@
 {
-    "$schema": "config.config.json",
-    "DeveloperMode": false,
+    "$schema": "/assets/options.config.json",
+    "DeveloperMode": true,
     "FastStart": true,
     "Style": "random",
     "PauseOnBlur": false,
-    "FrameMax": "auto",
+    "FrameMax": 60,
     "FullScreen": false,
     "EntityCountSecMax": 1024,
     "Player": 3,
@@ -13,8 +13,8 @@
     "Idle": 360,
     "MaxMutex": 4,
     "Volume": {
-        "BGM": 80,
-        "SE": 60
+        "BGM": 50,
+        "SE": 30
     },
     "KeyBoard": {
         "Up": "ArrowUp",

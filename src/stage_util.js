@@ -1,6 +1,6 @@
 import Prefab from "./prefab.js";
 import {
-    config,
+    options,
     getLayer,
     GUI_SCREEN,
     HEIGHT,
@@ -59,8 +59,8 @@ export default function StageUtil() {
                 inst.event.dispatchEvent(STAGE_EVENT.pause, {origin: "Util"});
                 return
             }
-            if (session.player.graze > config.GrazeMax) {
-                session.player.graze = config.GrazeMax
+            if (session.player.graze > options.GrazeMax) {
+                session.player.graze = options.GrazeMax
             }
             if (session.score > session.highScore && !session.developerMode) {
                 session.highScore = session.score

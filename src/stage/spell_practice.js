@@ -1,6 +1,6 @@
 import {
-    getLayer, saveToFile, save, session,
-    config,
+    getLayer, saveToFile, profile, session,
+    options,
     continueAllSound,
     entities, EVENT_MAPPING,
     GUI_SCREEN,
@@ -100,16 +100,16 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
     inst.dialogueScript = [];
     inst.boss = [];
     inst.event.addEventListener(STAGE_EVENT.load, function () {
-        if (config.Hint.mode === "auto" && !replayOption) {
+        if (options.Hint.mode === "auto" && !replayOption) {
             ob.addEventListener(EVENT_MAPPING.miss, autoSaveHint);
         }
         ob.addEventListener(EVENT_MAPPING.changeBGM, showBGM);
-        if (config.Hint.mode === "auto" || config.Hint.mode === "on") {
-            const files = fs.readdirSync(config.Hint.path);
+        if (options.Hint.mode === "auto" || options.Hint.mode === "on") {
+            const files = fs.readdirSync(options.Hint.path);
             const filesLen = files.length;
             for (let i = 0; i < filesLen; i++) {
                 if (/^.+\.json$/.test(files[i].toLowerCase())) {
-                    let hint = JSON.parse(fs.readFileSync(config.Hint.path + "/" + files[i]).toString());
+                    let hint = JSON.parse(fs.readFileSync(options.Hint.path + "/" + files[i]).toString());
                     if (hint.HINT_VER === HINT_VER) {
                         hint = hint.hint;
                         if (menu === hint.menu && selectedIndex === hint.selectedIndex) {
@@ -130,7 +130,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                 menu,
                 selectedIndex,
                 player: player.name,
-                DeveloperMode: config.DeveloperMode,
+                DeveloperMode: options.DeveloperMode,
                 dialogue: {},
                 dialogueCloseTimes: []
             },
@@ -265,7 +265,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                     runningFrames++;
                     if (replayOption) {
                         if (session.keys.has("control")) {
-                            if (session.maxMutex < config.MaxMutex) {
+                            if (session.maxMutex < options.MaxMutex) {
                                 session.maxMutex++
                             }
                         } else {
@@ -314,7 +314,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                             }
                         }
                     } else {
-                        const kb = config.KeyBoard;
+                        const kb = options.KeyBoard;
                         if (inst.dialogueScript.length > 0) {
                             session.dialogue = true;
                             const dialogue = [];
@@ -382,14 +382,14 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                         if (session.keys.has(kb.Shoot.toLowerCase())) {
                             events.push(EVENT_MAPPING.shoot);
                             ob.dispatchEvent(EVENT_MAPPING.shoot);
-                            if (config.ShootSlow === true && session.slow === false) {
+                            if (options.ShootSlow === true && session.slow === false) {
                                 session.slow = true;
                                 if (events.indexOf(EVENT_MAPPING.shift) >= 0) {
                                     events.push(EVENT_MAPPING.shift)
                                 }
                             }
                         } else {
-                            if (config.ShootSlow === true && session.slow === true) {
+                            if (options.ShootSlow === true && session.slow === true) {
                                 session.slow = false;
                                 if (events.indexOf(EVENT_MAPPING.unshift) >= 0) {
                                     events.push(EVENT_MAPPING.unshift)
@@ -447,7 +447,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
             for (let i = 0; i < inst.boss.length; i++) {
                 const boss = inst.boss[i];
                 boss.draw();
-                layerTitle.drawImage(enemyMarker, boss.hide ? 0 : 48, 0, 48, 16, boss.X - 15, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT, 30, 10);
+                layerTitle.drawImage(enemyMarker, inst.paused ? 48 : 0, 0, 48, 16, boss.X - 15, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT, 30, 10);
                 if (session.debugFlag === true) {
                     if (boss.atkBox && !boss.hide) {
                         if (boss.atkBox.name === "RBox") {
@@ -546,8 +546,8 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
         if (session.developerMode === true || replayOption) {
             return
         }
-        save.highScore = session.highScore;
-        saveToFile(save)
+        profile.highScore = session.highScore;
+        saveToFile(profile)
     };
     inst.callback.pause = function () {
         if (replayOption) {

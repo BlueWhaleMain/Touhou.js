@@ -1,4 +1,4 @@
-# config.json
+# options.json
 该文件是游戏的配置文件，详情如下：
 ```text
     "DeveloperMode": 开发者模式

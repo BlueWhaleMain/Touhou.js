@@ -122,10 +122,7 @@
             "loadingBg": "loading/th08_loading_bg.png",
             "title": {
                 "effect": "StarSky",
-                "bgm": {
-                    "head": "th08_01_head.wav",
-                    "loop": "th08_01_loop.wav"
-                }
+                "bgm": "easternNight"
             }
         },
         "th_10": {
@@ -133,10 +130,7 @@
             "loadingBg": "loading/th10_loading_bg.png",
             "title": {
                 "effect": "Layer",
-                "bgm": {
-                    "head": "th10_01_head.wav",
-                    "loop": "th10_01_loop.wav"
-                },
+                "bgm": "th10_01",
                 "layers": [
                     {
                         "img": "background/th10_stg3bg2.png",

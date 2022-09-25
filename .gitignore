@@ -1,6 +1,3 @@
-HELP.md
-save.json
-screen_shot/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
@@ -35,6 +32,6 @@ build/
 
 # Default ignored files
 /workspace.xml
-/replay/
-demo_*.json
-/hint/
+node_modules/
+publish/
+HELP.md

@@ -1,4 +1,4 @@
-import {session, getLayer, newAudio, resources, LAYER_MAPPING, HEIGHT} from "./util.js";
+import {getLayer, HEIGHT, LAYER_MAPPING, newAudio, resources, session} from "./util.js";
 
 let _;
 const soundOfSelect = newAudio(resources.Sounds.select);
@@ -8,6 +8,9 @@ export default function Menu(menuList, emitHandler, cancelHandler, drawingHandle
     this.selectedIndex = 0;
     this.sline = 0;
     this.aline = HEIGHT - 40;
+    this.moveTimeout = 10;
+    this.currentMoveTimeout = 0;
+    this.lastKey = null
     this.load = function () {
         this.menuList[this.selectedIndex].select();
         if (typeof callback === "function") {
@@ -15,7 +18,18 @@ export default function Menu(menuList, emitHandler, cancelHandler, drawingHandle
         }
     };
     this.tick = function () {
+        if (session.keys.has(this.lastKey)) {
+            if (this.currentMoveTimeout > 0) {
+                this.currentMoveTimeout--
+            }
+        } else {
+            this.currentMoveTimeout = 0
+            this.lastKey = null
+        }
         if (session.keys.has("ArrowUp".toLowerCase())) {
+            if (this.currentMoveTimeout > 0) {
+                return
+            }
             this.menuList[this.selectedIndex].leave();
             if (this.selectedIndex > 0) {
                 this.selectedIndex--
@@ -25,8 +39,16 @@ export default function Menu(menuList, emitHandler, cancelHandler, drawingHandle
             this.menuList[this.selectedIndex].select();
             soundOfSelect.currentTime = 0;
             _ = soundOfSelect.play();
-            session.keys.delete("ArrowUp".toLowerCase())
+            if (this.lastKey === "ArrowUp".toLowerCase()) {
+                this.currentMoveTimeout = this.moveTimeout
+            } else {
+                this.currentMoveTimeout = Math.min(this.moveTimeout * 3, 60)
+            }
+            this.lastKey = "ArrowUp".toLowerCase()
         } else if (session.keys.has("ArrowDown".toLowerCase())) {
+            if (this.currentMoveTimeout > 0) {
+                return
+            }
             this.menuList[this.selectedIndex].leave();
             if (this.selectedIndex < this.menuList.length - 1) {
                 this.selectedIndex++
@@ -36,7 +58,12 @@ export default function Menu(menuList, emitHandler, cancelHandler, drawingHandle
             this.menuList[this.selectedIndex].select();
             soundOfSelect.currentTime = 0;
             _ = soundOfSelect.play();
-            session.keys.delete("ArrowDown".toLowerCase())
+            if (this.lastKey === "ArrowDown".toLowerCase()) {
+                this.currentMoveTimeout = this.moveTimeout
+            } else {
+                this.currentMoveTimeout = Math.min(this.moveTimeout * 3, 60)
+            }
+            this.lastKey = "ArrowDown".toLowerCase()
         } else if (session.keys.has("z")) {
             session.keys.delete("z");
             if (typeof emitHandler === "function") {
@@ -58,12 +85,31 @@ export default function Menu(menuList, emitHandler, cancelHandler, drawingHandle
     };
     this.draw = function () {
         const length = this.menuList.length;
+        let arrow = null;
         for (let i = 0; i < length; i++) {
-            this.menuList[i].draw(this)
+            if (this.canDraw(i)) {
+                this.menuList[i].draw(this)
+                if (arrow === false) {
+                    this.menuList[i - 1].drawUp(this)
+                }
+                arrow = true
+            } else {
+                if (arrow === true) {
+                    this.menuList[i].drawDown(this)
+                    arrow = null
+                } else if (arrow === null) {
+                    arrow = false
+                }
+            }
         }
         if (typeof drawingHandler === "function") {
             drawingHandler(this)
         }
+    }
+    this.canDraw = function (i) {
+        const inst = this.menuList[i]
+        const drawY = inst.Y - (inst.selected ? (inst.Y > this.aline ? inst.Y - this.aline : 0) : this.sline)
+        return drawY >= this.menuList[0].Y && drawY <= this.aline;
     }
 }
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
@@ -136,6 +182,10 @@ export function MenuItem(x = 0, y = 0, context = "", fake = 150, drawingHandler)
             drawingHandler(inst, menu)
         }
     };
+    inst.drawUp = function (menu) {
+    }
+    inst.drawDown = function (menu) {
+    }
     return inst
 }
 
@@ -174,9 +224,14 @@ export function lightMenuItem(x, y, context, drawingHandler) {
     inst.draw = function (menu) {
         if (inst.selected) {
             if (inst.Y > menu.aline) {
-                menu.sline = inst.Y - menu.aline
+                const lane = inst.Y - menu.aline
+                if (menu.sline < lane) {
+                    menu.sline = lane
+                }
             } else {
-                menu.sline = 0
+                if (inst.Y - menu.sline < menu.menuList[0].Y) {
+                    menu.sline -= (menu.menuList[0].Y - (inst.Y - menu.sline))
+                }
             }
         }
         layerTitle.save();
@@ -186,5 +241,15 @@ export function lightMenuItem(x, y, context, drawingHandler) {
             drawingHandler(inst, menu)
         }
     };
+    inst.drawUp = function (menu) {
+        layerTitle.save();
+        inst.initDraw(layerTitle).fillText("▲", inst.X, inst.Y - menu.sline);
+        layerTitle.restore();
+    }
+    inst.drawDown = function (menu) {
+        layerTitle.save();
+        inst.initDraw(layerTitle).fillText("▼", inst.X, inst.Y - menu.sline);
+        layerTitle.restore();
+    }
     return inst
 }

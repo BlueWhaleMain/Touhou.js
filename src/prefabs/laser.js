@@ -1,13 +1,16 @@
 import {
     drawSticker,
-    entities, EVENT_MAPPING,
+    entities,
+    EVENT_MAPPING,
     getLayer,
     HEIGHT,
     L,
     LAYER_MAPPING,
+    newAudio,
     RBox,
-    TAGS,
-    session, newAudio, resources
+    resources,
+    session,
+    TAGS
 } from "../util.js";
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
@@ -71,9 +74,9 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
             case "knife":
                 break;
             case "master_spark":
-                inst.sizeBox = new RBox(256, 512);
-                inst.atkBox = new RBox(224, 480);
-                xs = 256;
+                inst.sizeBox = new RBox(256, 512, angle);
+                xs = 164;
+                inst.atkBox = new RBox(xs, 480, angle);
                 break;
             default:
                 throw new Error("LaserType: " + type + " is not supported.")
@@ -135,11 +138,11 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                 layerStage.drawImage(draw, -width / 2, -inst.sizeBox.ys / 2, width, inst.sizeBox.ys);
                 inst.atkBox.xs = xs * width / inst.sizeBox.xs;
                 layerStage.restore();
-                if (session.debugFlag === true) {
+                if (session.debugFlag === true && session.developerMode === true) {
                     layerUI.save();
                     layerUI.strokeStyle = "red";
                     layerUI.translate(inst.X + inst.DX, inst.Y + inst.DY);
-                    layerUI.rotate(inst.angle);
+                    layerUI.rotate(inst.atkBox.angle);
                     layerUI.strokeRect(-inst.atkBox.xs / 2, -inst.atkBox.ys / 2, inst.atkBox.xs, inst.atkBox.ys);
                     layerUI.restore()
                 }

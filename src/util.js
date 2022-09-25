@@ -274,14 +274,14 @@ export function newAudio(name, volume = 100, type = "SE") {
         if (session.loadingCount < session.loadingTotal) {
             session.loadingCount++
         }
-        audio.volume = volume * config.Volume[type] / 10000;
+        audio.volume = volume * options.Volume[type] / 10000;
         loadingScreenCache.push(consoleTime() + " " + audioName + " load success!");
         audio.removeEventListener("canplay", canplay)
     });
 
     function onVolumeChange(e) {
         if (e.detail.type === type) {
-            audio.volume = volume * config.Volume[type] / 10000
+            audio.volume = volume * options.Volume[type] / 10000
         }
     }
 
@@ -517,12 +517,15 @@ export const debugLayerCache = {
     LINE: {}
 };
 export const session = {};
-export let config = require("config.json");
-export const resources = require("resources.json");
-export let save;
-if (fs.existsSync("save.json")) {
-    save = require("save.json");
-    session.highScore = save.highScore;
+export let options = JSON.parse(fs.readFileSync("options.json").toString());
+export const resources = JSON.parse(fs.readFileSync("assets/resources.json").toString()) || require("../assets/resources.json");
+export let profile;
+if (!fs.existsSync("save")) {
+    fs.mkdirSync("save")
+}
+if (fs.existsSync("save/profile.json")) {
+    profile = JSON.parse(fs.readFileSync("save/profile.json").toString());
+    session.highScore = profile.highScore;
 } else {
     session.highScore = 0
 }
@@ -532,19 +535,19 @@ session.score = 0;
 session.slow = false;
 session.keys = new Set();
 session.debugFlag = false;
-if (config.Player > 7 || config.Player < 1) {
+if (options.Player > 7 || options.Player < 1) {
     throw new Error("ConfigValueError: 'Player' must be an integer from 1~7.")
 }
-if (config.DeveloperMode === true) {
+if (options.DeveloperMode === true) {
     session.developerMode = true
 }
 
 export function saveConfigToFile() {
-    fs.writeFileSync("./config.json", JSON.stringify(config, null, 4))
+    fs.writeFileSync("./options.json", JSON.stringify(options, null, 4))
 }
 
 export function resetAndSaveConfig() {
-    config = {
+    options = {
         DeveloperMode: false,
         FastStart: true,
         Style: "random",
@@ -581,16 +584,16 @@ export function resetAndSaveConfig() {
 }
 
 export function loadSaveFromFile() {
-    if (!fs.existsSync("save.json")) {
+    if (!fs.existsSync("save/profile.json")) {
         saveToFile({
             highScore: 0
         })
     }
-    save = require("save.json")
+    profile = JSON.parse(fs.readFileSync("save/profile.json").toString())
 }
 
 export function saveToFile(save) {
-    fs.writeFileSync("./save.json", JSON.stringify(save))
+    fs.writeFileSync("./save/profile.json", JSON.stringify(save))
 }
 
 export const WIDTH = 640;
@@ -1037,8 +1040,12 @@ export function changeBGM(bgm, callback, force = false) {
 
 export const STAGE_VER = 1;
 
+if (!fs.existsSync(options.Replay)) {
+    fs.mkdirSync(options.Replay)
+}
+
 export function saveReplay(name, stg, rand, eventList) {
-    fs.writeFileSync(config.Replay + "/" + new Date().valueOf() + ".json", JSON.stringify({
+    fs.writeFileSync(options.Replay + "/" + new Date().valueOf() + ".json", JSON.stringify({
         name, stg, rand, eventList, STAGE_VER
     }))
 }
@@ -1103,7 +1110,7 @@ export const HINT_VER = 1;
 export const AUTO_HINT = "hint_auto";
 
 export function saveHint(name, timestamp, hint) {
-    fs.writeFileSync(config.Hint.path + "/" + name + ".json", JSON.stringify({
+    fs.writeFileSync(options.Hint.path + "/" + name + ".json", JSON.stringify({
         HINT_VER, timestamp, hint
     }))
 }

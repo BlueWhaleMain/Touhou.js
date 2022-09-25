@@ -6,7 +6,7 @@ import {
     L,
     TAGS,
     WIDTH,
-    config,
+    options,
     session,
     EVENT_MAPPING,
     GUI_SCREEN, newAudio, resources, LAYER_MAPPING, newImage
@@ -29,7 +29,7 @@ export default function PlayerUtil() {
     inst.indTime = 60;
     inst.indMin = -60;
     inst.miss = false;
-    inst.playerCount = config.Player;
+    inst.playerCount = options.Player;
     inst.bombCount = 3;
     inst.power = 0;
     inst.point = 0;
