@@ -12,7 +12,7 @@ export default function bullet() {
                 return
             }
         }
-        if (inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
+        if (session.player.miss === false && inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
             if (this.grazeState === false) {
                 session.player.graze++;
                 session.score += 500 + session.player.point * 10;

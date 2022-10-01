@@ -118,7 +118,7 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
                 }
                 let draw;
                 const bullet = inst.components["bullet"];
-                if (bullet.grazeState === true) {
+                if (session.debugFlag === true && bullet.grazeState === true) {
                     draw = image.graze
                 } else {
                     draw = image.layer0

@@ -115,6 +115,8 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                 const laser = inst.components["laser"];
                 if (laser.hitState === true) {
                     draw = drawSticker(type, color).hit
+                } else if (laser.grazeState === true && session.debugFlag === true) {
+                    draw = drawSticker(type, color).graze
                 } else {
                     draw = drawSticker(type, color).layer0
                 }

@@ -1,8 +1,9 @@
-import {TAGS, session, newAudio, resources} from "../util.js";
+import {newAudio, resources, session, TAGS} from "../util.js";
 
 let _;
 const soundOfGraze = newAudio(resources.Sounds.graze);
 export default function laser() {
+    this.grazeState = undefined;
     this.hitState = false;
     this.tick = function (inst) {
         if (inst.startTime > 0) {
@@ -20,11 +21,14 @@ export default function laser() {
             if (inst.delayTime !== undefined) {
                 inst.delayTime--;
             }
-            if (inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
+            if (session.player.miss === false && inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.grazeBox)) {
+                this.grazeState = true;
                 session.player.graze++;
                 session.score += 500 + session.player.point * 10;
                 soundOfGraze.currentTime = 0;
                 _ = soundOfGraze.play()
+            } else {
+                this.grazeState = false;
             }
             if (inst.atkBox.isHit(inst.X, inst.Y, session.player.X, session.player.Y, session.player.hitBox)) {
                 if (session.player.indTime > 0) {
