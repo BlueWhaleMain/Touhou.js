@@ -1824,11 +1824,13 @@ let mutex = 0;
 let dc = 0;
 session.maxMutex = 1;
 
-setInterval(function () {
-    if (dc < mutex) {
-        dc += mutex
-    }
-}, Math.round(n / options.FrameMax))
+if (typeof options.FrameMax === "number") {
+    setInterval(function () {
+        if (dc < mutex) {
+            dc += mutex
+        }
+    }, Math.round(n / options.FrameMax))
+}
 
 function nextFrame(f) {
     if (session.slowRunning === true) {
