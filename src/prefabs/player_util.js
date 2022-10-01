@@ -13,6 +13,7 @@ import {
 } from "../util.js";
 import PowerOrb from "./power_orb.js";
 import {ob} from "../observer.js"
+import debug from "../layers/debug";
 
 let _;
 const soundOfExtend = newAudio(resources.Sounds.extend);
@@ -264,6 +265,8 @@ export default function PlayerUtil() {
             }
         }
     });
+    inst.removeLayer('debug');
+    inst.addLayer('debug', debug)
     ob.addEventListener(EVENT_MAPPING.left, function () {
         if (inst.hideTime > 0 || inst.miss) {
             return

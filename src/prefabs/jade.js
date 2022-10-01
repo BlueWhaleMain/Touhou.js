@@ -5,11 +5,15 @@ import {
     ABox,
     arrowTo,
     drawSticker,
+    entities,
+    EVENT_MAPPING,
     getLayer,
     L,
-    TAGS,
-    entities,
-    EVENT_MAPPING, newAudio, resources, LAYER_MAPPING
+    LAYER_MAPPING,
+    newAudio,
+    resources,
+    session,
+    TAGS
 } from "../util.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"

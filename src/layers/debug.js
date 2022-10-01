@@ -1,51 +1,56 @@
 /*
  *调试图层，显示判定区域等
  */
-import {debugLayerCache, getLayer, L, LAYER_MAPPING, session} from "../util.js";
+import {getLayer, L, LAYER_MAPPING, session} from "../util.js";
+import graphics from "../graphics.js";
 
 const r90 = 90 * L;
 const layerUI = getLayer(LAYER_MAPPING.UI);
 export default function debug() {
-    let draw, cacheCtx;
+    const graph = new graphics()
     this.draw = function (inst) {
         if (session.debugFlag === true && session.developerMode === true) {
-            if (inst.atkBox && inst.atkBox.name === "ABox") {
-                if (!debugLayerCache.ABox[inst.atkBox.r]) {
-                    debugLayerCache.ABox[inst.atkBox.r] = document.createElement("canvas");
-                    debugLayerCache.ABox[inst.atkBox.r].width = inst.atkBox.r + inst.atkBox.r + 2;
-                    debugLayerCache.ABox[inst.atkBox.r].height = inst.atkBox.r + inst.atkBox.r + 2;
-                    cacheCtx = debugLayerCache.ABox[inst.atkBox.r].getContext("2d");
-                    cacheCtx.save();
-                    cacheCtx.strokeStyle = "red";
-                    cacheCtx.beginPath();
-                    cacheCtx.arc(inst.atkBox.r + 1, inst.atkBox.r + 1, inst.atkBox.r, 0, Math.PI * 2);
-                    cacheCtx.stroke();
-                    cacheCtx.restore()
-                }
-                draw = debugLayerCache.ABox[inst.atkBox.r];
-                layerUI.drawImage(draw, inst.X - inst.atkBox.r - 1, inst.Y - inst.atkBox.r - 1);
+            if (inst.atkBox) {
+                this.drawBox(inst, inst.atkBox, 'red')
+            }
+            if (inst.sizeBox) {
+                this.drawBox(inst, inst.sizeBox, 'blue')
+            }
+            if (inst.grazeBox) {
+                this.drawBox(inst, inst.grazeBox, 'green')
+            }
+            if (inst.hitBox) {
+                this.drawBox(inst, inst.hitBox, 'orange')
             }
             if (inst.components["movable"]) {
-                if (!debugLayerCache.LINE[20]) {
-                    debugLayerCache.LINE[20] = document.createElement("canvas");
-                    debugLayerCache.LINE[20].width = 1;
-                    debugLayerCache.LINE[20].height = 20;
-                    cacheCtx = debugLayerCache.LINE[20].getContext("2d");
-                    cacheCtx.save();
-                    cacheCtx.strokeStyle = "white";
-                    cacheCtx.beginPath();
-                    cacheCtx.moveTo(0, 0);
-                    cacheCtx.lineTo(0, 20);
-                    cacheCtx.stroke();
-                    cacheCtx.restore()
+                let draw;
+                let len = 20
+                if (inst.sizeBox.name === "ABox") {
+                    len = inst.sizeBox.r / 2 + 10
+                } else if (inst.sizeBox.name === 'RBox') {
+                    len = inst.sizeBox.xs / 2 + 10
                 }
-                draw = debugLayerCache.LINE[20];
+                draw = graph.getLine(len, 'white')
                 layerUI.save();
                 layerUI.translate(inst.X, inst.Y);
                 layerUI.rotate(Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90);
-                layerUI.drawImage(draw, 0, -20);
+                layerUI.drawImage(draw, 0, -len);
                 layerUI.restore()
             }
+        }
+    }
+    this.drawBox = function (inst, box, color) {
+        let draw;
+        if (box.name === "ABox") {
+            draw = graph.getCircle(box.r, color);
+            layerUI.drawImage(draw, inst.X - box.r - 1, inst.Y - box.r - 1);
+        } else if (box.name === 'RBox') {
+            draw = graph.getRectangle(box.xs, box.ys, color);
+            layerUI.save();
+            layerUI.translate(inst.X + (inst.DX || 0), inst.Y + (inst.DY || 0));
+            layerUI.rotate(box.angle);
+            layerUI.drawImage(draw, -box.xs / 2, -box.ys / 2)
+            layerUI.restore()
         }
     }
 }

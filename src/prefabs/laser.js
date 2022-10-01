@@ -17,11 +17,11 @@ import movable from "../components/movable.js";
 import laser from "../components/laser.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js";
+import debug from "../layers/debug";
 
 let _;
 const r90 = 90 * L;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
-const layerUI = getLayer(LAYER_MAPPING.UI);
 const soundOfLaser = newAudio(resources.Sounds.laser);
 const soundOfNep00 = newAudio(resources.Sounds.nep00);
 export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = true) {
@@ -140,16 +140,10 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                 layerStage.drawImage(draw, -width / 2, -inst.sizeBox.ys / 2, width, inst.sizeBox.ys);
                 inst.atkBox.xs = xs * width / inst.sizeBox.xs;
                 layerStage.restore();
-                if (session.debugFlag === true && session.developerMode === true) {
-                    layerUI.save();
-                    layerUI.strokeStyle = "red";
-                    layerUI.translate(inst.X + inst.DX, inst.Y + inst.DY);
-                    layerUI.rotate(inst.atkBox.angle);
-                    layerUI.strokeRect(-inst.atkBox.xs / 2, -inst.atkBox.ys / 2, inst.atkBox.xs, inst.atkBox.ys);
-                    layerUI.restore()
-                }
             }
         });
+        inst.removeLayer('debug');
+        inst.addLayer('debug', debug)
     };
     inst.init();
 

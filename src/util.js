@@ -511,11 +511,6 @@ export const GUI_SCREEN = {
     HEIGHT: 460
 };
 export const entities = [];
-export const debugLayerCache = {
-    RBox: {},
-    ABox: {},
-    LINE: {}
-};
 export const session = {};
 export let options = JSON.parse(fs.readFileSync("options.json").toString());
 export const resources = JSON.parse(fs.readFileSync("assets/resources.json").toString()) || require("../assets/resources.json");

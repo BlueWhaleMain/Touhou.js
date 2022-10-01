@@ -448,25 +448,6 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                 const boss = inst.boss[i];
                 boss.draw();
                 layerTitle.drawImage(enemyMarker, inst.paused ? 48 : 0, 0, 48, 16, boss.X - 15, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT, 30, 10);
-                if (session.debugFlag === true) {
-                    if (boss.atkBox && !boss.hide) {
-                        if (boss.atkBox.name === "RBox") {
-                            layerUI.save();
-                            layerUI.strokeStyle = "red";
-                            layerUI.strokeRect(boss.X - boss.atkBox.xs / 2, boss.Y - boss.atkBox.ys / 2,
-                                boss.atkBox.xs, boss.atkBox.ys);
-                            layerUI.restore()
-                        } else if (boss.atkBox.name === "ABox") {
-                            layerUI.save();
-                            layerUI.strokeStyle = "red";
-                            layerUI.beginPath();
-                            layerUI.arc(boss.X, boss.Y, boss.atkBox.r, 0, Math.PI * 2);
-                            layerUI.closePath();
-                            layerUI.stroke();
-                            layerUI.restore()
-                        }
-                    }
-                }
             }
             rendererEntity();
             if (inst.dialogueScript.length > 0) {
