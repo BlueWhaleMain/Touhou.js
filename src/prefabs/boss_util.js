@@ -280,9 +280,8 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             ob.dispatchEvent(EVENT_MAPPING.changeBGM)
         });
     };
+    inst.getStageType = function () {
+        return "Boss"
+    }
     return inst
-}
-
-export function isStopped() {
-    return soundOfEnEp1.paused && soundOfEnEp2.paused
 }

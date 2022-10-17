@@ -1,15 +1,17 @@
 import Prefab from "./prefab.js";
 import {
-    options,
+    continueAllSound,
     getLayer,
     GUI_SCREEN,
     HEIGHT,
-    session,
-    TAGS,
-    WIDTH,
+    LAYER_MAPPING,
     newImage,
+    options,
     resources,
-    LAYER_MAPPING, stopAllSound, continueAllSound
+    session,
+    stopAllSound,
+    TAGS,
+    WIDTH
 } from "./util.js";
 import Observer from "./observer.js";
 
@@ -166,6 +168,10 @@ export default function StageUtil() {
                     layerTitle.fillText("IndTime " + session.player.indTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 80);
                     layerTitle.fillText("Miss " + session.player.miss, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 90);
                     layerTitle.fillText("HideTime " + session.player.hideTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 100);
+                    if (typeof inst.getRunningFrames === 'function') {
+                        layerTitle.fillText("RunningFrames " + inst.getRunningFrames(), GUI_SCREEN.X + 10,
+                            GUI_SCREEN.Y + 110)
+                    }
                     layerTitle.restore()
                 }
             }
