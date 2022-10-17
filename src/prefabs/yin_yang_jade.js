@@ -2,16 +2,16 @@ import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
 import bullet from "../components/bullet.js";
 import {
+    ABox,
+    entities,
+    EVENT_MAPPING,
     getLayer,
+    L,
     LAYER_MAPPING,
     newImage,
     resources,
     session,
-    TAGS,
-    ABox,
-    L,
-    entities,
-    EVENT_MAPPING
+    TAGS
 } from "../util.js";
 import health from "../components/health.js";
 import GreenOrb from "./green_orb.js";
@@ -43,6 +43,7 @@ export default function YinYangJade(entity, x, y, mx, my, reflex = true, rotatio
             }
             return true
         }
+        return false
     };
     inst.components["health"].callback.dead = function () {
         drop({type: EVENT_MAPPING.shoot})

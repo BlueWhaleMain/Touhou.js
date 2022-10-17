@@ -1,16 +1,16 @@
 import Prefab from "../prefab.js";
 import bullet from "../components/bullet.js";
 import {
+    ABox,
+    entities,
+    EVENT_MAPPING,
     getLayer,
+    L,
     LAYER_MAPPING,
     newImage,
     resources,
     session,
-    TAGS,
-    ABox,
-    L,
-    entities,
-    EVENT_MAPPING
+    TAGS
 } from "../util.js";
 import health from "../components/health.js";
 import GreenOrb from "./green_orb.js";
@@ -43,6 +43,7 @@ export default function StarMaster(entity, x, y, rotation = 0, blood = 100) {
             }
             return true
         }
+        return false
     };
     inst.components["health"].callback.dead = function () {
         drop({type: EVENT_MAPPING.shoot})

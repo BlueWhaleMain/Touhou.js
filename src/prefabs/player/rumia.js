@@ -1,15 +1,19 @@
 import PlayerUtil from "../player_util.js";
 import {
     ABox,
-    RBox,
     clearEntity,
     entities,
+    EVENT_MAPPING,
     getLayer,
     L,
+    LAYER_MAPPING,
+    newAudio,
+    newImage,
+    RBox,
+    resources,
     session,
     TAGS,
-    transTo,
-    EVENT_MAPPING, newImage, resources, newAudio, LAYER_MAPPING
+    transTo
 } from "../../util.js";
 import RumiaBall from "../rumia_ball.js";
 import GreenOrb from "../green_orb.js";
@@ -217,9 +221,18 @@ export default function Rumia() {
         inst.indTime = 250;
         const box = new ABox(inst.bombTime);
         clearEntity(function (entity) {
-            if (entity.tags.has(TAGS.hostile) && entity.atkBox.isHit(entity.X, entity.Y, inst.X, inst.Y, box)) {
-                entities.push(GreenOrb(entity.X, entity.Y, 0, -2, "small"));
-                return true
+            if (entity.atkBox) {
+                if (entity.atkBox.isHit(entity.X, entity.Y, inst.X, inst.Y, box)) {
+                    if (entity.tags.has(TAGS.hostile)) {
+                        entities.push(GreenOrb(entity.X, entity.Y, 0, -2, "small"));
+                        return true
+                    } else if (entity.tags.has(TAGS.enemy)) {
+                        const health = entity.components["health"]
+                        if (health) {
+                            health.doDelta(-Math.floor(inst.bombTime / 100))
+                        }
+                    }
+                }
             }
         }, entities.length);
         for (let i = 0; i < session.stage.boss.length; i++) {
