@@ -77,7 +77,7 @@ export default function dreamSealSilence(edit) {
                         card.entity.X = GUI_SCREEN.WIDTH + GUI_SCREEN.X;
                         card.entity.target.X = GUI_SCREEN.WIDTH + GUI_SCREEN.X - 40
                     }
-                    entities.push(YinYangJade(card.entity, card.entity.X, card.entity.Y, Math.random() - 0.5, -2));
+                    entities.push(YinYangJade(card.entity, card.entity.X, card.entity.Y, Math.nextSeed() - 0.5, -2));
                     soundOfOption.currentTime = 0;
                     _ = soundOfOption.play()
                 }
