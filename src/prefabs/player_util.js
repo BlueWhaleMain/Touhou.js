@@ -1,15 +1,19 @@
 import Prefab from "../prefab.js";
 import {
     entities,
+    EVENT_MAPPING,
     getLayer,
+    GUI_SCREEN,
     HEIGHT,
     L,
-    TAGS,
-    WIDTH,
+    LAYER_MAPPING,
+    newAudio,
+    newImage,
     options,
+    resources,
     session,
-    EVENT_MAPPING,
-    GUI_SCREEN, newAudio, resources, LAYER_MAPPING, newImage
+    TAGS,
+    WIDTH
 } from "../util.js";
 import PowerOrb from "./power_orb.js";
 import {ob} from "../observer.js"

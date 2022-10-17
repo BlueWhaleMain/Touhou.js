@@ -1,12 +1,17 @@
 import Prefab from "../prefab.js";
 import health from "../components/health.js";
 import {
-    getLayer,
-    TAGS,
-    session,
-    L,
+    changeBGM,
     entities,
-    EVENT_MAPPING, newImage, resources, newAudio, LAYER_MAPPING, changeBGM
+    EVENT_MAPPING,
+    getLayer,
+    L,
+    LAYER_MAPPING,
+    newAudio,
+    newImage,
+    resources,
+    session,
+    TAGS
 } from "../util.js";
 import EnEpBall from "./en_ep_ball.js";
 import GreenOrb from "./green_orb.js";
@@ -235,7 +240,7 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             layerUI.beginPath();
             layerUI.arc(0, 0, 60, Math.PI * 2,
                 Math.PI * 2 * (1 - (inst.components["health"].getValue()
-                / inst.components["health"].getMax())), true);
+                    / inst.components["health"].getMax())), true);
             layerUI.stroke();
             if (inst.card && inst.card.option.noCardFrame > 0) {
                 layerUI.beginPath();

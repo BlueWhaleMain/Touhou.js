@@ -3,24 +3,28 @@ import item from "../components/item.js";
 import movable from "../components/movable.js";
 import {
     ABox,
-    getLayer,
-    hslToRgb,
-    rgbToHsl,
     editImage,
-    session,
+    getLayer,
     GUI_SCREEN,
+    hslToRgb,
+    LAYER_MAPPING,
+    newAudio,
     newImage,
-    resources, newAudio, LAYER_MAPPING
+    resources,
+    rgbToHsl,
+    session
 } from "../util.js";
 import {showScore} from "../dialogue.js";
 
 const middle = document.createElement("canvas");
 middle.width = 10;
 middle.height = 10;
-const middleCtx = middle.getContext("2d");
 const small = document.createElement("canvas");
+small.width = 10
+small.height = 10
 const eBullet2 = newImage(resources.Images.eBullet2);
 eBullet2.addEventListener("load", function () {
+    const middleCtx = middle.getContext("2d");
     middleCtx.drawImage(eBullet2, 115, 419, 10, 10, 0, 0, 10, 10);
     const smallCtx = small.getContext("2d");
     smallCtx.drawImage(middle, 0, 0);
@@ -32,7 +36,6 @@ eBullet2.addEventListener("load", function () {
 const soundOfItemPickUp = newAudio(resources.Sounds.item);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 let _;
-
 export default function GreenOrb(x, y, mx, my, size = "middle", spy = false) {
     const inst = new Prefab(x, y);
     inst.sizeBox = new ABox(5);
