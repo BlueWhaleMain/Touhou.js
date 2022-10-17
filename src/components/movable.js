@@ -145,6 +145,8 @@ export default function movable() {
         if (this.stop === true) {
             return
         }
+        // 移动和碰撞并无关系，需要拆分
+        // 碰撞可能会造成多种结果：造成伤害、改变速度、触发事件
         if (this.reflex.enabled === true && this.reflex.count !== 0) {
             let work = false;
             if (inst.atkBox.isOutX(inst.X, inst.Y, this.MX, this.reflex.xMax, this.reflex.xMin)) {

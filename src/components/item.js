@@ -1,6 +1,7 @@
 import {arrowTo, TAGS, session, GUI_SCREEN} from "../util.js";
 export default function item() {
     this.spy = false;
+    // 物品与移动也并无关系，需分解出重力组件
     this.configMovement = function (inst) {
         inst.components["movable"].flush = false;
         inst.components["movable"].grave = 0.03
@@ -35,6 +36,7 @@ export default function item() {
                 inst.tags.add(TAGS.death);
                 this.pick(inst)
             }
+            // 同样，“被玩家吸引”的属性也需要分离组件
             if (this.spy) {
                 this.inScreen(inst);
                 const speed = arrowTo(inst.X, inst.Y, session.player.X, session.player.Y, 8);
