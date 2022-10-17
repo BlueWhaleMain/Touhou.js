@@ -184,6 +184,10 @@ export function ABox(r) {
     }
 }
 
+export function randomPos(x = 0, y = 0, width = 0, height = 0) {
+    return [GUI_SCREEN.X + x + Math.nextSeed() * (GUI_SCREEN.WIDTH + width), GUI_SCREEN.Y + y + Math.nextSeed() * (GUI_SCREEN.HEIGHT + height)]
+}
+
 export function editImage(px, callback, ignoreColor) {
     if (!ignoreColor) {
         ignoreColor = [255, 255, 255]
@@ -1108,4 +1112,24 @@ export function saveHint(name, timestamp, hint) {
     fs.writeFileSync(options.Hint.path + "/" + name + ".json", JSON.stringify({
         HINT_VER, timestamp, hint
     }))
+}
+
+export function batchExecute(/* [function] */flist) {
+    return (...arg) => {
+        const results = []
+        for (const f of flist) {
+            results.push(f(...arg))
+        }
+        return results
+    }
+}
+
+export function delayExecute(f, delay) {
+    let step = 0
+    return (...arg) => {
+        if (step > delay) {
+            return f(...arg)
+        }
+        step++
+    }
 }

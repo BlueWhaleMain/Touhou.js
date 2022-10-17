@@ -40,6 +40,10 @@
     },
     "Sounds": {
         "loading": "loading.flac",
+        "spiritualDominationWhoDoneIt": {
+            "head": "th02_17_head.wav",
+            "loop": "th02_17_loop.wav"
+        },
         "easternNight": {
             "head": "th08_01_head.wav",
             "loop": "th08_01_loop.wav"
@@ -109,6 +113,7 @@
         "bonus": "bonus.wav",
         "cat0": "cat_0.wav",
         "power0": "power0.wav",
+        "en_ep_0": "en_ep_0.wav",
         "en_ep_1": "en_ep_1.wav",
         "en_ep_2": "en_ep_2.wav",
         "slash": "slash.wav",
