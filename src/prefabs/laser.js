@@ -17,7 +17,6 @@ import movable from "../components/movable.js";
 import laser from "../components/laser.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js";
-import debug from "../layers/debug";
 
 let _;
 const r90 = 90 * L;
@@ -142,8 +141,6 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                 layerStage.restore();
             }
         });
-        inst.removeLayer('debug');
-        inst.addLayer('debug', debug)
     };
     inst.init();
 

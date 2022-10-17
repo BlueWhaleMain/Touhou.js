@@ -13,7 +13,6 @@ import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
 import BlueOrb from "./blue_orb.js";
 import {generateRandomSpeed} from "../components/movable.js";
-import debug from "../layers/debug";
 
 let _;
 export const HEALTH_DELTA_MAX = 80;
@@ -265,8 +264,6 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             }
         }
     });
-    inst.removeLayer('debug');
-    inst.addLayer('debug', debug)
     inst.playBGM = function () {
         changeBGM({
             head: inst.bgm,

@@ -9,12 +9,15 @@ const layerUI = getLayer(LAYER_MAPPING.UI);
 export default function debug() {
     const graph = new graphics()
     this.draw = function (inst) {
-        if (session.debugFlag === true && session.developerMode === true) {
+        if (session.debugFlag === true) {
             if (inst.atkBox) {
                 this.drawBox(inst, inst.atkBox, 'red')
             }
             if (inst.sizeBox) {
                 this.drawBox(inst, inst.sizeBox, 'blue')
+            }
+            if (inst.pickBox) {
+                this.drawBox(inst, inst.pickBox, 'aqua')
             }
             if (inst.grazeBox) {
                 this.drawBox(inst, inst.grazeBox, 'green')
@@ -22,19 +25,32 @@ export default function debug() {
             if (inst.hitBox) {
                 this.drawBox(inst, inst.hitBox, 'orange')
             }
-            if (inst.components["movable"]) {
+            const movable = inst.components["movable"]
+            if (movable) {
                 let draw;
                 let len = 20
-                if (inst.sizeBox.name === "ABox") {
-                    len = inst.sizeBox.r / 2 + 10
-                } else if (inst.sizeBox.name === 'RBox') {
-                    len = inst.sizeBox.xs / 2 + 10
+                if (inst.sizeBox) {
+                    if (inst.sizeBox.name === "ABox") {
+                        len = inst.sizeBox.r / 2 + 10
+                    } else if (inst.sizeBox.name === 'RBox') {
+                        len = inst.sizeBox.xs / 2 + 10
+                    }
                 }
                 draw = graph.getLine(len, 'white')
                 layerUI.save();
                 layerUI.translate(inst.X, inst.Y);
-                layerUI.rotate(Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90);
+                layerUI.rotate(Math.atan2(movable.MY, movable.MX) + r90);
                 layerUI.drawImage(draw, 0, -len);
+                layerUI.restore()
+            }
+            const health = inst.components["health"]
+            if (health) {
+                const current = health.getValue()
+                const max = health.getMax()
+                layerUI.save()
+                layerUI.translate(inst.X, inst.Y)
+                layerUI.fillStyle = health.indestructible ? 'gold' : 'red'
+                layerUI.fillText(current + '/' + max, 0, 0)
                 layerUI.restore()
             }
         }

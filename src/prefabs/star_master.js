@@ -15,7 +15,6 @@ import {
 import health from "../components/health.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js";
-import debug from "../layers/debug.js";
 
 const r360 = 360 * L;
 const cache = document.createElement("canvas");
@@ -93,7 +92,6 @@ export default function StarMaster(entity, x, y, rotation = 0, blood = 100) {
             layerStage.restore()
         }
     });
-    inst.addLayer("debug", debug);
     inst.edit = function (f) {
         f(inst);
         return inst

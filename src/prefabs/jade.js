@@ -17,7 +17,6 @@ import {
 } from "../util.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
-import debug from "../layers/debug.js";
 
 let _;
 const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);
@@ -141,8 +140,6 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
                 }
             }
         });
-        inst.removeLayer("debug");
-        inst.addLayer("debug", debug);
     };
     inst.init();
 

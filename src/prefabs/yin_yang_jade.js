@@ -16,7 +16,6 @@ import {
 import health from "../components/health.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js";
-import debug from "../layers/debug.js";
 
 const r360 = 360 * L;
 const cache = document.createElement("canvas");
@@ -97,7 +96,6 @@ export default function YinYangJade(entity, x, y, mx, my, reflex = true, rotatio
             layerStage.restore()
         }
     });
-    inst.addLayer("debug", debug);
     inst.edit = function (f) {
         f(inst);
         return inst

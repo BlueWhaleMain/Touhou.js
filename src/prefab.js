@@ -1,4 +1,6 @@
-import {TAGS} from "./util.js";
+import {session, TAGS} from "./util.js";
+import debug from "./layers/debug";
+
 export default function Prefab(x, y) {
     this.X = 0 || x;
     this.Y = 0 || y;
@@ -18,6 +20,10 @@ export default function Prefab(x, y) {
             this.renderers[renderersShadow].draw(this)
         }
     };
+    if (session.developerMode === true) {
+        this.removeLayer('debug')
+        this.addLayer('debug', debug)
+    }
 }
 Prefab.prototype.addComponent = function (componentName, fn) {
     if (this.componentsShadow.has(componentName)) {
