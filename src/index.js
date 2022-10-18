@@ -661,7 +661,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                     let yousei = Yousei('hatted', 'red', 0, GUI_SCREEN.Y + 100, 10,
                         batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 2,
                             shootCircle(0, 48, 170, 30, 3, 0,
-                                360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
+                                360, 0, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
                             delayExecute(moveLine(2, 0), 300)]),
                         500, [PowerOrb(0, 0, 0, -1, 'big'),
                             Player1Clear(0, 0)])
@@ -671,7 +671,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + 100, 10,
                         batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 2,
                             shootCircle(0, 48, 170, 30, 3, 0,
-                                360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
+                                360, 0, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
                             delayExecute(moveLine(-2, 0), 300)]),
                         500, [BlueOrb(0, 0, 0, -1), Player1Clear(0, 0)])
                     yousei.showMagicRing()
