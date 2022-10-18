@@ -39,7 +39,7 @@
     "PauseOnBlur": false,
     "FrameMax": "auto",
     "FullScreen": false,
-    "EntityCountSecMax": 1024,
+    "EntityCountSecMax": 16384,
     "Player": 3,
     "GrazeMax": 99999,
     "ShootSlow": false,
