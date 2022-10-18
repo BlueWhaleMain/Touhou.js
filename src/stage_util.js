@@ -172,6 +172,10 @@ export default function StageUtil() {
                         layerTitle.fillText("RunningFrames " + inst.getRunningFrames(), GUI_SCREEN.X + 10,
                             GUI_SCREEN.Y + 110)
                     }
+                    if (typeof inst.getCurrentFrames === 'function') {
+                        layerTitle.fillText("CurrentFrames " + inst.getCurrentFrames(), GUI_SCREEN.X + 10,
+                            GUI_SCREEN.Y + 120)
+                    }
                     layerTitle.restore()
                 }
             }

@@ -107,6 +107,8 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
     });
     let runningFrames = 0;
     let waitingFrames = 0;
+    let currentFrames = 0;
+    let lastFrames = 0;
     let timestamp = 0;
     let shade = 0;
     let hints = [];
@@ -287,6 +289,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                         inst.pause();
                         return
                     }
+                    currentFrames++;
                     runningFrames++;
                     if (replayOption) {
                         if (session.keys.has("control")) {
@@ -443,6 +446,8 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                             } else {
                                 if (waitingFrames === 0 && session.player.bombTime < 1) {
                                     inst.resolveStageObj(inst.stageMap.shift())
+                                    lastFrames = currentFrames
+                                    currentFrames = 0
                                 }
                             }
                         }
@@ -586,6 +591,12 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
     }
     inst.getRunningFrames = function () {
         return runningFrames
+    }
+    inst.getCurrentFrames = function () {
+        return currentFrames
+    }
+    inst.getLastFrames = function () {
+        return lastFrames
     }
     return inst
 }
