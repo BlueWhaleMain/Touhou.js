@@ -3,7 +3,7 @@ import Jade from "../prefabs/jade";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
-export default function shootCircle(start, delay, end, sum, append = 1, startAngle = 0, endAngle = 360, max = 1, spy = false, ...arg) {
+export default function shootCircle(start, delay, end, sum, append = 1, startAngle = 0, endAngle = 360, addAngle = 0, max = 1, spy = false, ...arg) {
     let step = 0, count = 0
     return (inst) => {
         if (step > end) {
@@ -17,8 +17,9 @@ export default function shootCircle(start, delay, end, sum, append = 1, startAng
             for (let i = startAngle; i <= endAngle; i += (endAngle - startAngle) / sum) {
                 for (let k = 0; k < append; k++) {
                     const jade = Jade(...arg)
-                    let speed = 0.4 + Math.pow(1.09, k * 2);
-                    speed = transTo(speed, speed, spyAngle - i * L);
+                    let speed = Math.sqrt(Math.pow(jade.components["movable"].MX, 2)
+                        + Math.pow(jade.components["movable"].MY, 2)) + Math.pow(1.09, k * 2);
+                    speed = transTo(speed, 0, spyAngle + ((i + 45) % 360) * L);
                     jade.X = inst.X + speed[0]
                     jade.Y = inst.Y + speed[1]
                     jade.components["movable"].MX = speed[0]
@@ -28,6 +29,17 @@ export default function shootCircle(start, delay, end, sum, append = 1, startAng
             }
             soundOfBombShoot.currentTime = 0;
             _ = soundOfBombShoot.play()
+            if (addAngle) {
+                startAngle += addAngle
+                endAngle += addAngle
+                if (startAngle >= 360 && endAngle >= 360) {
+                    startAngle -= 360
+                    endAngle -= 360
+                } else if (startAngle <= -360 && endAngle <= -360) {
+                    startAngle += 360
+                    endAngle += 360
+                }
+            }
             count++
         }
         step++

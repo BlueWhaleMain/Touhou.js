@@ -358,137 +358,334 @@ function practiceStartFactory(selectedIndex, replayOption) {
     let bgm = false;
     if (selectedIndex === 0) {
         stageMap = function () {
+            const stage1 = new StageItem(new Map([
+                [0, function () {
+                    changeBGM(ASSETS.SOUND.spiritualDominationWhoDoneIt)
+                    session.player.power = 0
+                    // self.skipStep(1200, 8)
+                    // self.skipStep(1600, 16)
+                }], [660, function () {
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 20 + i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'red', 0, 0, 0, 5), moveLine(1, 0)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'blue', GUI_SCREEN.WIDTH - i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'blue', 0, 0, 0, 5), moveLine(-1, 0)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [840, function () {
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 20 + i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'red', 0, 0, 0, 5), moveLine(1, 0)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'blue', GUI_SCREEN.WIDTH - i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'blue', 0, 0, 0, 5), moveLine(-1, 0)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [900, function () {
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 20 + i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'red', 0, 0, 0, 5), moveLine(1, 0)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'blue', GUI_SCREEN.WIDTH - i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'blue', 0, 0, 0, 5), moveLine(-1, 0)]), -1,
+                            [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [930, function () {
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 20 + i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'red', 0, 0, 0, 5), moveLine(1, 0)]), -1,
+                            [PowerOrb(0, 0, 0, -1, i % 2 === 0 ? "middle" : "big")]))
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        entities.push(Yousei('hatted', 'blue', GUI_SCREEN.WIDTH - i * 10,
+                            100 - i * 20, 1,
+                            batchExecute([shootDot(30, 5, 240, 60, true,
+                                'ring', 'blue', 0, 0, 0, 5), moveLine(-1, 0)]), -1,
+                            [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1000, function () {
+                    for (let i = 0; i < 20; i++) {
+                        const color = i % 2 === 0 ? 'blue' : 'green'
+                        entities.push(Kedama(color, GUI_SCREEN.WIDTH + i * 20, 100, 1,
+                            batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
+                                3, 0, 360, 0, 60, true,
+                                'point', color, 0, 0, 0, 5), moveLine(-5, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1060, function () {
+                    for (let i = 0; i < 20; i++) {
+                        const color = i % 2 === 0 ? 'blue' : 'green'
+                        entities.push(Kedama(color, GUI_SCREEN.X - i * 20, 100, 1,
+                            batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
+                                3, 0, 360, 0, 60, true,
+                                'point', color, 0, 0, 0, 5), moveLine(5, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1120, function () {
+                    for (let i = 0; i < 20; i++) {
+                        const color = i % 2 === 0 ? 'blue' : 'green'
+                        entities.push(Kedama(color, GUI_SCREEN.WIDTH + i * 20, 100, 1,
+                            batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
+                                3, 0, 360, 0, 60, true,
+                                'point', color, 0, 0, 0, 5), moveLine(-5, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1140, function () {
+                    for (let i = 0; i < 20; i++) {
+                        const color = i % 2 === 0 ? 'blue' : 'green'
+                        entities.push(Kedama(color, GUI_SCREEN.X - i * 20, 100, 1,
+                            batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
+                                3, 0, 360, 0, 60, true,
+                                'point', color, 0, 0, 0, 5), moveLine(5, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1240, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 40 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 30, 120 + i * 3, 5,
+                                5, 0, 180, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1270, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 60 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 40, 120 + i * 3, 5,
+                                5, 0, 90, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1300, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 50 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 50, 120 + i * 3, 5,
+                                5, 0, 45, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1370, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 40 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 30, 120 + i * 3, 5,
+                                5, 0, 180, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1400, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 60 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 40, 120 + i * 3, 5,
+                                5, 0, 90, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1430, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 50 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 50, 120 + i * 3, 5,
+                                5, 0, 45, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1500, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 60 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 40, 120 + i * 3, 5,
+                                5, 0, 90, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1530, function () {
+                    for (let i = 0; i < 6; i++) {
+                        const x = GUI_SCREEN.X + 50 + i * (GUI_SCREEN.WIDTH / 7)
+                        entities.push(Yousei('hatted', 'blue', x, -40, 3,
+                            batchExecute([shootCircle(3 + i * 3, 50, 120 + i * 3, 5,
+                                5, 0, 45, 0, 4, true,
+                                'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
+                                moveLine(-2, 1), 120), 120)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1650, function () {
+                    let yousei = Yousei('hatted', 'blue', GUI_SCREEN.X + 100, -40, 30,
+                        batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 3,
+                            shootCircle(0, 6, 370, 6, 3, 0,
+                                360, -6, 120, false, 'rice', 'blue', 0, 0, 0, 2)),
+                            delayExecute(moveLine(0, 2), 400)]),
+                        520, [PowerOrb(0, 0, 0, -1, 'big')])
+                    yousei.showMagicRing()
+                    entities.push(yousei)
+                    yousei = Yousei('hatted', 'blue', GUI_SCREEN.X + 250, -40, 30,
+                        batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 3,
+                            shootCircle(0, 6, 370, 6, 3, 0,
+                                360, 6, 120, false, 'rice', 'blue', 0, 0, 0, 2)),
+                            delayExecute(moveLine(0, 2), 400)]),
+                        520, [BlueOrb(0, 0, 0, -1)])
+                    yousei.showMagicRing()
+                    entities.push(yousei)
+                }], [2200, function () {
+
+                }]
+            ]))
+            const stage2 =
+                new StageItem(new Map([[1, function (self, inst) {
+                    if (inst.getLastFrames() > 6000) {
+                        self.skipStep(400, 1)
+                    }
+                }], [1, function () {
+                    for (let i = 0; i < 8; i++) {
+                        const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
+                        entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
+                            moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
+                                shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
+                                    0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [100, function () {
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Yousei('normal', 'red', -i * 20, 70, 1,
+                            batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                                false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
+                            300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Yousei('normal', 'red', -i * 20, 90, 1,
+                            batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                                true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
+                            300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Yousei('normal', 'red', -i * 20, 110, 1,
+                            batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                                false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
+                            300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Yousei('normal', 'blue',
+                            GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70, 1,
+                            batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                                false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Yousei('normal', 'blue',
+                            GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 90, 1,
+                            batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                                true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Yousei('normal', 'blue',
+                            GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 110, 1,
+                            batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                                false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [300, function () {
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [600, function () {
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Kedama('red', -i * 20, 70 + i % 4 * 10, 1,
+                            batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                                2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
+                            300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Kedama('red', -i * 20, 100 - i % 4 * 10, 1,
+                            batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                                2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
+                            300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [900, function () {
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Kedama('blue',
+                            GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70 + i % 4 * 10, 1,
+                            batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                                2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 16; i++) {
+                        entities.push(Kedama('blue',
+                            GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 100 - i % 4 * 10, 1,
+                            batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                                2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1200, function () {
+                    let yousei = Yousei('hatted', 'red', 0, GUI_SCREEN.Y + 100, 10,
+                        batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 2,
+                            shootCircle(0, 48, 170, 30, 3, 0,
+                                360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
+                            delayExecute(moveLine(2, 0), 300)]),
+                        500, [PowerOrb(0, 0, 0, -1, 'big'),
+                            Player1Clear(0, 0)])
+                    yousei.showMagicRing()
+                    entities.push(yousei)
+                    yousei = Yousei('hatted', 'blue',
+                        GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + 100, 10,
+                        batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 2,
+                            shootCircle(0, 48, 170, 30, 3, 0,
+                                360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
+                            delayExecute(moveLine(-2, 0), 300)]),
+                        500, [BlueOrb(0, 0, 0, -1), Player1Clear(0, 0)])
+                    yousei.showMagicRing()
+                    entities.push(yousei)
+                }], [1500, function () {
+
+                }]]))
             if (session.selectedPlayer === Rumia) {
                 return [
-                    new StageItem(new Map([
-                        [0, function () {
-                            changeBGM(ASSETS.SOUND.spiritualDominationWhoDoneIt)
-                            session.player.power = 0
-                        }], [1, function () {
-                            for (let i = 0; i < 8; i++) {
-                                const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
-                                entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
-                                    moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
-                                        shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
-                                            0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
-                            }
-                        }], [300, function () {
-                            for (let i = 0; i < 8; i++) {
-                                entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
-                                    40 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(60, 1, 70, 1, true,
-                                        'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                                    [PowerOrb(0, 0, 0, -1)]))
-                            }
-                            for (let i = 0; i < 8; i++) {
-                                entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
-                                    40 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(60, 1, 70, 1, true,
-                                        'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                                    [PowerOrb(0, 0, 0, -1)]))
-                            }
-                        }], [600, function () {
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('red', -i * 20, 70 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
-                                    300, [PowerOrb(0, 0, 0, -1)]))
-                            }
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('red', -i * 20, 100 - i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
-                                    300, [PowerOrb(0, 0, 0, -1)]))
-                            }
-                        }], [900, function () {
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('blue',
-                                    GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
-                                    300, [BlueOrb(0, 0, 0, -1)]))
-                            }
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('blue',
-                                    GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 100 - i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
-                                    300, [BlueOrb(0, 0, 0, -1)]))
-                            }
-                        }], [1200, function () {
-                            let yousei = Yousei('hatted', 'red', 0, GUI_SCREEN.Y + 100, 10,
-                                batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 2,
-                                    shootCircle(0, 48, 170, 30, 3, 0,
-                                        360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
-                                    delayExecute(moveLine(2, 0), 300)]),
-                                500, [PowerOrb(0, 0, 0, -1, 'big'),
-                                    Player1Clear(0, 0)])
-                            yousei.showMagicRing()
-                            entities.push(yousei)
-                            yousei = Yousei('hatted', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + 100, 10,
-                                batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 2,
-                                    shootCircle(0, 48, 170, 30, 3, 0,
-                                        360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
-                                    delayExecute(moveLine(-2, 0), 300)]),
-                                500, [BlueOrb(0, 0, 0, -1), Player1Clear(0, 0)])
-                            yousei.showMagicRing()
-                            entities.push(yousei)
-                        }], [1700, function () {
-
-                        }]
-                    ])),
+                    stage1,
                     bossYukariYakumo(480, -60, 1000, [
                         test1(),
                         test2(),
-                    ]),
-                    new StageItem(new Map([[1, function (self, inst) {
-                        if (inst.getRunningFrames() > 7500) {
-                            self.skipStep(400, 1)
-                        }
-                    }], [100, function () {
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'red', -i * 20, 70, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                                300, [PowerOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'red', -i * 20, 90, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                                300, [PowerOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'red', -i * 20, 110, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                                300, [PowerOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                                300, [BlueOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 90, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                                300, [BlueOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 110, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                                300, [BlueOrb(0, 0, 0, -1)]))
-                        }
-                    }], [500, function () {
-
-                    }]])),
+                    ]), stage2,
                     bossYukariYakumo(480, -60, 1000, [
                         test3(),
                         boundaryBetweenWaveAndParticle(function (cd) {
@@ -735,136 +932,11 @@ function practiceStartFactory(selectedIndex, replayOption) {
                     ])
                 ];
             } else if (session.selectedPlayer === HakureiReimu) {
-                return [
-                    new StageItem(new Map([
-                        [0, function () {
-                            changeBGM(ASSETS.SOUND.spiritualDominationWhoDoneIt)
-                            session.player.power = 0
-                        }], [1, function () {
-                            for (let i = 0; i < 8; i++) {
-                                const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
-                                entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
-                                    moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
-                                        shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
-                                            0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
-                            }
-                        }], [300, function () {
-                            for (let i = 0; i < 8; i++) {
-                                entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
-                                    40 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(60, 1, 70, 1, true,
-                                        'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                                    [PowerOrb(0, 0, 0, -1)]))
-                            }
-                            for (let i = 0; i < 8; i++) {
-                                entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
-                                    40 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(60, 1, 70, 1, true,
-                                        'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                                    [PowerOrb(0, 0, 0, -1)]))
-                            }
-                        }], [600, function () {
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('red', -i * 20, 70 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
-                                    300, [PowerOrb(0, 0, 0, -1)]))
-                            }
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('red', -i * 20, 100 - i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
-                                    300, [PowerOrb(0, 0, 0, -1)]))
-                            }
-                        }], [900, function () {
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('blue',
-                                    GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70 + i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
-                                    300, [BlueOrb(0, 0, 0, -1)]))
-                            }
-                            for (let i = 0; i < 16; i++) {
-                                entities.push(Kedama('blue',
-                                    GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 100 - i % 4 * 10, 1,
-                                    batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                                        2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
-                                    300, [BlueOrb(0, 0, 0, -1)]))
-                            }
-                        }], [1200, function () {
-                            let yousei = Yousei('hatted', 'red', 0, GUI_SCREEN.Y + 100, 10,
-                                batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 2,
-                                    shootCircle(0, 48, 170, 30, 3, 0,
-                                        360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
-                                    delayExecute(moveLine(2, 0), 300)]),
-                                500, [PowerOrb(0, 0, 0, -1, 'big'),
-                                    Player1Clear(0, 0)])
-                            yousei.showMagicRing()
-                            entities.push(yousei)
-                            yousei = Yousei('hatted', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + 100, 10,
-                                batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 2,
-                                    shootCircle(0, 48, 170, 30, 3, 0,
-                                        360, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
-                                    delayExecute(moveLine(-2, 0), 300)]),
-                                500, [BlueOrb(0, 0, 0, -1), Player1Clear(0, 0)])
-                            yousei.showMagicRing()
-                            entities.push(yousei)
-                        }], [1700, function () {
-
-                        }]
-                    ])),
+                return [stage1,
                     bossYukariYakumo(480, -60, 1000, [
                         test1(),
                         test2(),
-                    ]),
-                    new StageItem(new Map([[1, function (self, inst) {
-                        if (inst.getRunningFrames() > 7500) {
-                            self.skipStep(400, 1)
-                        }
-                    }], [100, function () {
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'red', -i * 20, 70, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                                300, [PowerOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'red', -i * 20, 90, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                                300, [PowerOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'red', -i * 20, 110, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                                300, [PowerOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                                300, [BlueOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 90, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                                300, [BlueOrb(0, 0, 0, -1)]))
-                        }
-                        for (let i = 0; i < 16; i++) {
-                            entities.push(Yousei('normal', 'blue',
-                                GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 110, 1,
-                                batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                                    false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                                300, [BlueOrb(0, 0, 0, -1)]))
-                        }
-                    }], [500, function () {
-
-                    }]])),
+                    ]), stage2,
                     bossYukariYakumo(480, -60, 1000, [
                         test3(),
                         boundaryBetweenWaveAndParticle(function (cd) {
