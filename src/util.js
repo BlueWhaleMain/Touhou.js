@@ -244,25 +244,6 @@ export function editImage(px, callback, ignoreColor) {
 //     child.prototype.constructor = child
 // }
 
-export function pathEscape(s) {
-    if (s[0] === "\\" || s[0] === "/") {
-        s.splice(0, 1)
-    }
-    const sr = s[s.length - 1];
-    if (sr !== "/") {
-        if (sr === "\\") {
-            s[s.length - 1] = "/"
-        } else {
-            s += "/"
-        }
-    }
-    return s
-}
-
-export function joinPath(l, r) {
-    return pathEscape(l) + pathEscape(r)
-}
-
 export const loadingScreenCache = [];
 
 const images = {};
@@ -453,21 +434,30 @@ export function getValidTimeFileName() {
     return now.getFullYear() + "-" + now.getMonth() + "-" + now.getDay() + "_" + now.getHours() + "-" + now.getMinutes() + "-" + now.getSeconds()
 }
 
+const _path_ = require('path')
+
 export function saveOrDownload(dataURL, path, name, callback) {
-    const filename = joinPath(path, name);
-    if (fs.existsSync(path) && !fs.existsSync(filename)) {
-        if (typeof callback === "function") {
-            saveBase64(dataURL.slice(dataURL.indexOf(",") + 1), filename, callback)
+    if (fs.existsSync(path)) {
+        const filename = _path_.join(path, name);
+        if (!fs.existsSync(filename)) {
+            if (typeof callback === "function") {
+                saveBase64(dataURL.slice(dataURL.indexOf(",") + 1), filename, callback)
+            } else {
+                saveBase64(dataURL.slice(dataURL.indexOf(",") + 1), filename, function (e) {
+                    if (e) {
+                        console.error(e);
+                        downloadDataURL(dataURL, filename)
+                    }
+                })
+            }
         } else {
-            saveBase64(dataURL.slice(dataURL.indexOf(",") + 1), filename, function (e) {
-                if (e) {
-                    console.error(e);
-                    downloadDataURL(dataURL, filename)
-                }
-            })
+            downloadDataURL(dataURL, filename);
+            if (typeof callback === "function") {
+                callback()
+            }
         }
     } else {
-        downloadDataURL(dataURL, filename);
+        downloadDataURL(dataURL, name);
         if (typeof callback === "function") {
             callback()
         }
