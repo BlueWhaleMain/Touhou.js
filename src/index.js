@@ -1315,7 +1315,8 @@ const replayMenu = new Menu(replayList, function (selectedIndex) {
         layerTitle.fillText("LagRate:" + (replay.stg.totalFrames && replay.stg.totalTs
             ? ((1 - replay.stg.totalFrames * 50 / 3 / replay.stg.totalTs) * 100).toFixed(4) + "%" : "N/A")
             , 40, 468);
-        layerTitle.fillText("Score:" + (replay.stg.score ? replay.stg.score : "N/A"), 200, 468)
+        layerTitle.fillText("Version:" + (replay.version ? replay.version : "N/A"), 200, 468)
+        layerTitle.fillText("Score:" + (replay.stg.score ? replay.stg.score : "N/A"), 320, 468)
     }
     layerTitle.restore();
     rendererEntity()

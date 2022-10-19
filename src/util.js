@@ -1068,8 +1068,9 @@ if (!fs.existsSync(options.Replay)) {
 }
 
 export function saveReplay(name, stg, rand, eventList) {
+    const version = pkg.version
     fs.writeFileSync(options.Replay + "/" + new Date().valueOf() + ".json", JSON.stringify({
-        name, stg, rand, eventList, STAGE_VER
+        name, stg, rand, eventList, STAGE_VER, version
     }))
 }
 
@@ -1133,8 +1134,9 @@ export const HINT_VER = 1;
 export const AUTO_HINT = "hint_auto";
 
 export function saveHint(name, timestamp, hint) {
+    const version = pkg.version
     fs.writeFileSync(options.Hint.path + "/" + name + ".json", JSON.stringify({
-        HINT_VER, timestamp, hint
+        HINT_VER, timestamp, hint, version
     }))
 }
 
