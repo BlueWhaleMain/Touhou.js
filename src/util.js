@@ -92,7 +92,7 @@ export function arrowTo(x, y, x1, y1, speed) {
     return [(x1 - x) / s * speed, (y1 - y) / s * speed]
 }
 
-export function RBox(xs, ys, angle) {
+export function RBox(xs, ys, angle = 0) {
     this.name = "RBox";
     this.xs = xs;
     this.ys = ys;
@@ -115,19 +115,35 @@ export function RBox(xs, ys, angle) {
             return maxX - minX <= this.xs + hitBox.xs && maxY - minY <= this.ys + hitBox.ys;
         }
     };
-    this.isOutX = function (x, y, mx, xMax, xMin) {
-        return mx <= 0 && x < -4 * this.xs - xMin || mx > 0 && x > xMax + this.xs + this.xs + xMin
+    this.isOutX = function (x, mx, xMax, xMin) {
+        return mx <= 0 && x < -this.xs / 2 - xMin || mx > 0 && x > xMax + this.xs / 2
     };
-    this.isOutY = function (x, y, my, yMax, yMin) {
-        return my <= 0 && y < -4 * this.ys - yMin || my > 0 && y > yMax + this.ys + this.ys + yMin
+    this.isOutedX = function (x, xMax, xMin) {
+        return x < -this.xs / 2 - xMin || x > xMax + this.xs / 2
+    }
+    this.isOutY = function (y, my, yMax, yMin) {
+        return my <= 0 && y < -this.ys / 2 - yMin || my > 0 && y > yMax + this.ys / 2
     };
+    this.isOutedY = function (y, yMax, yMin) {
+        return y < -this.ys / 2 - yMin || y > yMax + this.ys / 2
+    }
     this.isOut = function (x, y, mx, my, xMax, yMax, xMin, yMin) {
-        return this.isOutX(x, y, mx, xMax, xMin) || this.isOutY(x, y, my, yMax, yMin)
+        return this.isOutX(x, mx, xMax, xMin) || this.isOutY(y, my, yMax, yMin)
     };
+    this.isOuted = function (x, y, xMax, yMax, xMin, yMin) {
+        return this.isOutedX(x, xMax, xMin) || this.isOutedY(y, yMax, yMin)
+    }
     this.isOutScreen = function (x, y, mx, my) {
         return this.isOut(x, y, mx, my, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT,
             GUI_SCREEN.X, GUI_SCREEN.Y)
     };
+    this.isOutedScreen = function (x, y) {
+        return this.isOuted(x, y, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT,
+            GUI_SCREEN.X, GUI_SCREEN.Y)
+    }
+    this.isOverHead = function (x, y) {
+        return (y < -this.ys / 2 - GUI_SCREEN.Y) && !this.isOutedX(x, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.X)
+    }
     this.inScreen = function (x, y) {
         if (x - this.xs / 2 < GUI_SCREEN.X) {
             x = this.xs / 2 + GUI_SCREEN.X;
@@ -156,19 +172,35 @@ export function ABox(r) {
             return (maxX - xx) * (maxX - xx) + (maxY - yy) * (maxY - yy) <= this.r * this.r;
         }
     };
-    this.isOutX = function (x, y, mx, xMax, xMin) {
-        return x < -this.r - xMin && mx <= 0 || x > xMax + this.r + xMin && mx > 0
+    this.isOutX = function (x, mx, xMax, xMin) {
+        return mx <= 0 && x < -this.r - xMin || mx > 0 && x > xMax + this.r
     };
-    this.isOutY = function (x, y, my, yMax, yMin) {
-        return y < -this.r - yMin && my <= 0 || y > yMax + this.r + yMin && my > 0
+    this.isOutedX = function (x, xMax, xMin) {
+        return x < -this.r - xMin || x > xMax + this.r
+    };
+    this.isOutY = function (y, my, yMax, yMin) {
+        return y < -this.r - yMin && my <= 0 || y > yMax + this.r && my > 0
+    };
+    this.isOutedY = function (y, yMax, yMin) {
+        return y < -this.r - yMin || y > yMax + this.r
     };
     this.isOut = function (x, y, mx, my, xMax, yMax, xMin, yMin) {
-        return this.isOutX(x, y, mx, xMax, xMin) || this.isOutY(x, y, my, yMax, yMin)
+        return this.isOutX(x, mx, xMax, xMin) || this.isOutY(y, my, yMax, yMin)
+    };
+    this.isOuted = function (x, y, xMax, yMax, xMin, yMin) {
+        return this.isOutedX(x, xMax, xMin) || this.isOutedY(y, yMax, yMin)
     };
     this.isOutScreen = function (x, y, mx, my) {
         return this.isOut(x, y, mx, my, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT,
             GUI_SCREEN.X, GUI_SCREEN.Y)
     };
+    this.isOutedScreen = function (x, y) {
+        return this.isOuted(x, y, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT,
+            GUI_SCREEN.X, GUI_SCREEN.Y)
+    }
+    this.isOverHead = function (x, y) {
+        return (y < -this.r - GUI_SCREEN.Y) && !this.isOutedX(x, GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.X)
+    }
     this.inScreen = function (x, y) {
         if (x - this.r < GUI_SCREEN.X) {
             x = this.r + GUI_SCREEN.X;

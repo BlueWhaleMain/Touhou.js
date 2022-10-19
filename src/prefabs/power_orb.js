@@ -3,12 +3,16 @@ import item from "../components/item.js";
 import movable from "../components/movable.js";
 import {
     ABox,
-    RBox,
-    getLayer,
-    session,
     entities,
-    newImage, EVENT_MAPPING,
-    resources, newAudio, LAYER_MAPPING
+    EVENT_MAPPING,
+    getLayer,
+    GUI_SCREEN,
+    LAYER_MAPPING,
+    newAudio,
+    newImage,
+    RBox,
+    resources,
+    session
 } from "../util.js";
 import {title} from "../dialogue.js";
 import {ob} from "../observer.js";
@@ -26,6 +30,19 @@ texture.addEventListener("load", function () {
     bigCtx.drawImage(texture, 15, 1, 16, 16, 0, 0, 16, 16);
     middleCtx.drawImage(texture, 1, 3, 12, 12, 0, 0, 12, 12);
 });
+const bigOverHeadTexture = document.createElement("canvas")
+bigOverHeadTexture.width = 16;
+bigOverHeadTexture.height = 16;
+const bigOverHeadTextureCtx = bigOverHeadTexture.getContext("2d")
+const middleOverHeadTexture = document.createElement('canvas')
+middleOverHeadTexture.width = 12
+middleOverHeadTexture.height = 12
+const middleOverHeadTextureCtx=middleOverHeadTexture.getContext('2d')
+const eBullet2 = newImage(resources.Images.eBullet2);
+eBullet2.addEventListener('load', function () {
+    bigOverHeadTextureCtx.drawImage(eBullet2, 7 * 32 + 16, 13 * 32, 16, 16, 0, 0, 16, 16)
+    middleOverHeadTextureCtx.drawImage(eBullet2, 6 * 32 + 2, 13 * 32 + 2, 12, 12, 0, 0, 12, 12)
+})
 const soundOfItemPickUp = newAudio(resources.Sounds.item);
 const soundOfPowerUp = newAudio(resources.Sounds.powerUp);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
@@ -83,8 +100,14 @@ export default function PowerOrb(x, y, mx, my, size = "middle") {
         this.draw = function (inst) {
             if (size === "big") {
                 layerStage.drawImage(big, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
+                if (inst.sizeBox.isOverHead(inst.X, inst.Y)) {
+                    layerStage.drawImage(bigOverHeadTexture, inst.X - inst.sizeBox.xs / 2, GUI_SCREEN.Y)
+                }
             } else if (size === "middle") {
                 layerStage.drawImage(middle, inst.X - inst.sizeBox.xs / 2, inst.Y - inst.sizeBox.ys / 2)
+                if (inst.sizeBox.isOverHead(inst.X, inst.Y)) {
+                    layerStage.drawImage(middleOverHeadTexture, inst.X - inst.sizeBox.xs / 2, GUI_SCREEN.Y)
+                }
             }
         }
     });

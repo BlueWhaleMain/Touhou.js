@@ -149,11 +149,11 @@ export default function movable() {
         // 碰撞可能会造成多种结果：造成伤害、改变速度、触发事件
         if (this.reflex.enabled === true && this.reflex.count !== 0) {
             let work = false;
-            if (inst.atkBox.isOutX(inst.X, inst.Y, this.MX, this.reflex.xMax, this.reflex.xMin)) {
+            if (inst.atkBox.isOutX(inst.X, this.MX, this.reflex.xMax, this.reflex.xMin)) {
                 this.MX = -this.MX;
                 work = true
             }
-            if (inst.atkBox.isOutY(inst.X, inst.Y, this.MY, this.reflex.yMax, this.reflex.yMin)) {
+            if (inst.atkBox.isOutY(inst.Y, this.MY, this.reflex.yMax, this.reflex.yMin)) {
                 this.MY = -this.MY;
                 work = true
             }

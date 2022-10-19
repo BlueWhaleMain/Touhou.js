@@ -28,7 +28,7 @@ export default function EnemyUtil(/* number */x, /* number */y, /* number */bloo
     }
 
     function reflex() {
-        if (inst.sizeBox.isOutScreen(inst.X, inst.Y, 0, 0)) {
+        if (inst.sizeBox.isOutedScreen(inst.X, inst.Y)) {
             return
         }
         inst.components["health"].doDelta(-100)
@@ -36,7 +36,7 @@ export default function EnemyUtil(/* number */x, /* number */y, /* number */bloo
 
     function hurt(e) {
         if (e.detail && e.detail.isPlayer === true) {
-            if (inst.sizeBox.isOutScreen(inst.X, inst.Y, 0, 0)) {
+            if (inst.sizeBox.isOutedScreen(inst.X, inst.Y)) {
                 return
             }
             inst.components["health"].doDelta(-100)
