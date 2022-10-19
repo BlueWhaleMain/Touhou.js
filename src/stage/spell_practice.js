@@ -436,15 +436,15 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                             record.eventList[runningFrames] = JSON.parse(JSON.stringify(events))
                         }
                     }
-                    if (inst.boss.length === 0) {
-                        if (inst.stageItems.length === 0) {
-                            if (inst.stageMap.length === 0) {
-                                if (inst.failure === false) {
-                                    inst.clear();
-                                }
-                                inst.end = true;
-                            } else {
-                                if (waitingFrames === 0 && session.player.bombTime < 1) {
+                    if (waitingFrames === 0) {
+                        if (inst.boss.length === 0) {
+                            if (inst.stageItems.length === 0) {
+                                if (inst.stageMap.length === 0) {
+                                    if (inst.failure === false) {
+                                        inst.clear();
+                                    }
+                                    inst.end = true;
+                                } else {
                                     inst.resolveStageObj(inst.stageMap.shift())
                                     lastFrames = currentFrames
                                     currentFrames = 0
