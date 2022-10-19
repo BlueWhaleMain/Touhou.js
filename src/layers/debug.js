@@ -1,29 +1,44 @@
 /*
  *调试图层，显示判定区域等
  */
-import {getLayer, L, LAYER_MAPPING, session} from "../util.js";
-import graphics from "../graphics.js";
+import {getLayer, intervalExecute, L, LAYER_MAPPING, session} from "../util.js";
+import Graphics from "../graphics.js";
 
 const r90 = 90 * L;
-const layerUI = getLayer(LAYER_MAPPING.UI);
-export default function debug() {
-    const graph = new graphics()
+const layerDebug = getLayer(LAYER_MAPPING.DEBUG);
+export default function Debug() {
+    const graph = new Graphics()
+    let outedScreenVisible = true
+    const switchOutedScreenVisible = intervalExecute(() => {
+        outedScreenVisible = !outedScreenVisible
+    }, 10)
     this.draw = function (inst) {
         if (session.debugFlag === true) {
+            switchOutedScreenVisible()
             if (inst.atkBox) {
-                this.drawBox(inst, inst.atkBox, 'red')
+                if (outedScreenVisible || !inst.atkBox.isOutedScreen(inst.X, inst.Y)) {
+                    this.drawBox(inst, inst.atkBox, 'red')
+                }
             }
             if (inst.sizeBox) {
-                this.drawBox(inst, inst.sizeBox, 'blue')
+                if (outedScreenVisible || !inst.sizeBox.isOutedScreen(inst.X, inst.Y)) {
+                    this.drawBox(inst, inst.sizeBox, 'blue')
+                }
             }
             if (inst.pickBox) {
-                this.drawBox(inst, inst.pickBox, 'aqua')
+                if (outedScreenVisible || !inst.pickBox.isOutedScreen(inst.X, inst.Y)) {
+                    this.drawBox(inst, inst.pickBox, 'aqua')
+                }
             }
             if (inst.grazeBox) {
-                this.drawBox(inst, inst.grazeBox, 'green')
+                if (outedScreenVisible || !inst.grazeBox.isOutedScreen(inst.X, inst.Y)) {
+                    this.drawBox(inst, inst.grazeBox, 'green')
+                }
             }
             if (inst.hitBox) {
-                this.drawBox(inst, inst.hitBox, 'orange')
+                if (outedScreenVisible || !inst.hitBox.isOutedScreen(inst.X, inst.Y)) {
+                    this.drawBox(inst, inst.hitBox, 'orange')
+                }
             }
             const movable = inst.components["movable"]
             if (movable) {
@@ -37,21 +52,21 @@ export default function debug() {
                     }
                 }
                 draw = graph.getLine(len, 'white')
-                layerUI.save();
-                layerUI.translate(inst.X, inst.Y);
-                layerUI.rotate(Math.atan2(movable.MY, movable.MX) + r90);
-                layerUI.drawImage(draw, 0, -len);
-                layerUI.restore()
+                layerDebug.save();
+                layerDebug.translate(inst.X, inst.Y);
+                layerDebug.rotate(Math.atan2(movable.MY, movable.MX) + r90);
+                layerDebug.drawImage(draw, 0, -len);
+                layerDebug.restore()
             }
             const health = inst.components["health"]
             if (health) {
                 const current = health.getValue()
                 const max = health.getMax()
-                layerUI.save()
-                layerUI.translate(inst.X, inst.Y)
-                layerUI.fillStyle = health.indestructible ? 'gold' : 'red'
-                layerUI.fillText(current + '/' + max, 0, 0)
-                layerUI.restore()
+                layerDebug.save()
+                layerDebug.translate(inst.X, inst.Y)
+                layerDebug.fillStyle = health.indestructible ? 'gold' : 'red'
+                layerDebug.fillText(current + '/' + max, 0, 0)
+                layerDebug.restore()
             }
         }
     }
@@ -59,14 +74,14 @@ export default function debug() {
         let draw;
         if (box.name === "ABox") {
             draw = graph.getCircle(box.r, color);
-            layerUI.drawImage(draw, inst.X - box.r - 1, inst.Y - box.r - 1);
+            layerDebug.drawImage(draw, inst.X - box.r - 1, inst.Y - box.r - 1);
         } else if (box.name === 'RBox') {
             draw = graph.getRectangle(box.xs, box.ys, color);
-            layerUI.save();
-            layerUI.translate(inst.X + (inst.DX || 0), inst.Y + (inst.DY || 0));
-            layerUI.rotate(box.angle);
-            layerUI.drawImage(draw, -box.xs / 2, -box.ys / 2)
-            layerUI.restore()
+            layerDebug.save();
+            layerDebug.translate(inst.X + (inst.DX || 0), inst.Y + (inst.DY || 0));
+            layerDebug.rotate(box.angle);
+            layerDebug.drawImage(draw, -box.xs / 2, -box.ys / 2)
+            layerDebug.restore()
         }
     }
 }

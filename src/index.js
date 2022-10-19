@@ -20,6 +20,7 @@ import {
     newAudio,
     newImage,
     options,
+    pkg,
     profile,
     randomPos,
     rendererEntity,
@@ -296,29 +297,35 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
         layerTitle.font = "12px Comic Sans MS";
         layerTitle.fillText("正在播放：" + session.currentBGM.name, 400, 80);
         if (session.debugFlag) {
+            layerDebug.save();
+            layerDebug.shadowBlur = 3;
+            layerDebug.fillStyle = "rgb(153,153,153)";
+            layerDebug.shadowColor = "black";
+            layerDebug.font = "12px Comic Sans MS";
             const head = "(Head)File：" + session.currentBGM.dom.src;
-            let len = layerTitle.measureText(head).width;
-            layerTitle.fillText(head, Math.max(WIDTH - len - 40, 0), 56);
+            let len = layerDebug.measureText(head).width;
+            layerDebug.fillText(head, Math.max(WIDTH - len - 40, 0), 56);
             let total = session.currentBGM.dom.duration;
             let current = session.currentBGM.dom.currentTime;
             if (session.currentBGM.loop) {
                 const loop = "LoopFile：" + session.currentBGM.loop.src;
-                len = layerTitle.measureText(loop).width;
-                layerTitle.fillText(loop, Math.max(WIDTH - len - 40, 0), 68);
+                len = layerDebug.measureText(loop).width;
+                layerDebug.fillText(loop, Math.max(WIDTH - len - 40, 0), 68);
                 total += session.currentBGM.loop.duration;
                 if (!session.currentBGM.loop.paused) {
                     current = session.currentBGM.dom.duration + session.currentBGM.loop.currentTime
                 }
             }
-            layerTitle.strokeStyle = "rgb(153,153,153)";
-            layerTitle.strokeRect(400, 90, 120, 10);
-            layerTitle.fillRect(400, 90, 120 * current / total, 10);
+            layerDebug.strokeStyle = "rgb(153,153,153)";
+            layerDebug.strokeRect(400, 90, 120, 10);
+            layerDebug.fillRect(400, 90, 120 * current / total, 10);
             current = Math.round(current);
-            layerTitle.fillText(Math.floor(current / 60) + ":" + Math.prefix(current % 60) + "/" + Math.floor(total / 60) + ":" + Math.prefix(total % 60), 522, 100);
+            layerDebug.fillText(Math.floor(current / 60) + ":" + Math.prefix(current % 60) + "/" + Math.floor(total / 60) + ":" + Math.prefix(total % 60), 522, 100);
             if (session.currentBGM.loop) {
-                layerTitle.fillStyle = "red";
-                layerTitle.fillRect(400 + 120 * session.currentBGM.dom.duration / total, 90, 1, 10)
+                layerDebug.fillStyle = "red";
+                layerDebug.fillRect(400 + 120 * session.currentBGM.dom.duration / total, 90, 1, 10)
             }
+            layerDebug.restore()
         }
         let y = 0;
         for (let i = 0; i < self.menuList.length; i++) {
@@ -1668,12 +1675,13 @@ const optionMenu = new Menu([
     }
 }, function (self) {
     if (session.debugFlag) {
-        layerEffect.save();
-        layerEffect.font = "10px Comic Sans MS";
-        layerEffect.fillStyle = "white";
-        layerEffect.fillText("NodeWebkit Version " + process.versions["node-webkit"], 0, 10);
-        layerEffect.fillText("Chromium Version " + process.versions["chromium"], 0, 20);
-        layerEffect.restore()
+        layerDebug.save();
+        layerDebug.font = "10px Comic Sans MS";
+        layerDebug.fillStyle = "white";
+        layerDebug.fillText("NodeWebkit Version " + process.versions["node-webkit"], 0, 10);
+        layerDebug.fillText("Chromium Version " + process.versions["chromium"], 0, 20);
+        layerDebug.fillText("Game Version " + pkg.version, 0, 30)
+        layerDebug.restore()
     }
     layerTitle.save();
     layerTitle.font = "17px Comic Sans MS";
@@ -1981,31 +1989,40 @@ function runSpellPractice() {
 
 let restore = false;
 const imageOfError = newImage(resources.Images.error);
+const layerShade = getLayer(LAYER_MAPPING.SHADE)
+const layerDebug = getLayer(LAYER_MAPPING.DEBUG)
 
 function error(e, fatal = false) {
     console.error(e);
-    layerStage.clearRect(0, 0, WIDTH, HEIGHT);
-    clearScreen();
     cancelAllSound();
-    layerStage.save();
-    layerStage.font = "10px sans-serif";
-    layerStage.fillStyle = "red";
+    layerDebug.clearRect(0, 0, WIDTH, HEIGHT)
+    layerDebug.save();
+    layerDebug.strokeStyle = 'red'
+    layerDebug.strokeRect(0, 0, WIDTH, HEIGHT)
+    layerDebug.font = "10px Comic Sans MS";
+    layerDebug.fillStyle = "white";
+    layerDebug.fillText("NodeWebkit Version " + process.versions["node-webkit"], 450, 450);
+    layerDebug.fillText("Chromium Version " + process.versions["chromium"], 450, 460);
+    layerDebug.fillText("Game Version " + pkg.version, 450, 470)
+    layerDebug.font = "10px sans-serif";
+    layerDebug.fillStyle = "red";
     let y = 10;
     if (fatal) {
-        layerStage.fillText("哦豁，完蛋：", 2, y);
-        layerStage.fillText("[!]这是一个致命错误", 2, 475)
+        layerDebug.fillText("哦豁，完蛋：", 2, y);
+        layerDebug.fillText("[!]这是一个致命错误", 2, 475)
     } else {
-        layerStage.drawImage(imageOfError, WIDTH - imageOfError.width, HEIGHT - imageOfError.height);
-        layerStage.fillText("啊这，发生了一点错误：", 2, y);
-        layerStage.fillText("按[Z]返回主菜单", 2, 461);
-        layerStage.fillText("按[Esc]退出", 2, 475);
+        layerShade.drawImage(imageOfError, WIDTH - imageOfError.width, HEIGHT - imageOfError.height);
+        layerDebug.fillText("啊这，发生了一点错误：", 2, y);
+        layerDebug.fillText("按[F2]保存截图", 2, 447);
+        layerDebug.fillText("按[Z]返回主菜单", 2, 461);
+        layerDebug.fillText("按[Esc]退出", 2, 475);
         restore = true
     }
     e.stack.split("\n").forEach(function (s) {
         y += 10;
-        layerStage.fillText(s, 2, y)
+        layerDebug.fillText(s, 2, y)
     });
-    layerStage.restore();
+    layerDebug.restore();
 }
 
 const loadingBgm = newAudio(resources.Sounds.loading, 100, "BGM");
@@ -2054,11 +2071,11 @@ function run() {
             session.keys.delete("f5")
         }
         if (session.debugFlag) {
-            layerTitle.save();
-            layerTitle.font = "10px Comic Sans MS";
-            layerTitle.fillStyle = "white";
-            layerTitle.fillText("调试屏幕已开启", 0, HEIGHT - 1);
-            layerTitle.restore()
+            layerDebug.save();
+            layerDebug.font = "10px Comic Sans MS";
+            layerDebug.fillStyle = "white";
+            layerDebug.fillText("调试屏幕已开启", 0, HEIGHT - 1);
+            layerDebug.restore()
         }
         if (session.keys.has("f11")) {
             // idea 挨打
@@ -2117,19 +2134,19 @@ function loading(f) {
         } catch (e) {
         }
         if (options.DeveloperMode === true) {
-            layerTitle.save();
-            layerTitle.fillStyle = "white";
-            layerTitle.font = "16px sans-serif";
-            layerTitle.shadowColor = "black";
-            layerTitle.shadowBlur = 1;
+            layerDebug.save();
+            layerDebug.fillStyle = "white";
+            layerDebug.font = "16px sans-serif";
+            layerDebug.shadowColor = "black";
+            layerDebug.shadowBlur = 1;
             const len = Math.min(loadingScreenCache.length, Math.ceil(HEIGHT / 18));
             while (len < loadingScreenCache.length) {
                 loadingScreenCache.shift()
             }
             for (let i = len - 1; i >= 0; i--) {
-                layerTitle.fillText(loadingScreenCache[i], 0, i * 18)
+                layerDebug.fillText(loadingScreenCache[i], 0, i * 18)
             }
-            layerTitle.restore();
+            layerDebug.restore();
         }
         layerStage.save();
         layerStage.globalAlpha = 1 / t;
@@ -2326,14 +2343,19 @@ function main() {
                 }
                 if (restore) {
                     if (key === "z") {
-                        restore = false;
-                        mainMenu.load();
-                        ASSETS.SOUND.ok.currentTime = 0;
-                        _ = ASSETS.SOUND.ok.play();
-                        nextFrame(run)
                     } else if (key === "escape") {
                         win.close()
+                        return
+                    } else if (key.toLowerCase() === "f2") {
+                        saveOrDownload(takeScreenShot(LAYER_MAPPING.DEBUG), options.ScreenShot, "Touhou.JS_DebugReport_" + getValidTimeFileName() + ".png");
+                    } else {
+                        return
                     }
+                    restore = false;
+                    mainMenu.load();
+                    ASSETS.SOUND.ok.currentTime = 0;
+                    _ = ASSETS.SOUND.ok.play();
+                    nextFrame(run)
                     return
                 }
                 session.keys.add(key)

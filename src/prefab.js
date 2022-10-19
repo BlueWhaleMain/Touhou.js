@@ -1,5 +1,5 @@
 import {session, TAGS} from "./util.js";
-import debug from "./layers/debug";
+import Debug from "./layers/debug";
 
 export default function Prefab(x, y) {
     this.X = 0 || x;
@@ -22,7 +22,7 @@ export default function Prefab(x, y) {
     };
     if (session.developerMode === true) {
         this.removeLayer('debug')
-        this.addLayer('debug', debug)
+        this.addLayer('debug', Debug)
     }
 }
 Prefab.prototype.addComponent = function (componentName, fn) {

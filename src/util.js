@@ -550,6 +550,7 @@ export const entities = [];
 export const session = {};
 export let options = JSON.parse(fs.readFileSync("options.json").toString());
 export const resources = JSON.parse(fs.readFileSync("assets/resources.json").toString()) || require("../assets/resources.json");
+export const pkg = JSON.parse(fs.readFileSync("package.json").toString())
 export let profile;
 if (!fs.existsSync("save")) {
     fs.mkdirSync("save")
@@ -664,7 +665,7 @@ export const EVENT_MAPPING = {
     shift: "Shift",
     unshift: "UnShift"
 };
-// 背景-玩家-boss-弹幕(entity)/特效-符卡宣言-判定点-UI/效果/字幕-菜单-调试信息-错误/遮罩
+// 背景-玩家-boss-弹幕(entity)/特效-符卡宣言-判定点-UI/效果/字幕-菜单/遮罩/错误-调试信息
 // ----------场景----------------------UI-------------
 // /：图层 -：绘制次序
 export const LAYER_MAPPING = {
@@ -672,7 +673,8 @@ export const LAYER_MAPPING = {
     UI: 1,
     EFFECT: 2,
     TITLE: 3,
-    SHADE: 4
+    SHADE: 4,
+    DEBUG: 5
 };
 // 0图层可能重构为webgl
 const Sticker = {};
@@ -1160,6 +1162,17 @@ export function delayExecute(f, delay) {
     let step = 0
     return (...arg) => {
         if (step > delay) {
+            return f(...arg)
+        }
+        step++
+    }
+}
+
+export function intervalExecute(f, interval) {
+    let step = 0
+    return (...arg) => {
+        if (step > interval) {
+            step = 0
             return f(...arg)
         }
         step++

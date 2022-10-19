@@ -7,6 +7,7 @@ import {
     LAYER_MAPPING,
     newImage,
     options,
+    RBox,
     resources,
     session,
     stopAllSound,
@@ -14,6 +15,7 @@ import {
     WIDTH
 } from "./util.js";
 import Observer from "./observer.js";
+import Debug from "./layers/debug";
 
 export const STAGE_EVENT = {
     load: "Load",
@@ -23,6 +25,7 @@ export const STAGE_EVENT = {
 };
 const layerUI = getLayer(LAYER_MAPPING.UI);
 const layerTitle = getLayer(LAYER_MAPPING.TITLE);
+const layerDebug = getLayer(LAYER_MAPPING.DEBUG)
 const guiBackground = document.createElement("canvas");
 let t = 2, tsp = 0.1;
 guiBackground.width = WIDTH;
@@ -42,7 +45,7 @@ const sidebarBomb = newImage(resources.Images.sidebar.bomb);
 const sidebarLife = newImage(resources.Images.sidebar.life);
 const spellPractice = newImage(resources.Images.spellPractice);
 export default function StageUtil() {
-    const inst = new Prefab();
+    const inst = new Prefab(GUI_SCREEN.X + GUI_SCREEN.WIDTH / 2, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT / 2);
     inst.event = new Observer();
     inst.callback = {};
     inst.paused = false;
@@ -78,6 +81,8 @@ export default function StageUtil() {
             }
         }
     });
+    const debug = new Debug(inst)
+    const guiBox = new RBox(GUI_SCREEN.WIDTH, GUI_SCREEN.HEIGHT)
     inst.addLayer("StageUtil", function () {
         this.draw = function () {
             layerTitle.save();
@@ -145,39 +150,40 @@ export default function StageUtil() {
             }
             layerTitle.restore();
             if (session.developerMode) {
-                layerTitle.save();
-                layerTitle.font = "15px sans-serif";
+                layerDebug.save();
+                layerDebug.font = "15px sans-serif";
                 if (t) {
-                    layerTitle.fillStyle = "rgba(255,255,255," + (1 / t) + ")"
+                    layerDebug.fillStyle = "rgba(255,255,255," + (1 / t) + ")"
                 } else {
-                    layerTitle.fillStyle = "white"
+                    layerDebug.fillStyle = "white"
                 }
-                layerTitle.fillText("Developer Mode", 475, 365);
-                layerTitle.restore();
+                layerDebug.fillText("Developer Mode", 475, 365);
+                layerDebug.restore();
                 if (session.debugFlag) {
-                    layerTitle.save();
-                    layerTitle.font = "10px Comic Sans MS";
-                    layerTitle.fillStyle = "white";
-                    layerTitle.fillText("Player", GUI_SCREEN.X, GUI_SCREEN.Y + 10);
-                    layerTitle.fillText("X " + session.player.X, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 20);
-                    layerTitle.fillText("Y " + session.player.Y, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 30);
-                    layerTitle.fillText("HitCount " + session.player.hitCount, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 40);
-                    layerTitle.fillText("ShootDelay " + session.player.shootDelay, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 50);
-                    layerTitle.fillText("BombUsed " + session.player.bombUsed, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 60);
-                    layerTitle.fillText("BombTime " + session.player.bombTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 70);
-                    layerTitle.fillText("IndTime " + session.player.indTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 80);
-                    layerTitle.fillText("Miss " + session.player.miss, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 90);
-                    layerTitle.fillText("HideTime " + session.player.hideTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 100);
+                    layerDebug.save();
+                    layerDebug.font = "10px Comic Sans MS";
+                    layerDebug.fillStyle = "white";
+                    layerDebug.fillText("Player", GUI_SCREEN.X, GUI_SCREEN.Y + 10);
+                    layerDebug.fillText("X " + session.player.X, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 20);
+                    layerDebug.fillText("Y " + session.player.Y, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 30);
+                    layerDebug.fillText("HitCount " + session.player.hitCount, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 40);
+                    layerDebug.fillText("ShootDelay " + session.player.shootDelay, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 50);
+                    layerDebug.fillText("BombUsed " + session.player.bombUsed, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 60);
+                    layerDebug.fillText("BombTime " + session.player.bombTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 70);
+                    layerDebug.fillText("IndTime " + session.player.indTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 80);
+                    layerDebug.fillText("Miss " + session.player.miss, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 90);
+                    layerDebug.fillText("HideTime " + session.player.hideTime, GUI_SCREEN.X + 10, GUI_SCREEN.Y + 100);
                     if (typeof inst.getRunningFrames === 'function') {
-                        layerTitle.fillText("RunningFrames " + inst.getRunningFrames(), GUI_SCREEN.X + 10,
+                        layerDebug.fillText("RunningFrames " + inst.getRunningFrames(), GUI_SCREEN.X + 10,
                             GUI_SCREEN.Y + 110)
                     }
                     if (typeof inst.getCurrentFrames === 'function') {
-                        layerTitle.fillText("CurrentFrames " + inst.getCurrentFrames(), GUI_SCREEN.X + 10,
+                        layerDebug.fillText("CurrentFrames " + inst.getCurrentFrames(), GUI_SCREEN.X + 10,
                             GUI_SCREEN.Y + 120)
                     }
-                    layerTitle.restore()
+                    layerDebug.restore()
                 }
+                debug.drawBox(inst, guiBox, 'gold')
             }
             t += tsp;
             if (t > 2) {

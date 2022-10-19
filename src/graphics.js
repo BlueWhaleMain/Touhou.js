@@ -3,7 +3,7 @@ export const graphicsCache = {
     Rectangle: {},
     Circle: {}
 };
-export default function graphics() {
+export default function Graphics() {
     let cacheCtx;
     this.getLine = function (len, color) {
         let graph;
