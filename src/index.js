@@ -485,7 +485,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         const x = GUI_SCREEN.X + 50 + i * (GUI_SCREEN.WIDTH / 7)
                         entities.push(Yousei('hatted', 'blue', x, -40, 3,
                             batchExecute([shootCircle(3 + i * 3, 50, 120 + i * 3, 5,
-                                5, 0, 45, 0, 4, true,
+                                5, 0, 45, 0, 5, true,
                                 'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
                                 moveLine(-2, 1), 120), 120)]), -1,
                             [PowerOrb(0, 0, 0, -1)]))
@@ -515,7 +515,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         const x = GUI_SCREEN.X + 50 + i * (GUI_SCREEN.WIDTH / 7)
                         entities.push(Yousei('hatted', 'blue', x, -40, 3,
                             batchExecute([shootCircle(3 + i * 3, 50, 120 + i * 3, 5,
-                                5, 0, 45, 0, 4, true,
+                                5, 0, 45, 0, 5, true,
                                 'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
                                 moveLine(-2, 1), 120), 120)]), -1,
                             [PowerOrb(0, 0, 0, -1)]))
@@ -535,7 +535,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         const x = GUI_SCREEN.X + 50 + i * (GUI_SCREEN.WIDTH / 7)
                         entities.push(Yousei('hatted', 'blue', x, -40, 3,
                             batchExecute([shootCircle(3 + i * 3, 50, 120 + i * 3, 5,
-                                5, 0, 45, 0, 4, true,
+                                5, 0, 45, 0, 5, true,
                                 'ring', 'blue', 0, 0, 0, 4), moveTo(x, 50, 2, delayExecute(
                                 moveLine(-2, 1), 120), 120)]), -1,
                             [PowerOrb(0, 0, 0, -1)]))
@@ -543,7 +543,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                 }], [1650, function () {
                     let yousei = Yousei('hatted', 'blue', GUI_SCREEN.X + 100, -40, 30,
                         batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 3,
-                            shootCircle(0, 6, 370, 6, 3, 0,
+                            shootCircle(0, 6, 370, 6, 2, 0,
                                 360, -6, 120, false, 'rice', 'blue', 0, 0, 0, 2)),
                             delayExecute(moveLine(0, 2), 400)]),
                         520, [PowerOrb(0, 0, 0, -1, 'big')])
@@ -551,7 +551,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                     entities.push(yousei)
                     yousei = Yousei('hatted', 'blue', GUI_SCREEN.X + 250, -40, 30,
                         batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 3,
-                            shootCircle(0, 6, 370, 6, 3, 0,
+                            shootCircle(0, 6, 370, 6, 2, 0,
                                 360, 6, 120, false, 'rice', 'blue', 0, 0, 0, 2)),
                             delayExecute(moveLine(0, 2), 400)]),
                         520, [BlueOrb(0, 0, 0, -1)])
