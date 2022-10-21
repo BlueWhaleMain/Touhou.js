@@ -141,10 +141,12 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             }
             if (inst.loaded === false) {
                 inst.loaded = true;
-                while (dialogue.length > 0) {
-                    const d = dialogue.shift();
-                    d.entity = inst;
-                    session.stage.dialogueScript.push(d)
+                if (dialogue) {
+                    while (dialogue.length > 0) {
+                        const d = dialogue.shift();
+                        d.entity = inst;
+                        session.stage.dialogueScript.push(d)
+                    }
                 }
                 if (typeof inst.callback.load === "function") {
                     inst.callback.load()
@@ -167,19 +169,31 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             if (inst.tags.has(TAGS.death)) {
                 if (inst.components["health"].getValue() <= inst.components["health"].getMin()) {
                     if (inst.dieFrame > 0) {
-                        if (inst.dieFrame > 60) {
-                            if (inst.dieFrame % 6 === 0) {
-                                soundOfBombShoot.currentTime = 0;
-                                _ = soundOfBombShoot.play()
+                        if (dialogue) {
+                            if (inst.dieFrame > 60) {
+                                if (inst.dieFrame % 6 === 0) {
+                                    soundOfBombShoot.currentTime = 0;
+                                    _ = soundOfBombShoot.play()
+                                }
+                                if (inst.dieFrame > 180) {
+                                    soundOfEnEp1.currentTime = 0;
+                                    _ = soundOfEnEp1.play();
+                                    inst.dead = true;
+                                    entities.push(GreenOrb(inst.X, inst.Y, 0, -2))
+                                }
+                                entities.push(EnEpBall(inst.X, inst.Y, (Math.random() - 0.5) * 10,
+                                    (Math.random() - 0.5) * 10))
                             }
-                            if (inst.dieFrame > 180) {
+                        } else {
+                            inst.target.X = x
+                            inst.target.Y = y
+                            inst.checkPOS(10)
+                            if (inst.dieFrame > 60) {
                                 soundOfEnEp1.currentTime = 0;
                                 _ = soundOfEnEp1.play();
                                 inst.dead = true;
                                 entities.push(GreenOrb(inst.X, inst.Y, 0, -2))
                             }
-                            entities.push(EnEpBall(inst.X, inst.Y, (Math.random() - 0.5) * 10,
-                                (Math.random() - 0.5) * 10))
                         }
                     } else if (inst.dieFrame === 0) {
                         let spawnPoint;
@@ -187,8 +201,10 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
                             spawnPoint = generateRandomSpeed(100, 50, -50, undefined, undefined, undefined, 20);
                             entities.push(BlueOrb(inst.X + spawnPoint[0], inst.Y + spawnPoint[1], 0, -2))
                         }
-                        soundOfEnEp2.currentTime = 0;
-                        _ = soundOfEnEp2.play();
+                        if (dialogue) {
+                            soundOfEnEp2.currentTime = 0;
+                            _ = soundOfEnEp2.play();
+                        }
                     }
                     inst.dieFrame++
                 } else {
