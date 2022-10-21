@@ -40,6 +40,10 @@
     },
     "Sounds": {
         "loading": "loading.flac",
+        "aSoulAsScarletAsAgroundCherry": {
+            "head": "th01_02_head.wav",
+            "loop": "th01_02_loop.wav"
+        },
         "spiritualDominationWhoDoneIt": {
             "head": "th02_17_head.wav",
             "loop": "th02_17_loop.wav"

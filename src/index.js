@@ -109,6 +109,15 @@ const ASSETS = {
         yukariYakumo: newImage(resources.Images.bossYukariYakumo)
     },
     SOUND: {
+        aSoulAsScarletAsAgroundCherry: {
+            head: newAudio(resources.Sounds.aSoulAsScarletAsAgroundCherry.head, 100, "BGM"),
+            loop: newAudio(resources.Sounds.aSoulAsScarletAsAgroundCherry.loop, 100, "BGM"),
+            name: "如鬼灯般的红色之魂",
+            description: "１面的主题曲。\n" +
+                "想要突出夜晚里森林的印象。反正是第一关，觉得加些勇气感就能\n" +
+                "让人有干劲了吧，做成稍微活泼一点的音乐了。\n" +
+                "说成勇气感还不如说是有趣的百鬼夜行的感觉吧？"
+        },
         spiritualDominationWhoDoneIt: {
             head: newAudio(resources.Sounds.spiritualDominationWhoDoneIt.head, 100, "BGM"),
             loop: newAudio(resources.Sounds.spiritualDominationWhoDoneIt.loop, 100, "BGM"),
@@ -252,6 +261,7 @@ function addToMusicRoom(bgm) {
     musics.push(bgm)
 }
 
+addToMusicRoom(ASSETS.SOUND.aSoulAsScarletAsAgroundCherry);
 addToMusicRoom(ASSETS.SOUND.spiritualDominationWhoDoneIt);
 addToMusicRoom(ASSETS.SOUND.easternNight);
 addToMusicRoom(ASSETS.SOUND.th10_01);
