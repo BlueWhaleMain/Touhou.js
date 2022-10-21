@@ -20,28 +20,28 @@ import {ob} from "../observer.js";
 const big = document.createElement("canvas");
 big.width = 16;
 big.height = 16;
-const bigCtx = big.getContext("2d");
 const middle = document.createElement("canvas");
 middle.width = 12;
 middle.height = 12;
-const middleCtx = middle.getContext("2d");
 const texture = newImage(resources.Images.powerOrb);
 texture.addEventListener("load", function () {
+    const bigCtx = big.getContext("2d");
     bigCtx.drawImage(texture, 15, 1, 16, 16, 0, 0, 16, 16);
+    const middleCtx = middle.getContext("2d");
     middleCtx.drawImage(texture, 1, 3, 12, 12, 0, 0, 12, 12);
 });
 const bigOverHeadTexture = document.createElement("canvas")
-bigOverHeadTexture.width = 16;
-bigOverHeadTexture.height = 16;
-const bigOverHeadTextureCtx = bigOverHeadTexture.getContext("2d")
+bigOverHeadTexture.width = 12;
+bigOverHeadTexture.height = 13;
 const middleOverHeadTexture = document.createElement('canvas')
-middleOverHeadTexture.width = 12
-middleOverHeadTexture.height = 12
-const middleOverHeadTextureCtx=middleOverHeadTexture.getContext('2d')
+middleOverHeadTexture.width = 10
+middleOverHeadTexture.height = 10
 const eBullet2 = newImage(resources.Images.eBullet2);
 eBullet2.addEventListener('load', function () {
-    bigOverHeadTextureCtx.drawImage(eBullet2, 7 * 32 + 16, 13 * 32, 16, 16, 0, 0, 16, 16)
-    middleOverHeadTextureCtx.drawImage(eBullet2, 6 * 32 + 2, 13 * 32 + 2, 12, 12, 0, 0, 12, 12)
+    const bigOverHeadTextureCtx = bigOverHeadTexture.getContext("2d")
+    bigOverHeadTextureCtx.drawImage(eBullet2, 7 * 32 + 16 + 2, 13 * 32 + 2, 12, 13, 0, 0, 12, 13)
+    const middleOverHeadTextureCtx = middleOverHeadTexture.getContext('2d')
+    middleOverHeadTextureCtx.drawImage(eBullet2, 6 * 32 + 3, 13 * 32 + 2, 10, 10, 0, 0, 10, 10)
 })
 const soundOfItemPickUp = newAudio(resources.Sounds.item);
 const soundOfPowerUp = newAudio(resources.Sounds.powerUp);

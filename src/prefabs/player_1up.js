@@ -1,16 +1,21 @@
 import Prefab from "../prefab.js";
 import item from "../components/item.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, session, entities, newImage, resources, newAudio, LAYER_MAPPING} from "../util.js";
+import {ABox, getLayer, session, entities, newImage, resources, newAudio, LAYER_MAPPING, GUI_SCREEN} from "../util.js";
 import {title} from "../dialogue.js";
 
 const cache = document.createElement("canvas");
 cache.width = 16;
 cache.height = 16;
-const cacheCtx = cache.getContext("2d");
+const overHeadTexture = document.createElement('canvas')
+overHeadTexture.width = 12
+overHeadTexture.height = 13
 const eBullet2 = newImage(resources.Images.eBullet2);
 eBullet2.addEventListener("load", function () {
+    const cacheCtx = cache.getContext("2d");
     cacheCtx.drawImage(eBullet2, 64, 416, 16, 16, 0, 0, 16, 16);
+    const overHeadTextureCtx = overHeadTexture.getContext('2d')
+    overHeadTextureCtx.drawImage(eBullet2, 9 * 32 + 2, 13 * 32 + 2, 12, 13, 0, 0, 12, 13)
 });
 let _;
 const soundOfExtend = newAudio(resources.Sounds.extend);
@@ -51,6 +56,9 @@ export default function Player1Up(x, y, mx, my, spy = false) {
     inst.addLayer("Player1Up", function () {
         this.draw = function (inst) {
             layerStage.drawImage(cache, inst.X - inst.sizeBox.r, inst.Y - inst.sizeBox.r)
+            if (inst.sizeBox.isOverHead(inst.X, inst.Y)) {
+                layerStage.drawImage(overHeadTexture, inst.X - inst.sizeBox.r, GUI_SCREEN.Y)
+            }
         }
     });
     return inst
