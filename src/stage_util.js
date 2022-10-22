@@ -158,9 +158,7 @@ export default function StageUtil() {
                     layerDebug.fillStyle = "white"
                 }
                 layerDebug.fillText("Developer Mode", 475, 365);
-                layerDebug.restore();
                 if (session.debugFlag) {
-                    layerDebug.save();
                     layerDebug.font = "10px Comic Sans MS";
                     layerDebug.fillStyle = "white";
                     layerDebug.fillText("Player", GUI_SCREEN.X, GUI_SCREEN.Y + 10);
@@ -181,9 +179,9 @@ export default function StageUtil() {
                         layerDebug.fillText("CurrentFrames " + inst.getCurrentFrames(), GUI_SCREEN.X + 10,
                             GUI_SCREEN.Y + 120)
                     }
-                    layerDebug.restore()
+                    debug.drawBox(inst, guiBox, 'gold')
                 }
-                debug.drawBox(inst, guiBox, 'gold')
+                layerDebug.restore();
             }
             t += tsp;
             if (t > 2) {
