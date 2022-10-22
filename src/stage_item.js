@@ -15,6 +15,9 @@ export default function StageItem(/* Map<number,function> */stageScriptMap) {
     this.getStageType = function () {
         return "Stage"
     }
+    this.setStep = function (val) {
+        step = val
+    }
     this.skipStep = function (val, skip) {
         step += val
         cur += skip

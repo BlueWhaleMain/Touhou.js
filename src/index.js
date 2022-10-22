@@ -79,6 +79,8 @@ import moveTo from "./ai/move_to";
 import shootCircle from "./ai/shoot_circle";
 import Player1Clear from "./prefabs/player_1clear";
 import Kedama from "./prefabs/enemy/kedama";
+import Jade from "./prefabs/jade";
+import {generateRandomSpeed} from "./components/movable";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -241,9 +243,7 @@ const ASSETS = {
                 "　为啥呢？"
         },
         invalid: newAudio(resources.Sounds.invalid),
-        ok: newAudio(resources.Sounds.ok),
-        timeout: newAudio(resources.Sounds.timeout),
-        timeout1: newAudio(resources.Sounds.timeout1, 100, "TEST")
+        ok: newAudio(resources.Sounds.ok)
     }
 };
 const transRumia = document.createElement("canvas");
@@ -375,10 +375,179 @@ function practiceStartFactory(selectedIndex, replayOption) {
     let bgm = false;
     if (selectedIndex === 0) {
         stageMap = function () {
-            const stage1 = new StageItem(new Map([
+            const stage1 =
+                new StageItem(new Map([[0, function () {
+                    session.player.power = 0
+                    changeBGM(ASSETS.SOUND.aSoulAsScarletAsAgroundCherry)
+                }], [600, function () {
+                    for (let i = 0; i < 8; i++) {
+                        const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
+                        entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
+                            moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
+                                shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
+                                    0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [800, function () {
+                    for (let i = 0; i < 8; i++) {
+                        const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
+                        entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
+                            moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
+                                shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
+                                    0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1000, function () {
+                    for (let i = 0; i < 8; i++) {
+                        const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
+                        entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
+                            moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
+                                shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
+                                    0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1200, function () {
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1400, function () {
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1600, function () {
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
+                            40 + i % 4 * 10, 1,
+                            batchExecute([shootDot(60, 1, 70, 1, true,
+                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
+                            [PowerOrb(0, 0, 0, -1)]))
+                    }
+                }], [1980, function () {
+
+                }]]))
+            const stage2 = new StageItem(new Map([[1, function (self, inst) {
+                if (inst.getLastFrames() > 6000) {
+                    self.skipStep(400, 1)
+                }
+            }], [100, function () {
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Yousei('normal', 'red', -i * 20, 70, 1,
+                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
+                        300, [PowerOrb(0, 0, 0, -1)]))
+                }
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Yousei('normal', 'red', -i * 20, 90, 1,
+                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                            true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
+                        300, [PowerOrb(0, 0, 0, -1)]))
+                }
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Yousei('normal', 'red', -i * 20, 110, 1,
+                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
+                        300, [PowerOrb(0, 0, 0, -1)]))
+                }
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Yousei('normal', 'blue',
+                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70, 1,
+                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
+                        300, [BlueOrb(0, 0, 0, -1)]))
+                }
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Yousei('normal', 'blue',
+                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 90, 1,
+                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                            true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
+                        300, [BlueOrb(0, 0, 0, -1)]))
+                }
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Yousei('normal', 'blue',
+                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 110, 1,
+                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
+                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
+                        300, [BlueOrb(0, 0, 0, -1)]))
+                }
+            }], [600, function () {
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Kedama('red', -i * 20, 70 + i % 4 * 10, 1,
+                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
+                        300, [PowerOrb(0, 0, 0, -1)]))
+                }
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Kedama('red', -i * 20, 100 - i % 4 * 10, 1,
+                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
+                        300, [PowerOrb(0, 0, 0, -1)]))
+                }
+            }], [800, function () {
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Kedama('blue',
+                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70 + i % 4 * 10, 1,
+                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
+                        300, [BlueOrb(0, 0, 0, -1)]))
+                }
+                for (let i = 0; i < 16; i++) {
+                    entities.push(Kedama('blue',
+                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 100 - i % 4 * 10, 1,
+                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
+                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
+                        300, [BlueOrb(0, 0, 0, -1)]))
+                }
+            }], [1000, function () {
+                let yousei = Yousei('hatted', 'red', 0, GUI_SCREEN.Y + 100, 10,
+                    batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 2,
+                        shootCircle(0, 48, 170, 30, 3, 0,
+                            360, 0, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
+                        delayExecute(moveLine(2, 0), 300)]),
+                    500, [PowerOrb(0, 0, 0, -1, 'big'),
+                        Player1Clear(0, 0)])
+                yousei.showMagicRing()
+                entities.push(yousei)
+                yousei = Yousei('hatted', 'blue',
+                    GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + 100, 10,
+                    batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 2,
+                        shootCircle(0, 48, 170, 30, 3, 0,
+                            360, 0, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
+                        delayExecute(moveLine(-2, 0), 300)]),
+                    500, [BlueOrb(0, 0, 0, -1), Player1Clear(0, 0)])
+                yousei.showMagicRing()
+                entities.push(yousei)
+            }], [1300, function () {
+
+            }]]))
+            const stage9 = new StageItem(new Map([
                 [0, function () {
                     changeBGM(ASSETS.SOUND.spiritualDominationWhoDoneIt)
-                    session.player.power = 0
                     // self.skipStep(1200, 8)
                     // self.skipStep(1600, 16)
                 }], [630, function () {
@@ -446,7 +615,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         const color = i % 2 === 0 ? 'blue' : 'green'
                         entities.push(Kedama(color, GUI_SCREEN.WIDTH + i * 20, 100, 1,
                             batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
-                                3, 0, 360, 0, 60, true,
+                                3, 36, 396, 0, 60, true,
                                 'point', color, 0, 0, 0, 5), moveLine(-5, 0)]),
                             300, [BlueOrb(0, 0, 0, -1)]))
                     }
@@ -455,7 +624,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         const color = i % 2 === 0 ? 'blue' : 'green'
                         entities.push(Kedama(color, GUI_SCREEN.X - i * 20, 100, 1,
                             batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
-                                3, 0, 360, 0, 60, true,
+                                3, 36, 396, 0, 60, true,
                                 'point', color, 0, 0, 0, 5), moveLine(5, 0)]),
                             300, [BlueOrb(0, 0, 0, -1)]))
                     }
@@ -464,7 +633,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         const color = i % 2 === 0 ? 'blue' : 'green'
                         entities.push(Kedama(color, GUI_SCREEN.WIDTH + i * 20, 100, 1,
                             batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
-                                3, 0, 360, 0, 60, true,
+                                3, 36, 396, 0, 60, true,
                                 'point', color, 0, 0, 0, 5), moveLine(-5, 0)]),
                             300, [BlueOrb(0, 0, 0, -1)]))
                     }
@@ -473,7 +642,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                         const color = i % 2 === 0 ? 'blue' : 'green'
                         entities.push(Kedama(color, GUI_SCREEN.X - i * 20, 100, 1,
                             batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
-                                3, 0, 360, 0, 60, true,
+                                3, 36, 396, 0, 60, true,
                                 'point', color, 0, 0, 0, 5), moveLine(5, 0)]),
                             300, [BlueOrb(0, 0, 0, -1)]))
                     }
@@ -709,186 +878,461 @@ function practiceStartFactory(selectedIndex, replayOption) {
 
                 }]
             ]))
-            const stage2 =
-                new StageItem(new Map([[5280, function () {
+            const stage10 =
+                new StageItem(new Map([[60, function () {
+                    for (let i = 0; i < 4; i++) {
+                        const x = GUI_SCREEN.X + 42 + i * 64
+                        const yousei = Yousei('hatted', 'blue', x, -40, 30,
+                            batchExecute([moveTo(x - 32, GUI_SCREEN.Y + 80, 3,
+                                shootCircle(0, 6, 120, 6, 2, 0,
+                                    360, -6, 120, false, 'rice', 'blue', 0, 0, 0, 2)),
+                                delayExecute(moveLine(2, 1), 121)]),
+                            520, [BlueOrb(0, 0, 0, -1)])
+                        yousei.showMagicRing()
+                        entities.push(yousei)
+                    }
+                    entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'red', 0, 0, 0, 5), moveLine(2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [120, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'blue', 0, 0, 0, 5), moveLine(-2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [180, function () {
+                    entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'red', 0, 0, 0, 5), moveLine(2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [240, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'blue', 0, 0, 0, 5), moveLine(-2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [420, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42, 40, 20,
+                        batchExecute([shootCircle(30, 5, 240, 60, 1, 0,
+                            30, 0, 2, true, 'ring', 'blue', 0, 0, 0, 5),
+                            moveLine(-2, 0)]), -1, [BlueOrb(0, 0, 0, -1)]))
+                }], [480, function () {
+                    entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'red', 0, 0, 0, 5), moveLine(2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                    for (let i = 0; i < 4; i++) {
+                        const x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42 - i * 64
+                        let yousei = Yousei('hatted', 'green', x, -40, 30,
+                            batchExecute([moveTo(x + 32, GUI_SCREEN.Y + 80, 3,
+                                shootCircle(0, 6, 120, 6, 2, 0,
+                                    360, -6, 120, false, 'rice', 'green', 0, 0, 0, 2)),
+                                delayExecute(moveLine(-2, 1), 121)]),
+                            520, [BlueOrb(0, 0, 0, -1)])
+                        yousei.showMagicRing()
+                        entities.push(yousei)
+                    }
+                }], [660, function () {
+                    entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'red', 0, 0, 0, 5), moveLine(2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [780, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'blue', 0, 0, 0, 5), moveLine(-2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [840, function () {
+                    entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'red', 0, 0, 0, 5), moveLine(2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                    for (let i = 0; i < 4; i++) {
+                        const x = GUI_SCREEN.X + 42 + i * 64
+                        const yousei = Yousei('hatted', 'blue', x, -40, 30,
+                            batchExecute([moveTo(x - 32, GUI_SCREEN.Y + 80, 3,
+                                shootCircle(0, 6, 120, 6, 2, 0,
+                                    360, -6, 120, false, 'rice', 'blue', 0, 0, 0, 2)),
+                                delayExecute(moveLine(2, 1), 121)]),
+                            520, [BlueOrb(0, 0, 0, -1)])
+                        yousei.showMagicRing()
+                        entities.push(yousei)
+                    }
+                }], [960, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'blue', 0, 0, 0, 5), moveLine(-2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [1020, function () {
+                    entities.push(Yousei('hatted', 'red', GUI_SCREEN.X + 42, 40, 20,
+                        batchExecute([shootCircle(30, 5, 240, 60, 1, 0,
+                            30, 0, 2, true,
+                            'ring', 'red', 0, 0, 0, 5), moveLine(2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                    for (let i = 0; i < 4; i++) {
+                        const x = GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42 - i * 64
+                        let yousei = Yousei('hatted', 'green', x, -40, 30,
+                            batchExecute([moveTo(x + 32, GUI_SCREEN.Y + 80, 3,
+                                shootCircle(0, 6, 120, 6, 2, 0,
+                                    360, -6, 120, false, 'rice', 'green', 0, 0, 0, 2)),
+                                delayExecute(moveLine(-2, 1), 121)]),
+                            520, [BlueOrb(0, 0, 0, -1)])
+                        yousei.showMagicRing()
+                        entities.push(yousei)
+                    }
+                }], [1080, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + GUI_SCREEN.WIDTH - 42, 40, 20,
+                        batchExecute([shootDot(30, 5, 240, 60, true,
+                            'ring', 'blue', 0, 0, 0, 5), moveLine(-2, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [1140, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + 20 + 10,
+                        100 - 20, 40,
+                        batchExecute([shootCircle(3 + 3, 5, 180 + 3, 4,
+                            1, 0, 60, 0, 60, true,
+                            'orb', 'red', 0, 0, 0, 5), moveLine(1, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [1320, function () {
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.WIDTH - 10,
+                        100 - 20, 40,
+                        batchExecute([shootCircle(3 + 3, 5, 180 + 3, 4,
+                            1, 0, 60, 0, 60, true,
+                            'orb', 'blue', 0, 0, 0, 5), moveLine(-1, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [1380, function () {
+                    for (let i = 0; i < 20; i++) {
+                        const color = i % 2 === 0 ? 'blue' : 'green'
+                        entities.push(Kedama(color, GUI_SCREEN.WIDTH + i * 20, 100, 1,
+                            batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
+                                3, 36, 396, 0, 60, true,
+                                'point', color, 0, 0, 0, 5), moveLine(-5, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1500, function () {
+                    for (let i = 0; i < 20; i++) {
+                        const color = i % 2 === 0 ? 'blue' : 'green'
+                        entities.push(Kedama(color, GUI_SCREEN.X - i * 20, 100, 1,
+                            batchExecute([shootCircle(3 + i * 3, 10, 120 + i * 3, 5,
+                                3, 36, 396, 0, 60, true,
+                                'point', color, 0, 0, 0, 5), moveLine(5, 0)]),
+                            300, [BlueOrb(0, 0, 0, -1)]))
+                    }
+                }], [1800, function () {
+                    let step = 0, count = 0
+                    const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
+                    entities.push(Yousei('hatted', 'blue', GUI_SCREEN.X + 20 + 10,
+                        100 - 20, 40,
+                        batchExecute([(inst) => {
+                            if (step > 180) {
+                                return true
+                            }
+                            if (step > 0 && step < 180 && step % 2 === 0 && count < 240) {
+                                const spawnPoint = generateRandomSpeed(8, 8, -8, undefined, undefined, undefined, 2);
+                                entities.push(Jade("ring", 'orangered', inst.X, inst.Y, spawnPoint[0], spawnPoint[1]))
+                                soundOfBombShoot.currentTime = 0;
+                                _ = soundOfBombShoot.play()
+                                count++
+                            }
+                            step++
+                        }, moveLine(1, 0)]), -1,
+                        [BlueOrb(0, 0, 0, -1)]))
+                }], [5280, function () {
 
                 }]]))
-            const stage3 =
-                new StageItem(new Map([[0, function () {
-                    changeBGM(ASSETS.SOUND.aSoulAsScarletAsAgroundCherry)
-                }], [600, function () {
-                    for (let i = 0; i < 8; i++) {
-                        const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
-                        entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
-                            moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
-                                shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
-                                    0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
-                    }
-                }], [800, function () {
-                    for (let i = 0; i < 8; i++) {
-                        const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
-                        entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
-                            moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
-                                shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
-                                    0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
-                    }
-                }], [1000, function () {
-                    for (let i = 0; i < 8; i++) {
-                        const pos = randomPos(0, -GUI_SCREEN.Y - 40, 40, -320)
-                        entities.push(Yousei('normal', 'red', pos[0], pos[1], 1,
-                            moveTo(GUI_SCREEN.X + 200, GUI_SCREEN.Y + 100, 1,
-                                shootDot(60, 1, 70, 1, false, 'point', 'dimgray',
-                                    0, 0, 0, 2), 60), 300, [PowerOrb(0, 0, 0, -1)]))
-                    }
-                }], [1200, function () {
-                    for (let i = 0; i < 8; i++) {
-                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
-                            40 + i % 4 * 10, 1,
-                            batchExecute([shootDot(60, 1, 70, 1, true,
-                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                            [PowerOrb(0, 0, 0, -1)]))
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
-                            40 + i % 4 * 10, 1,
-                            batchExecute([shootDot(60, 1, 70, 1, true,
-                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                            [PowerOrb(0, 0, 0, -1)]))
-                    }
-                }], [1400, function () {
-                    for (let i = 0; i < 8; i++) {
-                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
-                            40 + i % 4 * 10, 1,
-                            batchExecute([shootDot(60, 1, 70, 1, true,
-                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                            [PowerOrb(0, 0, 0, -1)]))
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
-                            40 + i % 4 * 10, 1,
-                            batchExecute([shootDot(60, 1, 70, 1, true,
-                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                            [PowerOrb(0, 0, 0, -1)]))
-                    }
-                }], [1600, function () {
-                    for (let i = 0; i < 8; i++) {
-                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 20 + i * 20,
-                            40 + i % 4 * 10, 1,
-                            batchExecute([shootDot(60, 1, 70, 1, true,
-                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                            [PowerOrb(0, 0, 0, -1)]))
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        entities.push(Yousei('normal', 'red', GUI_SCREEN.X + 220 + i * 20,
-                            40 + i % 4 * 10, 1,
-                            batchExecute([shootDot(60, 1, 70, 1, true,
-                                'point', 'dimgray', 0, 0, 0, 2), moveLine(0, 1)]), -1,
-                            [PowerOrb(0, 0, 0, -1)]))
-                    }
-                }], [1980, function () {
-
-                }]]))
-            const stage4 = new StageItem(new Map([[1, function (self, inst) {
-                if (inst.getLastFrames() > 6000) {
-                    self.skipStep(400, 1)
-                }
-            }], [100, function () {
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Yousei('normal', 'red', -i * 20, 70, 1,
-                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                        300, [PowerOrb(0, 0, 0, -1)]))
-                }
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Yousei('normal', 'red', -i * 20, 90, 1,
-                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                            true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                        300, [PowerOrb(0, 0, 0, -1)]))
-                }
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Yousei('normal', 'red', -i * 20, 110, 1,
-                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(3, 0)]),
-                        300, [PowerOrb(0, 0, 0, -1)]))
-                }
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Yousei('normal', 'blue',
-                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70, 1,
-                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                        300, [BlueOrb(0, 0, 0, -1)]))
-                }
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Yousei('normal', 'blue',
-                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 90, 1,
-                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                            true, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                        300, [BlueOrb(0, 0, 0, -1)]))
-                }
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Yousei('normal', 'blue',
-                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 110, 1,
-                        batchExecute([shootDot(20 + i * 6, 10, 60 + 8 * 20, 3,
-                            false, 'point', 'dimgray', 0, 0, 0, 2), moveLine(-3, 0)]),
-                        300, [BlueOrb(0, 0, 0, -1)]))
-                }
-            }], [600, function () {
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Kedama('red', -i * 20, 70 + i % 4 * 10, 1,
-                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
-                        300, [PowerOrb(0, 0, 0, -1)]))
-                }
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Kedama('red', -i * 20, 100 - i % 4 * 10, 1,
-                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(4, 0)]),
-                        300, [PowerOrb(0, 0, 0, -1)]))
-                }
-            }], [800, function () {
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Kedama('blue',
-                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 70 + i % 4 * 10, 1,
-                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
-                        300, [BlueOrb(0, 0, 0, -1)]))
-                }
-                for (let i = 0; i < 16; i++) {
-                    entities.push(Kedama('blue',
-                        GUI_SCREEN.X + GUI_SCREEN.WIDTH + i * 20, 100 - i % 4 * 10, 1,
-                        batchExecute([shootDot(10 + i * 8, 1, 60 + 8 * 20, 1,
-                            2 % i === 0, 'point', 'dimgray', 0, 0, 0, 1), moveLine(-4, 0)]),
-                        300, [BlueOrb(0, 0, 0, -1)]))
-                }
-            }], [1000, function () {
-                let yousei = Yousei('hatted', 'red', 0, GUI_SCREEN.Y + 100, 10,
-                    batchExecute([moveTo(GUI_SCREEN.X + 100, GUI_SCREEN.Y + 100, 2,
-                        shootCircle(0, 48, 170, 30, 3, 0,
-                            360, 0, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
-                        delayExecute(moveLine(2, 0), 300)]),
-                    500, [PowerOrb(0, 0, 0, -1, 'big'),
-                        Player1Clear(0, 0)])
-                yousei.showMagicRing()
-                entities.push(yousei)
-                yousei = Yousei('hatted', 'blue',
-                    GUI_SCREEN.X + GUI_SCREEN.WIDTH, GUI_SCREEN.Y + 100, 10,
-                    batchExecute([moveTo(GUI_SCREEN.X + 250, GUI_SCREEN.Y + 100, 2,
-                        shootCircle(0, 48, 170, 30, 3, 0,
-                            360, 0, 3, true, 'point', 'dimgray', 0, 0, 0, 2)),
-                        delayExecute(moveLine(-2, 0), 300)]),
-                    500, [BlueOrb(0, 0, 0, -1), Player1Clear(0, 0)])
-                yousei.showMagicRing()
-                entities.push(yousei)
-            }], [1300, function () {
-
-            }]]))
             if (session.selectedPlayer === Rumia) {
                 return [
                     stage1,
+                    bossRumia(-50, 125, 300, [
+                        moonlightRay()
+                    ], null),
+                    new StageItem(new Map([[-1, function () {
+                    }], [1, function (self) {
+                        session.keys.delete('z')
+                        session.stage.dialogueScript.push(
+                            SimpleDialogue([{
+                                text: "刚刚，那是什么？！"
+                            }], [{
+                                image: transRumia
+                            }], function () {
+                                entities.push(title(function () {
+                                    const self = {};
+                                    self.draw = function (self) {
+                                        layerEffect.save();
+                                        layerEffect.globalAlpha = self.opacity;
+                                        layerEffect.font = "14px sans-serif";
+                                        layerEffect.fillStyle = "rgb(255,212,53)";
+                                        layerEffect.shadowColor = "black";
+                                        layerEffect.shadowBlur = 2;
+                                        layerEffect.fillText("宵暗的妖怪 露米娅", 50, 360);
+                                        layerEffect.restore()
+                                    };
+                                    return self
+                                }))
+                            }, () => {
+                                self.setStep(-1)
+                            })
+                        )
+                    }]])),
+                    stage2,
+                    bossRumia(-50, 125, 900, [
+                        nightBird(),
+                        demarcation()
+                    ], [
+                        SimpleDialogue([{
+                            text: "这是..."
+                        }], [{
+                            image: transRumia
+                        }]),
+                        SimpleDialogue([{
+                            text: "...", fillStyle: "red", X: 300
+                        }], [{
+                            image: ASSETS.IMAGE.rumia,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "white";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("???", 250, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "？我", fillStyle: "red", X: 300, direction: "rtl"
+                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
+                            image: ASSETS.IMAGE.rumia,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    new StageItem(new Map([[-1, function () {
+                    }], [1, function (self) {
+                        session.keys.delete('z')
+                        session.stage.dialogueScript.push(
+                            SimpleDialogue([{
+                                text: "先去问问灵梦吧"
+                            }], [{
+                                image: transRumia
+                            }], null, () => {
+                                self.setStep(-1)
+                            })
+                        )
+                    }]])),
+                    bossHakureiReimu(480, -60, 1000, [
+                        dreamSealLoose(),
+                        dreamSealSilence()
+                    ], [
+                        SimpleDialogue([{
+                            text: "..."
+                        }], [{
+                            image: transRumia, X: 5
+                        }]),
+                        SimpleDialogue([{
+                            text: "！", fillStyle: "rgb(255,10,17)", X: 250
+                        }], [{
+                            image: ASSETS.IMAGE.bossHakureiReimu,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(255,10,17)";
+                                    layerEffect.shadowColor = "white";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.direction = "rtl";
+                                    layerEffect.fillText("乐园的巫女 博丽灵梦", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "胡闹就到此为止了！", fillStyle: "rgb(255,10,17)", X: 250
+                        }, {
+                            text: "发生什么了？"
+                        }], [{image: transRumia, X: 5}, {
+                            image: ASSETS.IMAGE.bossHakureiReimu,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    new StageItem(new Map([[-1, function () {
+                    }], [1, function (self) {
+                        session.keys.delete('z')
+                        session.stage.dialogueScript.push(
+                            SimpleDialogue([{
+                                text: "所以说发生什么啦"
+                            }], [{
+                                image: transRumia
+                            }])
+                        )
+                        session.stage.dialogueScript.push(
+                            SimpleDialogue([{
+                                text: "是真的露米娅啊，白忙活一场", fillStyle: "rgb(255,10,17)", X: 200
+                            }], [{
+                                image: ASSETS.IMAGE.hakureiReimu,
+                                X: 190
+                            }])
+                        )
+                        session.stage.dialogueScript.push(
+                            SimpleDialogue([{
+                                text: "自顾自跑了..."
+                            }], [{
+                                image: transRumia
+                            }], null, () => {
+                                self.setStep(-1)
+                            })
+                        )
+                    }]])),
+                    bossKirisameMarisa(500, 125, 1200, [
+                        milkyWay(),
+                        asteroidBelt(),
+                        masterSpark(),
+                        doubleSpark()
+                    ], [
+                        SimpleDialogue([{
+                            text: "额..."
+                        }], [{
+                            image: transRumia
+                        }]),
+                        SimpleDialogue([{
+                            text: "哈~", fillStyle: "gold", X: 200
+                        }], [{
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(255,251,37)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.fillText("普通的魔法使 雾雨·魔理沙", 250, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "啊 是魔理沙"
+                        }], [{image: transRumia}, {
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 200, globalAlpha: 0.4
+                        }]),
+                        SimpleDialogue([{
+                            text: "~抓到你了", fillStyle: "gold", X: 200, direction: "rtl"
+                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
+                            image: ASSETS.IMAGE.kirisameMarisa,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    new StageItem(new Map([[-1, function () {
+                    }], [1, function (self) {
+                        session.keys.delete('z')
+                        session.stage.dialogueScript.push(
+                            SimpleDialogue([{
+                                text: "完全不对！", fillStyle: "gold", X: 200
+                            }], [{
+                                image: ASSETS.IMAGE.kirisameMarisa,
+                                X: 190
+                            }, {
+                                image: transRumia, globalAlpha: 0.4, X: 5
+                            }])
+                        )
+                        session.stage.dialogueScript.push(SimpleDialogue([{
+                            text: "大家今天都好奇怪"
+                        }], [{
+                            image: transRumia
+                        }], null, () => {
+                            self.setStep(-1)
+                        }))
+                    }]])),
+                    bossPatchouliKnowledge(220, -60, 1000, [
+                        metalFatigue(),
+                        mercuryPoison()
+                    ], [
+                        SimpleDialogue([{
+                            text: "..."
+                        }], [{
+                            image: transRumia
+                        }]),
+                        SimpleDialogue([{
+                            text: "捉到了", fillStyle: "purple", X: 250
+                        }], [{
+                            image: ASSETS.IMAGE.patchouliKnowledge,
+                            X: 190
+                        }], function (inst) {
+                            inst.target.X = 220;
+                            inst.target.Y = 125;
+                            entities.push(title(function () {
+                                const self = {};
+                                self.draw = function (self) {
+                                    layerEffect.save();
+                                    layerEffect.globalAlpha = self.opacity;
+                                    layerEffect.font = "14px sans-serif";
+                                    layerEffect.fillStyle = "rgb(239,14,255)";
+                                    layerEffect.shadowColor = "black";
+                                    layerEffect.shadowBlur = 2;
+                                    layerEffect.direction = "rtl";
+                                    layerEffect.fillText("知识与避世的少女 帕秋莉·诺蕾姬", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                                    layerEffect.restore()
+                                };
+                                return self
+                            }))
+                        }),
+                        SimpleDialogue([{
+                            text: "==", fillStyle: "purple", X: 250
+                        }, {
+                            text: "?"
+                        }], [{image: transRumia}, {
+                            image: ASSETS.IMAGE.patchouliKnowledge,
+                            X: 190
+                        }], function (inst) {
+                            cancelAllSound();
+                            inst.playBGM()
+                        })
+                    ]),
+                    new StageItem(new Map([[-1, function () {
+                    }], [1, function (self) {
+                        session.keys.delete('z')
+                        session.stage.dialogueScript.push(SimpleDialogue([{
+                            text: "是抓错东西了吗？"
+                        }], [{
+                            image: transRumia
+                        }], null, () => {
+                            self.setStep(-1)
+                        }))
+                    }]])),
+                    stage9,
                     bossYukariYakumo(480, -60, 1000, [
                         test1(),
                         test2(),
-                    ], null), stage2,
+                    ], null), stage10,
                     bossYukariYakumo(480, -60, 1000, [
                         test3(),
                         boundaryBetweenWaveAndParticle(function (cd) {
@@ -900,22 +1344,7 @@ function practiceStartFactory(selectedIndex, replayOption) {
                             text: "#_#"
                         }], [{
                             image: transRumia
-                        }], function () {
-                            entities.push(title(function () {
-                                const self = {};
-                                self.draw = function (self) {
-                                    layerEffect.save();
-                                    layerEffect.globalAlpha = self.opacity;
-                                    layerEffect.font = "14px sans-serif";
-                                    layerEffect.fillStyle = "rgb(255,212,53)";
-                                    layerEffect.shadowColor = "black";
-                                    layerEffect.shadowBlur = 2;
-                                    layerEffect.fillText("宵暗的妖怪 露米娅", 50, 360);
-                                    layerEffect.restore()
-                                };
-                                return self
-                            }))
-                        }),
+                        }]),
                         SimpleDialogue([{
                             text: "www", fillStyle: "purple", X: 300
                         }], [{
@@ -955,182 +1384,65 @@ function practiceStartFactory(selectedIndex, replayOption) {
                             inst.playBGM()
                         })
                     ]),
-                    bossKirisameMarisa(500, 125, 1200, [
-                        milkyWay(),
-                        asteroidBelt(),
-                        masterSpark(),
-                        doubleSpark()
-                    ], [
-                        SimpleDialogue([{
-                            text: "额"
+                    new StageItem(new Map([[-1, function () {
+                    }], [1, function (self) {
+                        session.keys.delete('z')
+                        session.stage.dialogueScript.push(
+                            SimpleDialogue([{
+                                text: "原来是真的呢，好可惜...", fillStyle: "purple", X: 200
+                            }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
+                                image: ASSETS.IMAGE.yukariYakumo,
+                                X: 190
+                            }])
+                        )
+                        session.stage.dialogueScript.push(SimpleDialogue([{
+                            text: "可恶，被耍得团团转"
                         }], [{
                             image: transRumia
-                        }]),
-                        SimpleDialogue([{
-                            text: "哈~", fillStyle: "gold", X: 200
+                        }]))
+                        session.stage.dialogueScript.push(SimpleDialogue([{
+                            text: "等等，难道还有假的？！"
                         }], [{
-                            image: ASSETS.IMAGE.kirisameMarisa,
-                            X: 190
-                        }], function (inst) {
-                            inst.target.X = 220;
-                            inst.target.Y = 125;
-                            entities.push(title(function () {
-                                const self = {};
-                                self.draw = function (self) {
-                                    layerEffect.save();
-                                    layerEffect.globalAlpha = self.opacity;
-                                    layerEffect.font = "14px sans-serif";
-                                    layerEffect.fillStyle = "rgb(255,251,37)";
-                                    layerEffect.shadowColor = "black";
-                                    layerEffect.shadowBlur = 2;
-                                    layerEffect.fillText("普通的魔法使 雾雨·魔理沙", 250, 360);
-                                    layerEffect.restore()
-                                };
-                                return self
-                            }))
-                        }),
-                        SimpleDialogue([{
-                            text: "啊 是魔理沙"
-                        }], [{image: transRumia}, {
-                            image: ASSETS.IMAGE.kirisameMarisa,
-                            X: 200, globalAlpha: 0.4
-                        }]),
-                        SimpleDialogue([{
-                            text: "~DA☆ZE", fillStyle: "gold", X: 200, direction: "rtl"
-                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
-                            image: ASSETS.IMAGE.kirisameMarisa,
-                            X: 190
-                        }], function (inst) {
-                            cancelAllSound();
-                            inst.playBGM()
-                        })
-                    ]),
-                    stage3,
-                    bossRumia(-50, 125, 600, [
-                        moonlightRay()
-                    ], null),
-                    stage4,
-                    bossRumia(-50, 125, 900, [
-                        nightBird(),
-                        demarcation(),
+                            image: transRumia
+                        }], null, () => {
+                            self.setStep(-1)
+                        }))
+                    }]])),
+                    bossRumia(-50, 125, 1000, [
                         voidDeath(function (cd) {
+                            cd.practice = true
+                        }),
+                        rumiaThink(function (cd) {
                             cd.practice = true
                         })
                     ], [
                         SimpleDialogue([{
-                            text: "~"
-                        }], [{
-                            image: transRumia
-                        }]),
-                        SimpleDialogue([{
-                            text: "？！", fillStyle: "red", X: 300
+                            text: "现在才想起来么，真是个笨蛋呢~", fillStyle: "skyblue", X: 200
                         }], [{
                             image: ASSETS.IMAGE.rumia,
                             X: 190
                         }], function (inst) {
                             inst.target.X = 220;
                             inst.target.Y = 125
-                        }),
-                        SimpleDialogue([{
-                            text: "因为是测试模式来着 所以没关系"
-                        }], [{image: transRumia}, {
-                            image: ASSETS.IMAGE.rumia,
-                            X: 200, globalAlpha: 0.4
-                        }]),
-                        SimpleDialogue([{
-                            text: "？是 这样吗", fillStyle: "red", X: 300, direction: "rtl"
-                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
-                            image: ASSETS.IMAGE.rumia,
-                            X: 190
-                        }], function (inst) {
-                            cancelAllSound();
-                            inst.playBGM()
-                        })
-                    ]),
-                    bossPatchouliKnowledge(220, -60, 1000, [
-                        metalFatigue(),
-                        mercuryPoison()
-                    ], [
-                        SimpleDialogue([{
-                            text: "..."
-                        }], [{
-                            image: transRumia
-                        }]),
-                        SimpleDialogue([{
-                            text: "！", fillStyle: "purple", X: 250
-                        }], [{
-                            image: ASSETS.IMAGE.patchouliKnowledge,
-                            X: 190
-                        }], function (inst) {
-                            inst.target.X = 220;
-                            inst.target.Y = 125;
                             entities.push(title(function () {
                                 const self = {};
                                 self.draw = function (self) {
                                     layerEffect.save();
                                     layerEffect.globalAlpha = self.opacity;
                                     layerEffect.font = "14px sans-serif";
-                                    layerEffect.fillStyle = "rgb(239,14,255)";
+                                    layerEffect.fillStyle = "blue";
                                     layerEffect.shadowColor = "black";
                                     layerEffect.shadowBlur = 2;
-                                    layerEffect.direction = "rtl";
-                                    layerEffect.fillText("知识与避世的少女 帕秋莉·诺蕾姬", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                                    layerEffect.fillText("BlueWhaleMain", 250, 360);
                                     layerEffect.restore()
                                 };
                                 return self
                             }))
                         }),
                         SimpleDialogue([{
-                            text: "==", fillStyle: "purple", X: 250
-                        }, {
-                            text: "?"
-                        }], [{image: transRumia}, {
-                            image: ASSETS.IMAGE.patchouliKnowledge,
-                            X: 190
-                        }], function (inst) {
-                            cancelAllSound();
-                            inst.playBGM()
-                        })
-                    ]),
-                    bossHakureiReimu(480, -60, 1000, [
-                        dreamSealLoose(),
-                        dreamSealSilence()
-                    ], [
-                        SimpleDialogue([{
-                            text: "..."
-                        }], [{
-                            image: transRumia, X: 5
-                        }]),
-                        SimpleDialogue([{
-                            text: "！", fillStyle: "rgb(255,10,17)", X: 250
-                        }], [{
-                            image: ASSETS.IMAGE.bossHakureiReimu,
-                            X: 190
-                        }], function (inst) {
-                            inst.target.X = 220;
-                            inst.target.Y = 125;
-                            entities.push(title(function () {
-                                const self = {};
-                                self.draw = function (self) {
-                                    layerEffect.save();
-                                    layerEffect.globalAlpha = self.opacity;
-                                    layerEffect.font = "14px sans-serif";
-                                    layerEffect.fillStyle = "rgb(255,10,17)";
-                                    layerEffect.shadowColor = "white";
-                                    layerEffect.shadowBlur = 2;
-                                    layerEffect.direction = "rtl";
-                                    layerEffect.fillText("乐园的巫女 博丽灵梦", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
-                                    layerEffect.restore()
-                                };
-                                return self
-                            }))
-                        }),
-                        SimpleDialogue([{
-                            text: "胡闹就到此为止了！", fillStyle: "rgb(255,10,17)", X: 250
-                        }, {
-                            text: "是—这样吗—"
-                        }], [{image: transRumia, X: 5}, {
-                            image: ASSETS.IMAGE.bossHakureiReimu,
+                            text: "说别人笨蛋的自己才是笨蛋哦", fillStyle: "red", X: 300, direction: "rtl"
+                        }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
+                            image: ASSETS.IMAGE.rumia,
                             X: 190
                         }], function (inst) {
                             cancelAllSound();
@@ -1139,11 +1451,11 @@ function practiceStartFactory(selectedIndex, replayOption) {
                     ])
                 ];
             } else if (session.selectedPlayer === HakureiReimu) {
-                return [stage1,
+                return [stage9,
                     bossYukariYakumo(480, -60, 1000, [
                         test1(),
                         test2(),
-                    ]), stage2,
+                    ]), stage10,
                     bossYukariYakumo(480, -60, 1000, [
                         test3(),
                         boundaryBetweenWaveAndParticle(function (cd) {
@@ -1260,11 +1572,11 @@ function practiceStartFactory(selectedIndex, replayOption) {
                             inst.playBGM()
                         })
                     ]),
-                    stage3,
+                    stage1,
                     bossRumia(-50, 125, 900, [
                         moonlightRay()
                     ]),
-                    stage4,
+                    stage2,
                     bossRumia(-50, 125, 900, [
                         nightBird(),
                         demarcation(),
