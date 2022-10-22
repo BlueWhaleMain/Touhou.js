@@ -248,19 +248,21 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             layerUI.save();
             layerUI.translate(inst.X, inst.Y);
             layerUI.rotate(-90 * L);
-            layerUI.strokeStyle = "rgba(171,0,1,0.81)";
-            layerUI.lineWidth = 6;
-            layerUI.beginPath();
-            layerUI.arc(0, 0, 60, 0, Math.PI * 2);
-            layerUI.closePath();
-            layerUI.stroke();
-            layerUI.strokeStyle = "rgb(255,255,255)";
-            layerUI.lineWidth = 3;
-            layerUI.beginPath();
-            layerUI.arc(0, 0, 60, Math.PI * 2,
-                Math.PI * 2 * (1 - (inst.components["health"].getValue()
-                    / inst.components["health"].getMax())), true);
-            layerUI.stroke();
+            if (inst.dieFrame < 60) {
+                layerUI.strokeStyle = "rgba(171,0,1,0.81)";
+                layerUI.lineWidth = 6;
+                layerUI.beginPath();
+                layerUI.arc(0, 0, 60, 0, Math.PI * 2);
+                layerUI.closePath();
+                layerUI.stroke();
+                layerUI.strokeStyle = "rgb(255,255,255)";
+                layerUI.lineWidth = 3;
+                layerUI.beginPath();
+                layerUI.arc(0, 0, 60, Math.PI * 2,
+                    Math.PI * 2 * (1 - (inst.components["health"].getValue()
+                        / inst.components["health"].getMax())), true);
+                layerUI.stroke();
+            }
             if (inst.card && inst.card.option.noCardFrame > 0) {
                 layerUI.beginPath();
                 layerUI.lineWidth = 5;
