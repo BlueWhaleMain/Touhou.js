@@ -142,6 +142,7 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             if (inst.loaded === false) {
                 inst.loaded = true;
                 if (dialogue) {
+                    session.keys.delete('z')
                     while (dialogue.length > 0) {
                         const d = dialogue.shift();
                         d.entity = inst;
