@@ -187,12 +187,11 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
                         } else {
                             inst.target.X = x
                             inst.target.Y = y
-                            inst.checkPOS(10)
-                            if (inst.dieFrame > 60) {
-                                soundOfEnEp1.currentTime = 0;
-                                _ = soundOfEnEp1.play();
-                                inst.dead = true;
-                                entities.push(GreenOrb(inst.X, inst.Y, 0, -2))
+                            if (inst.dieFrame > 180) {
+                                inst.checkPOS(10)
+                                if (inst.X === x && inst.Y === y) {
+                                    inst.dead = true;
+                                }
                             }
                         }
                     } else if (inst.dieFrame === 0) {
@@ -204,6 +203,9 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
                         if (dialogue) {
                             soundOfEnEp2.currentTime = 0;
                             _ = soundOfEnEp2.play();
+                        } else {
+                            soundOfEnEp1.currentTime = 0;
+                            _ = soundOfEnEp1.play();
                         }
                     }
                     inst.dieFrame++
@@ -266,13 +268,15 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
                 layerUI.stroke();
             }
             layerUI.restore();
-            if (inst.dieFrame > 0 && inst.dieFrame < 60) {
-                layerUI.drawImage(bossEffect, inst.X - inst.dieFrame * 8, inst.Y - inst.dieFrame * 8,
-                    inst.dieFrame * 16, inst.dieFrame * 16)
-            }
-            if (inst.dieFrame > 120 && inst.dieFrame < 180) {
-                layerUI.drawImage(bossEffect, inst.X - (inst.dieFrame - 120) * 8, inst.Y - (inst.dieFrame - 120) * 8,
-                    (inst.dieFrame - 120) * 16, (inst.dieFrame - 120) * 16)
+            if (dialogue) {
+                if (inst.dieFrame > 0 && inst.dieFrame < 60) {
+                    layerUI.drawImage(bossEffect, inst.X - inst.dieFrame * 8, inst.Y - inst.dieFrame * 8,
+                        inst.dieFrame * 16, inst.dieFrame * 16)
+                }
+                if (inst.dieFrame > 120 && inst.dieFrame < 180) {
+                    layerUI.drawImage(bossEffect, inst.X - (inst.dieFrame - 120) * 8, inst.Y - (inst.dieFrame - 120) * 8,
+                        (inst.dieFrame - 120) * 16, (inst.dieFrame - 120) * 16)
+                }
             }
             if (inst.card) {
                 inst.card.draw()
