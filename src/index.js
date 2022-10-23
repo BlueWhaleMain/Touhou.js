@@ -2998,7 +2998,11 @@ function loading(f) {
         layerStage.fillStyle = "white";
         layerStage.fillText((session.loadingCount / session.loadingTotal * 100).toFixed() + "%", 0, 479);
         layerStage.restore();
-        if (session.loadingCount === session.loadingTotal && loadingBgm.currentTime > 0 && (loadingBgm.paused || options.FastStart) || session?.currentBGM?.dom?.currentTime > 0) {
+        if (session.loadingCount === session.loadingTotal
+            && ((loadingBgm.currentTime > 0 && (loadingBgm.paused || options.FastStart))
+                || session?.currentBGM?.dom?.currentTime > 0)) {
+            // 重新开始失败在于BGM未切换导致此处不执行
+            // || session?.currentBGM?.loop?.currentTime > 0
             if (!loadingBgm.paused) {
                 loadingBgm.pause();
                 loadingBgm.currentTime = 0;

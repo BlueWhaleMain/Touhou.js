@@ -90,7 +90,10 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                 inst.end = true;
                 session.keys.add("z");
                 inst.restart = true;
-                inst.restartCallBack = restartCallBack;
+                inst.restartCallBack = () => {
+                    changeBGM(bgm, null, true)
+                    restartCallBack()
+                };
                 return;
             default:
                 soundOfInvalid.currentTime = 0;
