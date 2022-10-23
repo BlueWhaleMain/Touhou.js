@@ -99,7 +99,8 @@ if (options.PauseOnBlur === true) {
     });
 }
 let _;
-const ignoreKeys = new Set(), entityCountSecMax = options.EntityCountSecMax;
+const ignoreKeys = new Set();
+let entityCountSecMax = options.EntityCountSecMax;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const layerTitle = getLayer(128);
@@ -2079,10 +2080,18 @@ function doReplay(replay, force) {
         session.selectedPlayer = getPlayer(replay.stg?.player);
         if (replay.stg?.menu === "practiceStart") {
             practiceStartFactory(replay.stg?.selectedIndex, replay);
-            transitions(runSpellPractice);
+            transitions(runSpellPractice, () => {
+                if (!isNaN(replay.EntityCountSecMax)) {
+                    entityCountSecMax = replay.EntityCountSecMax
+                }
+            });
         } else if (replay.stg?.menu === "spellPractice") {
             spellPracticeFactory(replay.stg?.selectedIndex, replay);
-            transitions(runSpellPractice);
+            transitions(runSpellPractice, () => {
+                if (!isNaN(replay.EntityCountSecMax)) {
+                    entityCountSecMax = replay.EntityCountSecMax
+                }
+            });
         } else {
             throw new Error("Menu:" + replay.stg?.menu + " is not exists!")
         }
@@ -2871,6 +2880,7 @@ function transitions(f, callback) {
     entities.length = 0;
     loadSaveFromFile();
     session.highScore = profile.highScore;
+    entityCountSecMax = options.EntityCountSecMax
     if (typeof callback === "function") {
         callback()
     }

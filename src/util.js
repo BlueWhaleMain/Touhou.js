@@ -1069,8 +1069,9 @@ if (!fs.existsSync(options.Replay)) {
 
 export function saveReplay(name, stg, rand, eventList) {
     const version = pkg.version
+    const EntityCountSecMax = options.EntityCountSecMax
     fs.writeFileSync(options.Replay + "/" + new Date().valueOf() + ".json", JSON.stringify({
-        name, stg, rand, eventList, STAGE_VER, version
+        name, stg, rand, eventList, STAGE_VER, version, EntityCountSecMax
     }))
 }
 
