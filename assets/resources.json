@@ -61,7 +61,6 @@
             "loop": "th08_21_loop.wav"
         },
         "failure": {
-            "all": "th10_18.wav",
             "head": "th10_18_head.wav",
             "loop": "th10_18_loop.wav"
         },
