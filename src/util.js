@@ -274,9 +274,14 @@ const bgm = new Set();
 const bgmIndex = {};
 const sounds = [];
 export const audioObserver = new Observer();
+export const VOLUME_MAX = 100;
+export const AUDIO_TYPE = {
+    BGM: "BGM",
+    SE: "SE"
+}
 
-export function newAudio(name, volume = 100, type = "SE") {
-    if (type === "BGM") {
+export function newAudio(name, volume = VOLUME_MAX, type = AUDIO_TYPE.SE) {
+    if (type === AUDIO_TYPE.BGM) {
         if (bgm.has(name)) {
             return sounds[bgmIndex[name]]
         } else {
@@ -306,6 +311,17 @@ export function newAudio(name, volume = 100, type = "SE") {
     sounds.push(audio);
     session.loadingTotal++;
     return audio
+}
+
+const textMap = new Map()
+
+export function newText(name) {
+    if (textMap.has(name)) {
+        return textMap.get(name)
+    }
+    const text = fs.readFileSync('./assets/texts/' + name).toString();
+    textMap.set(name, text);
+    return text
 }
 
 const layers = new Set();
