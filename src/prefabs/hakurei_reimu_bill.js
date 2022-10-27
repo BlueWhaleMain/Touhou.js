@@ -10,7 +10,7 @@ import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
 import {newImage} from "../resources/images";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 const texture = newImage(resources.Images.player.hakureiReimuShot);
 const cache = document.createElement("canvas");

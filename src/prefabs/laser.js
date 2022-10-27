@@ -14,7 +14,7 @@ import {ob} from "../observer.js";
 import {drawSticker} from "../resources/sticker";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {getLayer, HEIGHT, LAYER_MAPPING} from "../screens";
+import {getLayer, HEIGHT, LAYER_MAPPING} from "../layers/manager";
 
 let _;
 const r90 = 90 * L;

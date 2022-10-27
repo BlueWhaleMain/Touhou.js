@@ -5,7 +5,7 @@ import {ABox, session} from "../util.js";
 import {newImage} from "../resources/images";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 const cache = document.createElement("canvas");
 cache.width = 16;

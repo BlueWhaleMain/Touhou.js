@@ -10,7 +10,7 @@ import Jade from "../prefabs/jade.js";
 import {newImage} from "../resources/images";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 let _;
 const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);

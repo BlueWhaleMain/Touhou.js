@@ -1,7 +1,7 @@
 import {session} from "./util.js";
 import {newAudio} from "./resources/sounds";
 import {resources} from "./resources/manager";
-import {getLayer, HEIGHT, LAYER_MAPPING} from "./screens";
+import {getLayer, HEIGHT, LAYER_MAPPING} from "./layers/manager";
 
 let _;
 const soundOfSelect = newAudio(resources.Sounds.select);

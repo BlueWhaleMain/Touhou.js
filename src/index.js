@@ -60,7 +60,7 @@ import {
     stopAllSound
 } from "./resources/sounds";
 import {resources} from "./resources/manager";
-import {clearScreen, getLayer, HEIGHT, LAYER_MAPPING, takeScreenShot, WIDTH} from "./screens";
+import {clearScreen, getLayer, HEIGHT, LAYER_MAPPING, takeScreenShot, WIDTH} from "./layers/manager";
 import {testStage} from "./stages/test/manager";
 
 const gui = require("nw" + ".gui");

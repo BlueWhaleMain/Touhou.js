@@ -5,7 +5,7 @@ import {generateRandomSpeed, makeMovableArc, movableArc} from "../components/mov
 import health from "../components/health.js";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {HEIGHT, WIDTH} from "../screens";
+import {HEIGHT, WIDTH} from "../layers/manager";
 
 let _;
 const COLOR_MAPPING = {

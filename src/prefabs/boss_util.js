@@ -15,7 +15,7 @@ import {generateRandomSpeed} from "../components/movable.js";
 import {newImage} from "../resources/images";
 import {changeBGM, newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 let _;
 export const HEALTH_DELTA_MAX = 80;

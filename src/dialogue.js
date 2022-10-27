@@ -2,7 +2,7 @@ import {TAGS, entities} from "./util.js";
 import Prefab from "./prefab.js";
 import {newAudio} from "./resources/sounds";
 import {resources} from "./resources/manager";
-import {getLayer, LAYER_MAPPING} from "./screens";
+import {getLayer, LAYER_MAPPING} from "./layers/manager";
 
 let _;
 const layerUI = getLayer(LAYER_MAPPING.UI);

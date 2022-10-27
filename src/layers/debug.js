@@ -3,7 +3,7 @@
  */
 import {intervalExecute, L, session} from "../util.js";
 import Graphics from "../graphics.js";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "./manager";
 
 const r90 = 90 * L;
 const layerDebug = getLayer(LAYER_MAPPING.DEBUG);

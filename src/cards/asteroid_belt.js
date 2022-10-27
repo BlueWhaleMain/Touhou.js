@@ -4,7 +4,7 @@ import CardUtil from "../card_util.js";
 import StarMaster from "../prefabs/star_master.js";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {HEIGHT} from "../screens";
+import {HEIGHT} from "../layers/manager";
 
 let _;
 const soundOfOption = newAudio(resources.Sounds.option);

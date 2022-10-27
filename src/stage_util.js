@@ -11,7 +11,7 @@ import Debug from "./layers/debug";
 import {newImage} from "./resources/images";
 import {continueAllSound, stopAllSound} from "./resources/sounds";
 import {resources} from "./resources/manager";
-import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "./screens";
+import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "./layers/manager";
 
 export const STAGE_EVENT = {
     load: "Load",

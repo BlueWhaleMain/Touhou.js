@@ -7,7 +7,7 @@ import Jade from "../prefabs/jade.js";
 import Laser from "../prefabs/laser.js";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {HEIGHT} from "../screens";
+import {HEIGHT} from "../layers/manager";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);

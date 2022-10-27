@@ -30,7 +30,7 @@ import boundaryBetweenWaveAndParticle from "../../cards/boundary_between_wave_an
 import test from "../../cards/test";
 import voidDeath from "../../cards/void_death";
 import rumiaThink from "../../cards/rumia_think";
-import {getLayer, LAYER_MAPPING} from "../../screens";
+import {getLayer, LAYER_MAPPING} from "../../layers/manager";
 
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const transRumia = document.createElement("canvas");

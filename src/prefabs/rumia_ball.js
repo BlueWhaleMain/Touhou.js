@@ -3,7 +3,7 @@ import movable from "../components/movable.js";
 import {ABox, modifyEntity, TAGS, session} from "../util.js";
 import {newImage} from "../resources/images";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 const cache = document.createElement("canvas");
 cache.width = 48;

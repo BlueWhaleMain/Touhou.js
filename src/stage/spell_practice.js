@@ -22,7 +22,7 @@ import Menu, {MenuItem} from "../menu.js";
 import {newImage} from "../resources/images";
 import {cancelAllSound, changeBGM, continueAllSound, newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "../screens";
+import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "../layers/manager";
 
 const fs = require("fs");
 let step = 0;

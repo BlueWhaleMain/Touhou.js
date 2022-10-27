@@ -13,7 +13,7 @@ import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js";
 import {newImage} from "../resources/images";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 const r360 = 360 * L;
 const cache = document.createElement("canvas");

@@ -4,7 +4,7 @@ import {ABox, TAGS, EVENT_MAPPING} from "../util.js";
 import {ob} from "../observer.js"
 import {newImage} from "../resources/images";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 const bossEffect = newImage(resources.Images.bossEffect);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);

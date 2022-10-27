@@ -1,5 +1,5 @@
 export const layers = new Set();
-export const screens = {};
+export const manager = {};
 const contexts = {};
 
 export function clearScreen() {
@@ -9,7 +9,7 @@ export function clearScreen() {
 }
 
 export function initScreen(screen, layerId) {
-    screens[layerId] = screen;
+    manager[layerId] = screen;
     contexts[layerId] = screen.getContext("2d");
     contexts[layerId].clearRect(0, 0, WIDTH, HEIGHT);
     contexts[layerId].scale(screen.width / WIDTH, screen.height / HEIGHT);
@@ -65,7 +65,7 @@ export function getLayer(layerId) {
 export function takeScreenShot(layerId) {
     let screen;
     if (layerId) {
-        screen = screens[layerId]
+        screen = manager[layerId]
     } else {
         screen = document.createElement("canvas");
         const base = getLayer(0);
@@ -80,7 +80,7 @@ export function takeScreenShot(layerId) {
         l.sort();
         const length = l.length;
         for (let i = 0; i < length; i++) {
-            ctx.drawImage(screens[l[i]], 0, 0)
+            ctx.drawImage(manager[l[i]], 0, 0)
         }
     }
     if (screen) {
@@ -106,7 +106,7 @@ export const LAYER_MAPPING = {
 };
 window.addEventListener("resize", function () {
     for (let layer of layers) {
-        resizeScreen(screens[layer]);
-        initScreen(screens[layer], layer)
+        resizeScreen(manager[layer]);
+        initScreen(manager[layer], layer)
     }
 });

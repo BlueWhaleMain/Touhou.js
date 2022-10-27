@@ -5,7 +5,7 @@ import {ob} from "../observer.js"
 import {newImage} from "../resources/images";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "../screens";
+import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "../layers/manager";
 
 let _;
 const soundOfExtend = newAudio(resources.Sounds.extend);

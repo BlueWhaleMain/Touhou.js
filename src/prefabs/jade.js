@@ -15,7 +15,7 @@ import {ob} from "../observer.js"
 import {drawSticker} from "../resources/sticker";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../screens";
+import {getLayer, LAYER_MAPPING} from "../layers/manager";
 
 let _;
 const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);

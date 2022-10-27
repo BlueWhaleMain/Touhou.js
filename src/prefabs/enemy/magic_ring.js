@@ -2,7 +2,7 @@ import EnemyUtil from "../enemy_util";
 import {ABox, L, TAGS} from "../../util";
 import {newImage} from "../../resources/images";
 import {resources} from "../../resources/manager";
-import {getLayer, LAYER_MAPPING} from "../../screens";
+import {getLayer, LAYER_MAPPING} from "../../layers/manager";
 
 const r360 = 360 * L;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
