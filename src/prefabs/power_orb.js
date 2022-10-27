@@ -5,17 +5,16 @@ import {
     ABox,
     entities,
     EVENT_MAPPING,
-    getLayer,
     GUI_SCREEN,
-    LAYER_MAPPING,
-    newAudio,
-    newImage,
     RBox,
-    resources,
     session
 } from "../util.js";
 import {title} from "../dialogue.js";
 import {ob} from "../observer.js";
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 const big = document.createElement("canvas");
 big.width = 16;

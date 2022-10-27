@@ -1,5 +1,7 @@
-import {entities, L, newAudio, resources, session, transTo} from "../util";
+import {entities, L, session, transTo} from "../util";
 import Jade from "../prefabs/jade";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
 
 let _;
 const soundOfBombShoot1 = newAudio(resources.Sounds.bombShoot1);

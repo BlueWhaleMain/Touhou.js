@@ -1,8 +1,9 @@
 /*
  *调试图层，显示判定区域等
  */
-import {getLayer, intervalExecute, L, LAYER_MAPPING, session} from "../util.js";
+import {intervalExecute, L, session} from "../util.js";
 import Graphics from "../graphics.js";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 const r90 = 90 * L;
 const layerDebug = getLayer(LAYER_MAPPING.DEBUG);

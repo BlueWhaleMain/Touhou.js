@@ -1,7 +1,10 @@
-import {entities, L, session, transTo, newAudio, resources, HEIGHT} from "../util.js";
+import {entities, L, session, transTo} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import CardUtil from "../card_util.js";
 import StarMaster from "../prefabs/star_master.js";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {HEIGHT} from "../screens";
 
 let _;
 const soundOfOption = newAudio(resources.Sounds.option);

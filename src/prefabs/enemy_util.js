@@ -1,7 +1,9 @@
 import Prefab from "../prefab";
 import health from "../components/health";
-import {entities, EVENT_MAPPING, newAudio, resources, TAGS} from "../util";
+import {entities, EVENT_MAPPING, TAGS} from "../util";
 import {ob} from "../observer";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
 
 let _;
 const soundOfDamage = newAudio(resources.Sounds.damage);

@@ -4,19 +4,18 @@ import bullet from "../components/bullet.js";
 import {
     ABox,
     arrowTo,
-    drawSticker,
     entities,
     EVENT_MAPPING,
-    getLayer,
     L,
-    LAYER_MAPPING,
-    newAudio,
-    resources,
     session,
     TAGS
 } from "../util.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
+import {drawSticker} from "../resources/sticker";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 let _;
 const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);

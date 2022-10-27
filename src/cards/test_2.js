@@ -5,14 +5,13 @@ import {
     session,
     arrowTo,
     transTo,
-    modifyEntity,
-    newAudio,
-    resources,
-    newImage,
-    getLayer,
-    LAYER_MAPPING
+    modifyEntity
 } from "../util.js";
 import Jade from "../prefabs/jade.js";
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);

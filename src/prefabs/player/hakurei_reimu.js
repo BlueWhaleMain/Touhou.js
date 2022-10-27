@@ -1,21 +1,13 @@
-import {
-    ABox,
-    entities,
-    getLayer,
-    L,
-    LAYER_MAPPING,
-    newAudio,
-    newImage,
-    RBox,
-    resources,
-    session,
-    transTo, EVENT_MAPPING, TAGS
-} from "../../util.js";
+import {ABox, entities, EVENT_MAPPING, L, RBox, session, TAGS, transTo} from "../../util.js";
 import PlayerUtil from "../player_util.js";
 import HakureiReimuBill from "../hakurei_reimu_bill.js";
 import HakureiReimuLightBall from "../hakurei_reimu_light_ball.js";
 import SealingNeedle from "../sealing_needle.js";
 import {makeMovableArc} from "../../components/movable.js";
+import {newImage} from "../../resources/images";
+import {newAudio} from "../../resources/sounds";
+import {resources} from "../../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../../screens";
 
 let _;
 const soundOfShoot = newAudio(resources.Sounds.shoot);
@@ -271,4 +263,7 @@ export default function HakureiReimu() {
         layout = 0.02
     };
     return inst
+}
+HakureiReimu.getName = function () {
+    return "HakureiReimu"
 }

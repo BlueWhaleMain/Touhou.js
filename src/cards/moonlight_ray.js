@@ -2,9 +2,12 @@
 Moonlight Ray
  */
 import CardUtil from "../card_util.js";
-import {entities, L, transTo, HEIGHT, newAudio, resources, GUI_SCREEN} from "../util.js";
+import {entities, L, transTo, GUI_SCREEN} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import Laser from "../prefabs/laser.js";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {HEIGHT} from "../screens";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);

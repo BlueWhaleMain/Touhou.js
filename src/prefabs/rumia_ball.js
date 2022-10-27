@@ -1,6 +1,9 @@
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, modifyEntity, TAGS, session, LAYER_MAPPING, newImage, resources} from "../util.js";
+import {ABox, modifyEntity, TAGS, session} from "../util.js";
+import {newImage} from "../resources/images";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 const cache = document.createElement("canvas");
 cache.width = 48;

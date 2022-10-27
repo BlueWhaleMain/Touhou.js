@@ -1,8 +1,10 @@
-import {entities, L, session, transTo, newAudio, resources} from "../util.js";
+import {entities, L, session, transTo} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import CardUtil from "../card_util.js";
 import Laser from "../prefabs/laser.js";
 import StarMaster from "../prefabs/star_master.js";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);

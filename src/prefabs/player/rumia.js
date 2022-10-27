@@ -1,23 +1,12 @@
 import PlayerUtil from "../player_util.js";
-import {
-    ABox,
-    clearEntity,
-    entities,
-    EVENT_MAPPING,
-    getLayer,
-    L,
-    LAYER_MAPPING,
-    newAudio,
-    newImage,
-    RBox,
-    resources,
-    session,
-    TAGS,
-    transTo
-} from "../../util.js";
+import {ABox, clearEntity, entities, EVENT_MAPPING, L, RBox, session, TAGS, transTo} from "../../util.js";
 import RumiaBall from "../rumia_ball.js";
 import GreenOrb from "../green_orb.js";
 import {ob} from "../../observer.js"
+import {newImage} from "../../resources/images";
+import {newAudio} from "../../resources/sounds";
+import {resources} from "../../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../../screens";
 
 let _;
 const soundOfShoot = newAudio(resources.Sounds.shoot);
@@ -250,4 +239,7 @@ export default function Rumia() {
         _ = soundOfSlash.play()
     };
     return inst
+}
+Rumia.getName = function () {
+    return "Rumia"
 }

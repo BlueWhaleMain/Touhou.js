@@ -4,17 +4,16 @@ import movable from "../components/movable.js";
 import {
     ABox,
     editImage,
-    getLayer,
     GUI_SCREEN,
     hslToRgb,
-    LAYER_MAPPING,
-    newAudio,
-    newImage,
-    resources,
     rgbToHsl,
     session
 } from "../util.js";
 import {showScore} from "../dialogue.js";
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 const middle = document.createElement("canvas");
 middle.width = 10;

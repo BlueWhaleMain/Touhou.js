@@ -1,18 +1,19 @@
 import {
     ABox,
-    getLayer,
-    LAYER_MAPPING,
     modifyEntity,
-    newImage,
-    resources,
     session,
     TAGS,
     arrowTo,
-    entities, clearEntity, drawSticker, newAudio
+    entities, clearEntity
 } from "../util.js";
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
 import GreenOrb from "./green_orb.js";
+import {drawSticker} from "../resources/sticker";
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 let _;
 const texture = newImage(resources.Images.eBullet3);

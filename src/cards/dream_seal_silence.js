@@ -1,8 +1,10 @@
-import {options, entities, GUI_SCREEN, L, newAudio, resources, session, transTo} from "../util.js";
+import {options, entities, GUI_SCREEN, L, session, transTo} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import CardUtil from "../card_util.js";
 import {generateRandomSpeed} from "../components/movable.js";
 import YinYangJade from "../prefabs/yin_yang_jade.js";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);

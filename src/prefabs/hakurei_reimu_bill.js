@@ -1,10 +1,6 @@
 import {
     ABox,
-    getLayer,
-    LAYER_MAPPING,
     modifyEntity,
-    newImage,
-    resources,
     session,
     TAGS,
     arrowTo,
@@ -12,6 +8,9 @@ import {
 } from "../util.js";
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
+import {newImage} from "../resources/images";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 const texture = newImage(resources.Images.player.hakureiReimuShot);
 const cache = document.createElement("canvas");

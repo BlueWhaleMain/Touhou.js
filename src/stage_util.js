@@ -1,21 +1,17 @@
 import Prefab from "./prefab.js";
 import {
-    continueAllSound,
-    getLayer,
     GUI_SCREEN,
-    HEIGHT,
-    LAYER_MAPPING,
-    newImage,
     options,
     RBox,
-    resources,
     session,
-    stopAllSound,
-    TAGS,
-    WIDTH
+    TAGS
 } from "./util.js";
 import Observer from "./observer.js";
 import Debug from "./layers/debug";
+import {newImage} from "./resources/images";
+import {continueAllSound, stopAllSound} from "./resources/sounds";
+import {resources} from "./resources/manager";
+import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "./screens";
 
 export const STAGE_EVENT = {
     load: "Load",

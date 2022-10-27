@@ -1,15 +1,9 @@
 import Prefab from "../prefab.js";
 import health from "../components/health.js";
 import {
-    changeBGM,
     entities,
     EVENT_MAPPING,
-    getLayer,
     L,
-    LAYER_MAPPING,
-    newAudio,
-    newImage,
-    resources,
     session,
     TAGS
 } from "../util.js";
@@ -18,6 +12,10 @@ import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
 import BlueOrb from "./blue_orb.js";
 import {generateRandomSpeed} from "../components/movable.js";
+import {newImage} from "../resources/images";
+import {changeBGM, newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 let _;
 export const HEALTH_DELTA_MAX = 80;

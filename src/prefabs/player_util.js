@@ -1,22 +1,11 @@
 import Prefab from "../prefab.js";
-import {
-    entities,
-    EVENT_MAPPING,
-    getLayer,
-    GUI_SCREEN,
-    HEIGHT,
-    L,
-    LAYER_MAPPING,
-    newAudio,
-    newImage,
-    options,
-    resources,
-    session,
-    TAGS,
-    WIDTH
-} from "../util.js";
+import {entities, EVENT_MAPPING, GUI_SCREEN, L, options, session, TAGS} from "../util.js";
 import PowerOrb from "./power_orb.js";
 import {ob} from "../observer.js"
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "../screens";
 
 let _;
 const soundOfExtend = newAudio(resources.Sounds.extend);
@@ -357,4 +346,7 @@ export default function PlayerUtil() {
         }
     });
     return inst
+}
+PlayerUtil.getName = function () {
+    throw new Error('not implements')
 }

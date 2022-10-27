@@ -1,6 +1,10 @@
-import {AUDIO_TYPE, newAudio, newImage, newText, resources, VOLUME_MAX} from "./util";
+import {newImage} from "./images";
+import {AUDIO_TYPE, newAudio, VOLUME_MAX} from "./sounds";
+import {newText} from "./texts";
+import {resources} from "./manager";
 
 const DESCRIPTION_PREFIX = 'description/';
+
 export const ASSETS = {
     IMAGE: {
         rumia: newImage(resources.Images.bossRumia),

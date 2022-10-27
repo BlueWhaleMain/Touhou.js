@@ -1,4 +1,6 @@
-import {TAGS, session, newAudio, resources} from "../util.js";
+import {TAGS, session} from "../util.js";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
 
 let _;
 const soundOfGraze = newAudio(resources.Sounds.graze);

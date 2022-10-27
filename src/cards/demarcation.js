@@ -1,7 +1,9 @@
 import CardUtil from "../card_util.js";
-import {entities, L, transTo, modifyEntity, session, newAudio, resources, GUI_SCREEN} from "../util.js";
+import {entities, L, transTo, modifyEntity, session, GUI_SCREEN} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import {makeMovableArc} from "../components/movable.js";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);

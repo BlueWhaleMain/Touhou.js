@@ -1,5 +1,9 @@
 import BossUtil from "../boss_util.js";
-import {getLayer, ABox, LAYER_MAPPING, newAudio, resources, newImage} from "../../util.js";
+import {ABox} from "../../util.js";
+import {newImage} from "../../resources/images";
+import {newAudio} from "../../resources/sounds";
+import {resources} from "../../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../../screens";
 
 const cache = document.createElement("canvas");
 cache.width = 128;

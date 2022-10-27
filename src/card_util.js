@@ -1,18 +1,17 @@
 import {
     session,
-    getLayer,
     entities,
-    EVENT_MAPPING,
-    newImage,
-    resources,
-    newAudio,
-    LAYER_MAPPING
+    EVENT_MAPPING
 } from "./util.js";
 import {ob} from "./observer.js"
 import {title} from "./dialogue.js";
 import BlueOrb from "./prefabs/blue_orb.js";
 import PowerOrb from "./prefabs/power_orb.js";
 import {generateRandomSpeed} from "./components/movable.js";
+import {newImage} from "./resources/images";
+import {newAudio} from "./resources/sounds";
+import {resources} from "./resources/manager";
+import {getLayer, LAYER_MAPPING} from "./screens";
 
 let _;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);

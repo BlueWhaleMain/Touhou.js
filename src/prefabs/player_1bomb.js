@@ -1,7 +1,11 @@
 import Prefab from "../prefab.js";
 import item from "../components/item.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, session, newImage, resources, newAudio, LAYER_MAPPING} from "../util.js";
+import {ABox, session} from "../util.js";
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 const cache = document.createElement("canvas");
 cache.width = 16;

@@ -1,6 +1,6 @@
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
-import {getLayer, HEIGHT, LAYER_MAPPING} from "../util.js";
+import {getLayer, HEIGHT, LAYER_MAPPING} from "../screens";
 
 const MenuStarCache = {};
 const layerStage = getLayer(LAYER_MAPPING.STAGE);

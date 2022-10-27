@@ -1,34 +1,28 @@
 import {
     AUTO_HINT,
-    cancelAllSound,
-    changeBGM,
-    continueAllSound,
     entities,
     EVENT_MAPPING,
-    getLayer,
     GUI_SCREEN,
-    HEIGHT,
     HINT_VER,
     hslToRgb,
-    LAYER_MAPPING,
-    newAudio,
-    newImage,
     options,
     profile,
     rendererEntity,
-    resources,
     saveHint,
     saveReplay,
     saveToFile,
     session,
     TAGS,
     tickingEntity,
-    updateEntity,
-    WIDTH
+    updateEntity
 } from "../util.js";
 import StageUtil, {STAGE_EVENT} from "../stage_util.js";
 import {ob} from "../observer.js";
 import Menu, {MenuItem} from "../menu.js";
+import {newImage} from "../resources/images";
+import {cancelAllSound, changeBGM, continueAllSound, newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, HEIGHT, LAYER_MAPPING, WIDTH} from "../screens";
 
 const fs = require("fs");
 let step = 0;
@@ -151,7 +145,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
             stg: {
                 menu,
                 selectedIndex,
-                player: player.name,
+                player: player.getName(),
                 DeveloperMode: options.DeveloperMode,
                 dialogue: {},
                 dialogueCloseTimes: []

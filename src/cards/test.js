@@ -2,9 +2,13 @@
  * 这张符卡用来做参考很不错
  */
 import CardUtil from "../card_util.js";
-import {entities, newAudio, resources, getLayer, LAYER_MAPPING, newImage} from "../util.js";
+import {entities} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import {generateRandomSpeed} from "../components/movable.js";
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);

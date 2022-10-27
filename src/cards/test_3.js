@@ -4,14 +4,13 @@ import {
     L,
     session,
     arrowTo,
-    transTo,
-    newAudio,
-    resources,
-    newImage,
-    getLayer,
-    LAYER_MAPPING
+    transTo
 } from "../util.js";
 import Jade from "../prefabs/jade.js";
+import {newImage} from "../resources/images";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 let _;
 const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);

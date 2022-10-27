@@ -1,8 +1,11 @@
 import CardUtil from "../card_util.js";
-import {ABox, entities, HEIGHT, L, newAudio, resources, session, TAGS, WIDTH} from "../util.js";
+import {ABox, entities, L, session, TAGS} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import {generateRandomSpeed, makeMovableArc, movableArc} from "../components/movable.js";
 import health from "../components/health.js";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {HEIGHT, WIDTH} from "../screens";
 
 let _;
 const COLOR_MAPPING = {

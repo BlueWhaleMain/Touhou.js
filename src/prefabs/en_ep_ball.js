@@ -1,7 +1,10 @@
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
-import {ABox, getLayer, TAGS, EVENT_MAPPING, newImage, resources, LAYER_MAPPING} from "../util.js";
+import {ABox, TAGS, EVENT_MAPPING} from "../util.js";
 import {ob} from "../observer.js"
+import {newImage} from "../resources/images";
+import {resources} from "../resources/manager";
+import {getLayer, LAYER_MAPPING} from "../screens";
 
 const bossEffect = newImage(resources.Images.bossEffect);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);

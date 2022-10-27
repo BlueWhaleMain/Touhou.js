@@ -1,14 +1,8 @@
 import {
-    drawSticker,
     entities,
     EVENT_MAPPING,
-    getLayer,
-    HEIGHT,
     L,
-    LAYER_MAPPING,
-    newAudio,
     RBox,
-    resources,
     session,
     TAGS
 } from "../util.js";
@@ -17,6 +11,10 @@ import movable from "../components/movable.js";
 import laser from "../components/laser.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js";
+import {drawSticker} from "../resources/sticker";
+import {newAudio} from "../resources/sounds";
+import {resources} from "../resources/manager";
+import {getLayer, HEIGHT, LAYER_MAPPING} from "../screens";
 
 let _;
 const r90 = 90 * L;
