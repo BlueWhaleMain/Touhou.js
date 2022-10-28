@@ -1,7 +1,7 @@
 import {consoleTime, session} from "../util";
+import {loadingScreenCache} from "./manager";
 
 const images = {};
-export const loadingScreenCache = [];
 
 export function newImage(src, width, height) {
     const imageName = "image:" + src + "(" + (width || "auto") + "X" + (height || "auto") + ")";

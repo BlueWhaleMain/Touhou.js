@@ -49,7 +49,7 @@ import moonlightRay from "./cards/moonlight_ray.js";
 import darkSideOfTheMoon from "./cards/dark_side_of_the_moon.js";
 import rumiaThink from "./cards/rumia_think.js";
 import {ASSETS} from "./resources/assets";
-import {loadingScreenCache, newImage} from "./resources/images";
+import {newImage} from "./resources/images";
 import {
     audioObserver,
     cancelAllSound,
@@ -59,7 +59,7 @@ import {
     newAudio,
     stopAllSound
 } from "./resources/sounds";
-import {resources} from "./resources/manager";
+import {loadingScreenCache, resources} from "./resources/manager";
 import {clearScreen, getLayer, HEIGHT, LAYER_MAPPING, takeScreenShot, WIDTH} from "./layers/manager";
 import {testStage} from "./stages/test/manager";
 

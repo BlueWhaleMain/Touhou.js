@@ -1,6 +1,6 @@
 import Observer from "../observer";
-import {loadingScreenCache} from "./images";
 import {consoleTime, EVENT_MAPPING, options, session} from "../util";
+import {loadingScreenCache} from "./manager";
 
 const bgm = new Set();
 const bgmIndex = {};
