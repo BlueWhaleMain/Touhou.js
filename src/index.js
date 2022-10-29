@@ -178,7 +178,7 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
             y = 125 + i * 20;
             layerTitle.fillText("No." + (i + 1), 60, y - self.sline)
         }
-        y += 20;
+        y = self.aline + 20
         if (session.currentBGM.description) {
             layerTitle.fillStyle = "white";
             layerTitle.shadowColor = "rgb(153,153,153)";
@@ -196,6 +196,7 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
         self.draw()
     };
 });
+musicRoomMenu.aline -= 80
 
 function practiceStartFactory(selectedIndex, replayOption) {
     let stageMap = [];
