@@ -1,15 +1,8 @@
 import Prefab from "../prefab.js";
 import item from "../components/item.js";
 import movable from "../components/movable.js";
-import {
-    ABox,
-    entities,
-    EVENT_MAPPING,
-    GUI_SCREEN,
-    RBox,
-    session
-} from "../util.js";
-import {title} from "../dialogue.js";
+import {ABox, entities, EVENT_MAPPING, GUI_SCREEN, RBox, session} from "../util.js";
+import {showScore, title} from "../dialogue.js";
 import {ob} from "../observer.js";
 import {newImage} from "../resources/images";
 import {newAudio} from "../resources/sounds";
@@ -62,7 +55,7 @@ export default function PowerOrb(x, y, mx, my, size = "middle") {
     inst.addComponent("item", item);
     inst.components["item"].configMovement(inst);
     inst.components["item"].pick = function () {
-        let old = Math.floor(session.player.power / 100);
+        const raw = session.player.power
         if (size === "big") {
             session.player.power += 100;
             session.score += 100
@@ -72,23 +65,27 @@ export default function PowerOrb(x, y, mx, my, size = "middle") {
         }
         if (session.player.power > session.player.powerMax) {
             session.player.power = session.player.powerMax;
-            session.score += Math.floor(51200 * Math.abs(session.player.indTime) / 512)
-        } else if (session.player.power === session.player.powerMax) {
-            entities.push(title(function () {
-                const self = {};
-                self.draw = function (self) {
-                    layerTitle.save();
-                    layerTitle.globalAlpha = self.opacity;
-                    layerTitle.font = "15px sans-serif";
-                    layerTitle.fillStyle = "rgb(133,133,133)";
-                    layerTitle.fillText("Full Power Up!", 165, 200);
-                    layerTitle.restore()
-                };
-                return self
-            }));
-            ob.dispatchEvent(EVENT_MAPPING.clearEntity, {drop: true})
+            if (raw < session.player.powerMax) {
+                entities.push(title(function () {
+                    const self = {};
+                    self.draw = function (self) {
+                        layerTitle.save();
+                        layerTitle.globalAlpha = self.opacity;
+                        layerTitle.font = "15px sans-serif";
+                        layerTitle.fillStyle = "rgb(133,133,133)";
+                        layerTitle.fillText("Full Power Up!", 165, 200);
+                        layerTitle.restore()
+                    };
+                    return self
+                }));
+                ob.dispatchEvent(EVENT_MAPPING.clearEntity, {drop: true})
+            } else {
+                const score = Math.floor(51200 * Math.abs(session.player.indTime) / 512)
+                session.score += score
+                showScore(inst.X, inst.Y, score, 'white');
+            }
         }
-        if (session.player.power / 100 - old >= 1) {
+        if (session.player.power / 100 - Math.floor(raw / 100) >= 1) {
             soundOfPowerUp.currentTime = 0;
             _ = soundOfPowerUp.play();
         }
