@@ -73,7 +73,7 @@
         "failure": {
             "head": "th10_18_head.wav",
             "loop": "th10_18_loop.wav",
-            "name": "プレイヤーズスコア",
+            "name": "Player's Score",
             "description": "th10_18.lst"
         },
         "rumia": {
@@ -85,37 +85,37 @@
         "patchouliKnowledge": {
             "head": "th06_09_head.wav",
             "loop": "th06_09_loop.wav",
-            "name": "ラクトガール ～ 少女密室",
+            "name": "Locked Girl ～ 少女密室",
             "description": "th06_09.lst"
         },
         "hakureiReimu": {
             "head": "th08_09_head.wav",
             "loop": "th08_09_loop.wav",
-            "name": "少女綺想曲 ～ Dream Battle",
+            "name": "少女绮想曲　～ Dream Battle",
             "description": "th08_09.lst"
         },
         "kirisameMarisa": {
             "head": "th08_10_head.wav",
             "loop": "th08_10_loop.wav",
-            "name": "恋色マスタースパーク",
+            "name": "恋色Master spark",
             "description": "th08_10.lst"
         },
         "yukariYakumo": {
             "head": "th07_18_head.wav",
             "loop": "th07_18_loop.wav",
-            "name": "ネクロファンタジア",
+            "name": "Necro-Fantasia",
             "description": "th07_18.lst"
         },
         "th095_02": {
             "head": "th095_02_head.wav",
             "loop": "th095_02_loop.wav",
-            "name": "風の循環　～ Wind Tour",
+            "name": "风的循环 ～ Wind Tour",
             "description": "th095_02.lst"
         },
         "th095_04": {
             "head": "th095_04_head.wav",
             "loop": "th095_04_loop.wav",
-            "name": "東の国の眠らない夜",
+            "name": "东之国的不眠夜",
             "description": "th095_04.lst"
         },
         "select": "select.wav",
