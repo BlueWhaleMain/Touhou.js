@@ -81,7 +81,7 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
         if (healthDeltaMax < 0 || inst.tags.has(TAGS.death)) {
             return false
         }
-        session.score -= val;
+        session.score -= Math.floor(val);
         if (value / blood < 0.05) {
             soundOfDamage1.currentTime = 0;
             _ = soundOfDamage1.play()
