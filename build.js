@@ -23,7 +23,8 @@ const nw_pkg = {
     build: {
         nwVersion: "0.68.1",
         win: {
-            copyright: pkg.author
+            copyright: pkg.author,
+            icon: "assets/index.ico"
         }
     }
 }
