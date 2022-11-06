@@ -77,6 +77,19 @@ if (options.PauseOnBlur === true) {
         window.paused = true
     });
 }
+// 窗口不可见时自动停止逻辑，和dom停止渲染的机制保持一致
+document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') {
+        stopAllSound();
+        window.paused = true
+    }
+    if (document.visibilityState === 'visible') {
+        continueAllSound();
+        window.paused = false;
+        nextFrame(run)
+    }
+});
+
 let _;
 const ignoreKeys = new Set();
 let entityCountSecMax = options.EntityCountSecMax;
