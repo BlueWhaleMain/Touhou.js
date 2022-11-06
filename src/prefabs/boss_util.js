@@ -85,7 +85,7 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
         if (value / blood < 0.05) {
             soundOfDamage1.currentTime = 0;
             _ = soundOfDamage1.play()
-        } else if (value / blood < 0.1) {
+        } else {
             soundOfDamage.currentTime = 0;
             _ = soundOfDamage.play()
         }

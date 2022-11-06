@@ -1,27 +1,26 @@
 import Prefab from "../prefab";
 import health from "../components/health";
-import {entities, EVENT_MAPPING, TAGS} from "../util";
+import {entities, EVENT_MAPPING, session, TAGS} from "../util";
 import {ob} from "../observer";
 import {newAudio} from "../resources/sounds";
 import {resources} from "../resources/manager";
 
 let _;
 const soundOfDamage = newAudio(resources.Sounds.damage);
-const soundOfDamage1 = newAudio(resources.Sounds.damage1);
 const soundOfEnEp0 = newAudio(resources.Sounds.en_ep_0);
 export default function EnemyUtil(/* number */x, /* number */y, /* number */blood, brain, /* [Prefab] */drops = []) {
     const inst = new Prefab(x, y);
+    inst.callback = {}
     inst.tags.add(TAGS.enemy)
     inst.addComponent("health", health);
     inst.components["health"].init(blood, blood, 0);
 
     inst.components["health"].callback.doDelta = function (val, value) {
-        if (value / blood < 0.05) {
-            soundOfDamage1.currentTime = 0;
-            _ = soundOfDamage1.play()
-        } else if (value / blood < 0.1) {
-            soundOfDamage.currentTime = 0;
-            _ = soundOfDamage.play()
+        session.score -= Math.floor(val);
+        soundOfDamage.currentTime = 0;
+        _ = soundOfDamage.play()
+        if (typeof inst.callback.healthDelta === 'function') {
+            return inst.callback.healthDelta(val, value)
         }
     };
 
