@@ -285,7 +285,7 @@ export default function BossUtil(x, y, blood, cards, dialogue = []) {
             if (inst.showTexture) {
                 layerUI.save();
                 layerUI.globalAlpha = textureOpacity;
-                layerUI.drawImage(inst.texture, 125, textureLayout, 286, 373);
+                layerUI.drawImage(inst.texture, 125, textureLayout);
                 layerUI.restore()
             }
         }
