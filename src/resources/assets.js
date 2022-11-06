@@ -97,3 +97,10 @@ export const ASSETS = {
         ok: newAudio(resources.Sounds.ok)
     }
 };
+for(const o in ASSETS.SOUND) {
+    if (ASSETS.SOUND.hasOwnProperty(o) && ASSETS.SOUND[o].head && resources.Sounds[o]) {
+        ASSETS.SOUND[o].loopStartDelay = resources.Sounds[o].loopStartDelay;
+        ASSETS.SOUND[o].loopLoopDelay = resources.Sounds[o].loopLoopDelay;
+        ASSETS.SOUND[o].key = o;
+    }
+}

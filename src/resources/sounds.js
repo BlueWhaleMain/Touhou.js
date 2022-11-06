@@ -71,6 +71,9 @@ export function changeBGM(bgm, callback, force = false) {
             session.currentBGM.loop = bgm.loop;
             session.currentBGM.name = bgm.name;
             session.currentBGM.description = bgm.description
+            session.currentBGM.loopStartDelay = bgm.loopStartDelay
+            session.currentBGM.loopLoopDelay = bgm.loopLoopDelay
+            session.currentBGM.key = bgm.key
         } else {
             if (session.currentBGM.dom) {
                 _ = session.currentBGM.dom.pause()
@@ -87,7 +90,10 @@ export function changeBGM(bgm, callback, force = false) {
             dom: bgm.head,
             loop: bgm.loop,
             name: bgm.name,
-            description: bgm.description
+            description: bgm.description,
+            loopStartDelay: bgm.loopStartDelay,
+            loopLoopDelay: bgm.loopLoopDelay,
+            key: bgm.key
         }
     }
     if (typeof callback === "function") {

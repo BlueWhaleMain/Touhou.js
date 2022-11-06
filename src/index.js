@@ -59,7 +59,7 @@ import {
     newAudio,
     stopAllSound
 } from "./resources/sounds";
-import {loadingScreenCache, resources} from "./resources/manager";
+import {loadingScreenCache, resources, saveDelay} from "./resources/manager";
 import {clearScreen, getLayer, HEIGHT, LAYER_MAPPING, takeScreenShot, WIDTH} from "./layers/manager";
 import {testStage} from "./stages/test/manager";
 
@@ -106,6 +106,8 @@ const ml = musics.length;
 for (let i = 0; i < ml; i++) {
     mrm.push(lightMenuItem(140, 125 + 20 * i, musics[i].name))
 }
+const defaultLoopStartDelay = 0.09, defaultLoopLoopDelay = 0.09
+let delayIndex = 0
 const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
     let selectedBgm;
     if (selectedIndex < musics.length) {
@@ -124,7 +126,8 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
 }, function () {
     mainMenu.load()
 }, function (self) {
-    if (session.currentBGM) {
+    const currentBGM = session.currentBGM
+    if (currentBGM) {
         layerTitle.save();
         layerTitle.shadowBlur = 3;
         layerTitle.fillStyle = "rgb(153,153,153)";
@@ -132,36 +135,129 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
         layerTitle.font = "30px Comic Sans MS";
         layerTitle.fillText("Music Room", 240, 40);
         layerTitle.font = "12px Comic Sans MS";
-        layerTitle.fillText("正在播放：" + session.currentBGM.name, 400, 80);
+        layerTitle.fillText("正在播放：" + currentBGM.name, 400, 80);
         if (session.debugFlag) {
+            const dom = currentBGM.dom
+            const loop = currentBGM.loop
+            if (session.keys.has("ArrowLeft".toLowerCase())) {
+                if (dom.paused && currentBGM.paused > 1) {
+                    loop.currentTime -= 1;
+                    if (loop.currentTime <= 0) {
+                        currentBGM.paused = 1
+                        dom.currentTime = dom.duration - 1
+                    }
+                } else {
+                    dom.currentTime -= 1;
+                }
+            }
+            if (session.keys.has("ArrowRight".toLowerCase())) {
+                if (dom.paused && currentBGM.paused > 1) {
+                    loop.currentTime += 1;
+                } else {
+                    dom.currentTime += 1;
+                }
+            }
+            if (session.developerMode) {
+                if (session.keys.has("tab")) {
+                    session.keys.delete("tab")
+                    delayIndex = delayIndex === 0 ? 1 : 0;
+                    ASSETS.SOUND.ok.currentTime = 0
+                    _ = ASSETS.SOUND.ok.play()
+                }
+                if (session.keys.has("+")) {
+                    session.keys.delete('+')
+                    if (delayIndex === 0) {
+                        currentBGM.loopStartDelay = (currentBGM.loopStartDelay || defaultLoopStartDelay) - 0.01
+                    } else if (delayIndex === 1) {
+                        currentBGM.loopLoopDelay = (currentBGM.loopLoopDelay || defaultLoopLoopDelay) - 0.01;
+                    }
+                }
+                if (session.keys.has("-")) {
+                    session.keys.delete('-')
+                    if (delayIndex === 0) {
+                        currentBGM.loopStartDelay = (currentBGM.loopStartDelay || defaultLoopStartDelay) + 0.01;
+                    } else if (delayIndex === 1) {
+                        currentBGM.loopLoopDelay = (currentBGM.loopLoopDelay || defaultLoopLoopDelay) + 0.01;
+                    }
+                }
+                if (session.keys.has("enter")) {
+                    session.keys.delete('enter')
+                    if (delayIndex === 0) {
+                        const defaultVal = -(currentBGM.loopStartDelay || defaultLoopStartDelay)
+                        const val = parseFloat(prompt('输入音乐起始循环偏移值（秒）', String(defaultVal)))
+                        currentBGM.loopStartDelay = isNaN(val) ? -defaultVal : -val;
+                    } else if (delayIndex === 1) {
+                        const defaultVal = -(currentBGM.loopLoopDelay || defaultLoopLoopDelay)
+                        const val = parseFloat(prompt('输入音乐循环偏移值（秒）', String(defaultVal)))
+                        currentBGM.loopLoopDelay = isNaN(val) ? -defaultVal : -val;
+                    }
+                }
+                if (session.keys.has("s")) {
+                    session.keys.delete("s")
+                    if (confirm("Save delay to assets?")) {
+                        saveDelay(currentBGM);
+                    }
+                }
+            }
             layerDebug.save();
             layerDebug.shadowBlur = 3;
             layerDebug.fillStyle = "rgb(153,153,153)";
             layerDebug.shadowColor = "black";
             layerDebug.font = "12px Comic Sans MS";
-            const head = "(Head)File：" + session.currentBGM.dom.src;
+            const head = "(Head)File：" + dom.src;
             let len = layerDebug.measureText(head).width;
-            layerDebug.fillText(head, Math.max(WIDTH - len - 40, 0), 56);
-            let total = session.currentBGM.dom.duration;
-            let current = session.currentBGM.dom.currentTime;
-            if (session.currentBGM.loop) {
-                const loop = "LoopFile：" + session.currentBGM.loop.src;
-                len = layerDebug.measureText(loop).width;
-                layerDebug.fillText(loop, Math.max(WIDTH - len - 40, 0), 68);
-                total += session.currentBGM.loop.duration;
-                if (!session.currentBGM.loop.paused) {
-                    current = session.currentBGM.dom.duration + session.currentBGM.loop.currentTime
+            if (session.developerMode) {
+                layerDebug.fillText(head, Math.max(WIDTH - len - 40, 0), 56);
+            }
+            let total = dom.duration;
+            let current = dom.currentTime;
+            if (loop) {
+                const loopText = "LoopFile：" + loop.src;
+                len = layerDebug.measureText(loopText).width;
+                total += loop.duration;
+                if (!loop.paused) {
+                    current = dom.duration + loop.currentTime
+                }
+                if (session.developerMode) {
+                    layerDebug.fillText(loopText, Math.max(WIDTH - len - 40, 0), 68);
                 }
             }
             layerDebug.strokeStyle = "rgb(153,153,153)";
             layerDebug.strokeRect(400, 90, 120, 10);
             layerDebug.fillRect(400, 90, 120 * current / total, 10);
             current = Math.round(current);
-            layerDebug.fillText(Math.floor(current / 60) + ":" + Math.prefix(current % 60) + "/" + Math.floor(total / 60) + ":" + Math.prefix(total % 60), 522, 100);
-            if (session.currentBGM.loop) {
-                layerDebug.fillStyle = "red";
-                layerDebug.fillRect(400 + 120 * session.currentBGM.dom.duration / total, 90, 1, 10)
+            layerDebug.fillText(Math.floor(current / 60) + ":" + Math.prefix(current % 60) + "/"
+                + Math.floor(total / 60) + ":" + Math.prefix(total % 60), 522, 100);
+            if (session.developerMode) {
+                if (loop) {
+                    layerDebug.fillStyle = "red";
+                    let x = 400 + 120 * dom.duration / total
+                    layerDebug.fillRect(x, 90, 1, 10)
+                    layerDebug.font = "5px Comic Sans MS";
+                    layerDebug.fillText(dom.duration + "", x, 100);
+                    layerDebug.fillStyle = delayIndex === 0 ? "green" : "white";
+                    let delay = -(currentBGM.loopStartDelay || defaultLoopStartDelay)
+                    x = 400 + 120 * (dom.duration + delay) / total
+                    layerDebug.fillRect(x, 90, 1, 10);
+                    layerDebug.fillText(delay + "", x, 90);
+                    layerDebug.fillStyle = delayIndex === 1 ? "yellow" : "white";
+                    delay = -(currentBGM.loopLoopDelay || defaultLoopLoopDelay)
+                    x = 400 + 120 * (dom.duration + loop.duration + delay) / total
+                    layerDebug.fillText(delay + "", x, 90);
+                    layerDebug.fillRect(x, 90, 1, 10);
+                }
+                layerDebug.font = "8px Comic Sans MS";
+                layerDebug.fillStyle = 'white'
+                layerDebug.fillText('全局BGM播放设置', 400, 110)
+                layerDebug.fillText('按 Tab 切换调整内容', 470, 120)
+                layerDebug.fillStyle = (delayIndex === 0 ? "green" : "yellow")
+                layerDebug.fillText('按 + - 微调（0.01）' + (delayIndex === 0 ? "音乐起始循环偏移值" : "音乐循环偏移值"), 470, 130);
+                layerDebug.fillText('按 Enter 输入' + (delayIndex === 0 ? "音乐起始循环偏移值" : "音乐循环偏移值"), 470, 140);
+                layerDebug.fillText('按 S 将当前播放的BGM改动保存至资源关联', 470, 150)
             }
+            layerDebug.font = "8px Comic Sans MS";
+            layerDebug.fillStyle = 'white'
+            layerDebug.fillText('按 ← → 调整播放进度', 470, 110)
             layerDebug.restore()
         }
         let y = 0;
@@ -179,10 +275,10 @@ const musicRoomMenu = new Menu(mrm, function (selectedIndex) {
             layerTitle.fillText("No." + (i + 1), 60, y - self.sline)
         }
         y = self.aline + 20
-        if (session.currentBGM.description) {
+        if (currentBGM.description) {
             layerTitle.fillStyle = "white";
             layerTitle.shadowColor = "rgb(153,153,153)";
-            session.currentBGM.description.split("\n").forEach(function (s) {
+            currentBGM.description.split("\n").forEach(function (s) {
                 y += 12;
                 layerTitle.fillText(s, 60, y)
             });
@@ -1129,23 +1225,25 @@ function run() {
         if (!session.stage || session.stage.paused === false && session.stage.end === false) {
             const currentBGM = session.currentBGM;
             if (currentBGM) {
-                if (currentBGM.dom.paused || currentBGM.dom.currentTime + 0.12 > currentBGM.dom.duration) {
-                    if (currentBGM.loop && currentBGM.paused > 1) {
-                        if (currentBGM.loop.paused || currentBGM.loop.currentTime + 0.1 > currentBGM.loop.duration) {
-                            currentBGM.loop.currentTime = 0;
-                            _ = currentBGM.loop.play()
+                const dom = currentBGM.dom
+                const loop = currentBGM.loop
+                if (dom.paused || dom.currentTime + (currentBGM.loopStartDelay || defaultLoopStartDelay) > dom.duration) {
+                    if (loop && currentBGM.paused > 1) {
+                        if (loop.paused || loop.currentTime + (currentBGM.loopLoopDelay || defaultLoopLoopDelay) > loop.duration) {
+                            loop.currentTime = 0;
+                            _ = loop.play()
                         }
                     } else {
-                        _ = currentBGM.dom.play();
+                        _ = dom.play();
                         currentBGM.paused = currentBGM.paused + 1 || 2;
                     }
                 } else {
-                    if (currentBGM.dom.currentTime > currentBGM.leaveTime) {
-                        currentBGM.dom.currentTime = currentBGM.loopTime
+                    if (dom.currentTime > currentBGM.leaveTime) {
+                        dom.currentTime = currentBGM.loopTime
                     }
-                    if (!currentBGM.loop.paused) {
-                        _ = currentBGM.loop.pause();
-                        currentBGM.loop.currentTime = 0
+                    if (!loop.paused) {
+                        _ = loop.pause();
+                        loop.currentTime = 0
                     }
                 }
             }
