@@ -55,6 +55,8 @@ export default function CardUtil(option) {
             }
             if (option.noCard) {
                 noCardFrame = 0;
+                this.entity.components["health"].init(this.entity.components["health"].getMax(),
+                    this.entity.components["health"].getMax() * 8, 1);
                 ob.dispatchEvent(EVENT_MAPPING.cardEnEp)
             }
             if (typeof option.open === "function") {
@@ -109,8 +111,6 @@ export default function CardUtil(option) {
                 option.noCard(this, time)
             }
             if (this.entity.components["health"].getValue() <= this.entity.components["health"].getMax() / 8) {
-                this.entity.components["health"].init(this.entity.components["health"].getMax(),
-                    this.entity.components["health"].getMax() * 8, 1);
                 this.open()
             }
         } else {
