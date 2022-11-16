@@ -115,13 +115,13 @@ export function RBox(xs, ys, angle = 0) {
         }
     };
     this.isOutX = function (x, mx, xMax, xMin) {
-        return mx <= 0 && x < -this.xs / 2 - xMin || mx > 0 && x > xMax + this.xs / 2
+        return mx < 0 && x < xMin -this.xs / 2 || mx > 0 && x > xMax + this.xs / 2
     };
     this.isOutedX = function (x, xMax, xMin) {
         return x < -this.xs / 2 - xMin || x > xMax + this.xs / 2
     }
     this.isOutY = function (y, my, yMax, yMin) {
-        return my <= 0 && y < -this.ys / 2 - yMin || my > 0 && y > yMax + this.ys / 2
+        return my < 0 && y < yMin -this.ys / 2 || my > 0 && y > yMax + this.ys / 2
     };
     this.isOutedY = function (y, yMax, yMin) {
         return y < -this.ys / 2 - yMin || y > yMax + this.ys / 2
@@ -172,13 +172,13 @@ export function ABox(r) {
         }
     };
     this.isOutX = function (x, mx, xMax, xMin) {
-        return mx <= 0 && x < -this.r - xMin || mx > 0 && x > xMax + this.r
+        return mx < 0 && x < xMin -this.r || mx > 0 && x > xMax + this.r
     };
     this.isOutedX = function (x, xMax, xMin) {
         return x < -this.r - xMin || x > xMax + this.r
     };
     this.isOutY = function (y, my, yMax, yMin) {
-        return y < -this.r - yMin && my <= 0 || y > yMax + this.r && my > 0
+        return my < 0 && y < yMin -this.r || my > 0 && y > yMax + this.r
     };
     this.isOutedY = function (y, yMax, yMin) {
         return y < -this.r - yMin || y > yMax + this.r
