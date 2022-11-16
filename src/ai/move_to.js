@@ -27,8 +27,8 @@ export default function moveTo(x, y, speed, done, max = -1) {
             }
             return
         }
-        const spyAngle = Math.atan2(inst.X - x, inst.Y - y);
-        const speed2 = transTo(speed, 0, spyAngle + 90 * L);
+        const spyRad = Math.atan2(inst.X - x, inst.Y - y);
+        const speed2 = transTo(speed, 0, spyRad + 90 * L);
         inst.X += speed2[0]
         inst.Y += speed2[1]
         if (speed2[0] < 0) {

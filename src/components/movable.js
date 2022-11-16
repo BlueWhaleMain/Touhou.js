@@ -1,14 +1,23 @@
-import {TAGS, L, GUI_SCREEN} from "../util.js";
+import {GUI_SCREEN, L, TAGS} from "../util.js";
 
-export function movableArc(inst, target, r, yaw = 0, ya = 1, max) {
+export function movableAddSpeed(inst, fx, fy, mmx = 1, mmy = 1, max = 1, may = 1) {
+    inst.components["movable"].callback.tick = function (inst) {
+        const movable = inst.components["movable"];
+        movable.MX = Math.max(mmx, Math.min(max, fx(movable.MX)));
+        movable.MY = Math.max(mmy, Math.min(may, fx(movable.MY)));
+    };
+    return inst
+}
+
+export function movableArc(inst, target, r, arcAngle = 0, ya = 1, max) {
     const movable = inst.components["movable"];
     const handler = function (inst) {
-        yaw += ya;
-        if (yaw >= 360) {
-            yaw = 0
+        arcAngle += ya;
+        if (arcAngle >= 360) {
+            arcAngle = 0
         }
-        inst.X = target.X + r * Math.cos(yaw * L);
-        inst.Y = target.Y + r * Math.sin(yaw * L);
+        inst.X = target.X + r * Math.cos(arcAngle * L);
+        inst.Y = target.Y + r * Math.sin(arcAngle * L);
     };
     if (max) {
         movable.callback.tick = function () {
@@ -24,7 +33,7 @@ export function movableArc(inst, target, r, yaw = 0, ya = 1, max) {
     }
 }
 
-export function makeMovableArc(inst, r, yaw = 0, m = 1, ma = 0, mMin = 0, mMax) {
+export function makeMovableArc(inst, r, arcAngle = 0, m = 1, ma = 0, mMin = 0, mMax) {
     const movable = inst.components["movable"];
     movable.callback.tick = function () {
         let v = m * m * r;
@@ -35,39 +44,39 @@ export function makeMovableArc(inst, r, yaw = 0, m = 1, ma = 0, mMin = 0, mMax) 
         if (mMin !== undefined && m < mMin) {
             m = mMin
         }
-        const angle = Math.atan2(movable.MY, movable.MX) + yaw * L;
-        movable.MX += Math.sin(angle) * v;
-        movable.MY += -Math.cos(angle) * v
+        const rotationRad = Math.atan2(movable.MY, movable.MX) + arcAngle * L;
+        movable.MX += Math.sin(rotationRad) * v;
+        movable.MY += -Math.cos(rotationRad) * v
     };
     return inst
 }
 
-export function makeMovableRotate(inst, speed, yaw = 45, m = 1) {
+export function makeMovableRotate(inst, speed, rotateAngle = 45, m = 1) {
     const movable = inst.components["movable"];
     const MX = movable.MX;
     const MY = movable.MY;
     let r = Math.sqrt(MX * MX + MY * MY);
     inst.components["movable"].callback.tick = function (inst) {
         r += speed;
-        const angle = Math.atan2(MY, MX) + yaw * L;
-        inst.components["movable"].MX = Math.sin(angle) * r * m;
-        inst.components["movable"].MY = -Math.cos(angle) * r * m;
+        const rotationRad = Math.atan2(MY, MX) + rotateAngle * L;
+        inst.components["movable"].MX = Math.sin(rotationRad) * r * m;
+        inst.components["movable"].MY = -Math.cos(rotationRad) * r * m;
     };
     return inst
 }
 
-// export function makeMovableRotate(inst, speed, yaw) {
+// export function makeMovableRotate(inst, speed, rotateAngle) {
 //     const movable = inst.components["movable"];
 //     const MX = movable.MX;
 //     const MY = movable.MY;
 //     const r = Math.sqrt(MX * MX + MY * MY) + speed;
-//     if (yaw === undefined) {
-//         yaw = 45
+//     if (rotateAngle === undefined) {
+//         rotateAngle = 45
 //     }
-//     const angle = Math.atan2(MY, MX) + yaw * L;
+//     const rotationRad = Math.atan2(MY, MX) + rotateAngle * L;
 //     inst.components["movable"].callback.tick = function (inst) {
-//         inst.components["movable"].MX = Math.sin(angle) * r;
-//         inst.components["movable"].MY = -Math.cos(angle) * r
+//         inst.components["movable"].MX = Math.sin(rotationRad) * r;
+//         inst.components["movable"].MY = -Math.cos(rotationRad) * r
 //     };
 //     return inst
 // }
@@ -114,14 +123,14 @@ export function generateRandomSpeed(m = 2, max = 1, min = -1, abMax, abMin, spMa
         }
     }
     if (spMax && Math.sqrt(rand1 * rand1 + rand2 * rand2) > spMax) {
-        const angle = Math.atan2(rand2, rand1);
-        rand1 = Math.sin(angle) * spMax;
-        rand2 = -Math.cos(angle) * spMax
+        const rotationRad = Math.atan2(rand2, rand1);
+        rand1 = Math.sin(rotationRad) * spMax;
+        rand2 = -Math.cos(rotationRad) * spMax
     }
     if (spMin && Math.sqrt(rand1 * rand1 + rand2 * rand2) < spMin) {
-        const angle = Math.atan2(rand2, rand1);
-        rand1 = Math.sin(angle) * spMin;
-        rand2 = -Math.cos(angle) * spMin
+        const rotationRad = Math.atan2(rand2, rand1);
+        rand1 = Math.sin(rotationRad) * spMin;
+        rand2 = -Math.cos(rotationRad) * spMin
     }
     return [rand1, rand2];
 }

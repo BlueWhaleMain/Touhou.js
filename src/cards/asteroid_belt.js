@@ -19,31 +19,31 @@ const r90 = 90 * L;
 export default function asteroidBelt(edit) {
     let frame = 0;
     const meta = Math.random();
-    let yaw = 360;
+    let rotationAngle = 360;
 
     function spawnStarMaster(card, bit) {
         entities.push(StarMaster(card.entity, card.entity.X, card.entity.Y).edit(function (inst) {
             inst.tags.add(meta);
             inst.bit = bit;
             inst.addComponent("milkyWay", function () {
-                let angle, ys, xs, ry, r;
+                let rotationRad, ys, xs, ry, r;
                 this.tick = function (inst) {
                     r = Math.min((frame - 60) * 2, 120);
-                    ry = (yaw + 72 * angleMapping[bit]) * L;
+                    ry = (rotationAngle + 72 * angleMapping[bit]) * L;
                     xs = r * Math.cos(ry);
                     ys = r * Math.sin(ry);
                     inst.X = card.entity.X + xs;
                     inst.Y = card.entity.Y + ys;
-                    angle = Math.atan2(ys, xs);
+                    rotationRad = Math.atan2(ys, xs);
                     if (frame > 180 && frame % 5 === 0) {
-                        entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y, Math.sin(angle + r90),
-                            -Math.cos(angle + r90)).rotate(0.1));
+                        entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y, Math.sin(rotationRad + r90),
+                            -Math.cos(rotationRad + r90)).rotate(0.1));
                         entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y,
-                            Math.sin(angle + 5 * L + r90), -Math.cos(angle + 5 * L + r90)).rotate(0.1));
+                            Math.sin(rotationRad + 5 * L + r90), -Math.cos(rotationRad + 5 * L + r90)).rotate(0.1));
                         entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y,
-                            Math.sin(angle + 25 * L + r90), -Math.cos(angle + 25 * L + r90)).rotate(0.1));
+                            Math.sin(rotationRad + 25 * L + r90), -Math.cos(rotationRad + 25 * L + r90)).rotate(0.1));
                         entities.push(Jade("star", colorMapping[bit], inst.X, inst.Y,
-                            Math.sin(angle + 30 * L + r90), -Math.cos(angle + 30 * L + r90)).rotate(0.1));
+                            Math.sin(rotationRad + 30 * L + r90), -Math.cos(rotationRad + 30 * L + r90)).rotate(0.1));
                         soundOfBombShoot.currentTime = 0;
                         _ = soundOfBombShoot.play()
                     }
@@ -93,19 +93,19 @@ export default function asteroidBelt(edit) {
                         spawnStarMaster(card, 16)
                     }
                 }
-                yaw -= 3;
-                if (yaw < 0) {
-                    yaw += 360
+                rotationAngle -= 3;
+                if (rotationAngle < 0) {
+                    rotationAngle += 360
                 }
             }
             frame++
         },
         card: function (card) {
-            const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
+            const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
             for (let i = 0; i < 50; i++) {
                 if (frame === 15 * i) {
                     for (let j = 0; j < 21; j++) {
-                        const speed = transTo(0, 2, spyAngle - (5 * frame + 17 * j) * L);
+                        const speed = transTo(0, 2, spyRad - (5 * frame + 17 * j) * L);
                         if (frame % 2 === 1) {
                             entities.push(Jade("bigStar", "blue", card.entity.X, card.entity.Y, speed[0], speed[1], undefined, false))
                         } else {
@@ -120,14 +120,14 @@ export default function asteroidBelt(edit) {
             for (let i = 0; i < 20; i++) {
                 if (frame === 20 * i + 50) {
                     for (let j = 0; j < 3; j++) {
-                        const speed = transTo(0, 0.5, spyAngle - 90 * L);
+                        const speed = transTo(0, 0.5, spyRad - 90 * L);
                         const spawnPoint = [20, (Math.nextSeed() * HEIGHT)];
                         entities.push(Jade("star", "gold", spawnPoint[0], spawnPoint[1], speed[0], speed[1], undefined, false).rotate(0.1))
                     }
                 }
                 if (frame === 20 * i + 50) {
                     for (let j = 0; j < 3; j++) {
-                        const speed = transTo(0, 0.5, spyAngle + 90 * L);
+                        const speed = transTo(0, 0.5, spyRad + 90 * L);
                         const spawnPoint = [410, (Math.nextSeed() * HEIGHT)];
                         entities.push(Jade("star", "green", spawnPoint[0], spawnPoint[1], speed[0], speed[1], undefined, false).rotate(0.1))
                     }

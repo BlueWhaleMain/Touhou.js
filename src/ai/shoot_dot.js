@@ -17,9 +17,9 @@ export default function shootDot(start, delay, end, max = 1, spy = false, ...arg
             jade.Y = inst.Y
             if (spy) {
                 // 此处应改为偏转
-                const spyAngle = Math.atan2(inst.X - session.player.X, inst.Y - session.player.Y);
+                const spyRad = Math.atan2(inst.X - session.player.X, inst.Y - session.player.Y);
                 const speed = transTo(Math.sqrt(Math.pow(jade.components["movable"].MX, 2)
-                    + Math.pow(jade.components["movable"].MY, 2)), 0, spyAngle + 90 * L);
+                    + Math.pow(jade.components["movable"].MY, 2)), 0, spyRad + 90 * L);
                 jade.components["movable"].MX = speed[0]
                 jade.components["movable"].MY = speed[1]
             }

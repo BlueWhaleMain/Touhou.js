@@ -21,7 +21,7 @@ const r90 = 90 * L;
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const soundOfLaser = newAudio(resources.Sounds.laser);
 const soundOfNep00 = newAudio(resources.Sounds.nep00);
-export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = true) {
+export default function Laser(type, color, x, y, mx, my, rotation, time, canDrop = true) {
     const inst = new Prefab(x, y);
     inst.layTime = 1;
     if (time) {
@@ -34,21 +34,21 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
     inst.tags.add(TAGS.hostile);
     inst.DX = 0;
     inst.DY = 0;
-    inst.sizeBox = new RBox(16, HEIGHT * 2, angle);
-    inst.atkBox = new RBox(8, HEIGHT * 2, angle);
+    inst.sizeBox = new RBox(16, HEIGHT * 2, rotation);
+    inst.atkBox = new RBox(8, HEIGHT * 2, rotation);
     inst.type = type;
     inst.color = color;
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
-    inst.angle = angle;
+    inst.rotation = rotation;
     let xs = 8;
     const startTime = inst.startTime;
     inst.init = function () {
         let type = inst.type;
         let color = inst.color;
-        let angle = inst.angle;
-        inst.sizeBox.angle = angle;
-        inst.atkBox.angle = angle;
+        let rotationRad = inst.rotation;
+        inst.sizeBox.rotation = rotationRad;
+        inst.atkBox.rotation = rotationRad;
         switch (type) {
             case "laser":
                 break;
@@ -71,9 +71,9 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
             case "knife":
                 break;
             case "master_spark":
-                inst.sizeBox = new RBox(256, 512, angle);
+                inst.sizeBox = new RBox(256, 512, rotationRad);
                 xs = 164;
-                inst.atkBox = new RBox(xs, 480, angle);
+                inst.atkBox = new RBox(xs, 480, rotationRad);
                 break;
             default:
                 throw new Error("LaserType: " + type + " is not supported.")
@@ -81,8 +81,8 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
         inst.removeLayer("Laser");
         inst.addLayer("Laser", function () {
             this.draw = function (inst) {
-                if (angle === undefined) {
-                    inst.angle = Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90
+                if (rotationRad === undefined) {
+                    inst.rotation = Math.atan2(inst.components["movable"].MY, inst.components["movable"].MX) + r90
                 }
                 if (inst.delayTime <= 0 && inst.outTime <= 0) {
                     return
@@ -91,15 +91,15 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                     if (type === "master_spark") {
                         const height = inst.sizeBox.ys * (1 - inst.startTime / startTime);
                         layerStage.save();
-                        layerStage.translate(inst.X + Math.sin(angle) * (height / 2 - 256), inst.Y - Math.cos(angle) * (height / 2 - 256));
-                        layerStage.rotate(inst.angle);
+                        layerStage.translate(inst.X + Math.sin(rotationRad) * (height / 2 - 256), inst.Y - Math.cos(rotationRad) * (height / 2 - 256));
+                        layerStage.rotate(inst.rotation);
                         layerStage.drawImage(drawSticker(type, color).layer0, 4, -height / 2, 4, height);
                         layerStage.restore();
                         return
                     }
                     layerStage.save();
                     layerStage.translate(inst.X + inst.DX, inst.Y + inst.DY);
-                    layerStage.rotate(inst.angle);
+                    layerStage.rotate(inst.rotation);
                     layerStage.strokeStyle = "white";
                     layerStage.beginPath();
                     layerStage.moveTo(0, -HEIGHT);
@@ -133,7 +133,7 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
                     }
                 }
                 layerStage.translate(inst.X + inst.DX, inst.Y + inst.DY);
-                layerStage.rotate(inst.angle);
+                layerStage.rotate(inst.rotation);
                 layerStage.drawImage(draw, -width / 2, -inst.sizeBox.ys / 2, width, inst.sizeBox.ys);
                 inst.atkBox.xs = xs * width / inst.sizeBox.xs;
                 layerStage.restore();
@@ -161,9 +161,9 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
         if (e.type === EVENT_MAPPING.cardEnEp || e.detail && e.detail.drop === true) {
             for (let i = -inst.sizeBox.ys / 2; i < inst.sizeBox.ys / 2; i += 8) {
                 if (e.type === EVENT_MAPPING.bossInit) {
-                    entities.push(GreenOrb(inst.X + Math.sin(inst.angle) * i, inst.Y - Math.cos(inst.angle) * i, 0, -2, "middle", true));
+                    entities.push(GreenOrb(inst.X + Math.sin(inst.rotation) * i, inst.Y - Math.cos(inst.rotation) * i, 0, -2, "middle", true));
                 } else {
-                    entities.push(GreenOrb(inst.X + Math.sin(inst.angle) * i, inst.Y - Math.cos(inst.angle) * i, 0, -2, "small", true));
+                    entities.push(GreenOrb(inst.X + Math.sin(inst.rotation) * i, inst.Y - Math.cos(inst.rotation) * i, 0, -2, "small", true));
                 }
             }
         }
@@ -200,9 +200,9 @@ export default function Laser(type, color, x, y, mx, my, angle, time, canDrop = 
     inst.rotate = function (b, a, l = 256) {
         inst.X = b.X + l * Math.sin(a);
         inst.Y = b.Y - l * Math.cos(a);
-        inst.sizeBox.angle = a;
-        inst.atkBox.angle = a;
-        inst.angle = a;
+        inst.sizeBox.rotation = a;
+        inst.atkBox.rotation = a;
+        inst.rotation = a;
         return inst
     };
     inst.edit = function (f) {

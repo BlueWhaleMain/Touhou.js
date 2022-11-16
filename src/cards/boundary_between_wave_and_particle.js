@@ -33,9 +33,9 @@ export default function boundaryBetweenWaveAndParticle(edit) {
         },
         card: function (card) {
             for (let i = 0; i < 5; i++) {
-                const angle = (72 * i + raw * 2) * L;
-                const speed = transTo(2, 2, angle);
-                entities.push(Jade("rice", "hotpink", card.entity.X, card.entity.Y, speed[0], speed[1], -angle - 45 * L, false))
+                const rotationRad = (72 * i + raw * 2) * L;
+                const speed = transTo(2, 2, rotationRad);
+                entities.push(Jade("rice", "hotpink", card.entity.X, card.entity.Y, speed[0], speed[1], -rotationRad - 45 * L, false))
             }
             raw += sp;
             if (raw >= 360) {

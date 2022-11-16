@@ -1,4 +1,7 @@
-export default function moveLine(MX, MY) {
+import {L} from "../util";
+
+const r90 = 90 * L;
+export default function moveLine(/* number */MX,/* number */MY,/* number */rotation = undefined) {
     return (inst) => {
         inst.X += MX
         inst.Y += MY
@@ -10,6 +13,9 @@ export default function moveLine(MX, MY) {
             if (typeof inst.right === "function") {
                 inst.right()
             }
+        }
+        if (!isNaN(inst.rotation)) {
+            inst.rotation = rotation || Math.atan2(MY, MX) + r90;
         }
     }
 }

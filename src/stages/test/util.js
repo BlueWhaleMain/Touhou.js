@@ -33,12 +33,12 @@ export const spawnMagicRing = (x, y, start, end) => {
                             backTime--
                             if (backTime <= 0) {
                                 if (!spyDone) {
-                                    const spyAngle = Math.atan2(x - session.player.X, y - session.player.Y);
+                                    const spyRad = Math.atan2(x - session.player.X, y - session.player.Y);
                                     for (let i = 0; i <= 15; i += 15 / 5) {
                                         for (let k = 0; k < 3; k++) {
                                             const jade = Jade('point', 'dimgray', x, y, 0, 0)
                                             let speed = 2 + Math.pow(1.09, k * 3);
-                                            speed = transTo(speed, 0, spyAngle + (i + 90 % 360) * L);
+                                            speed = transTo(speed, 0, spyRad + (i + 90 % 360) * L);
                                             jade.X = inst.X + speed[0]
                                             jade.Y = inst.Y + speed[1]
                                             jade.components["movable"].MX = speed[0]
@@ -48,8 +48,8 @@ export const spawnMagicRing = (x, y, start, end) => {
                                     }
                                     spyDone = true
                                 }
-                                const spyAngle = Math.atan2(inst.X - session.player.X, inst.Y - session.player.Y);
-                                speed = transTo(5, 0, spyAngle + 90 * L);
+                                const spyRad = Math.atan2(inst.X - session.player.X, inst.Y - session.player.Y);
+                                speed = transTo(5, 0, spyRad + 90 * L);
                                 inst.components["movable"].MX = speed[0]
                                 inst.components["movable"].MY = speed[1]
                                 inst.components["movable"].callback.tick = null

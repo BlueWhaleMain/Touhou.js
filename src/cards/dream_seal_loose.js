@@ -22,16 +22,16 @@ export default function dreamSealLoose(edit) {
         bonus: 1000000,
         noCardFrame: 4400,
         noCard: function (card) {
-            const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
+            const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
             if (frame === 0) {
                 for (let j = 0; j < 30; j++) {
                     for (let k = 0; k < 4; k++) {
                         let speed = (0.4 + 0.8 * Math.pow(1.09, k * 4));
-                        speed = transTo(speed, speed, j * 12 * L + spyAngle);
+                        speed = transTo(speed, speed, j * 12 * L + spyRad);
                         const spawnPoint = [speed[0] * 10, speed[1] * 10];
                         entities.push(Jade("bill", "dimgray", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false));
                         speed = 0.4 + 0.05 * k;
-                        speed = transTo(speed, speed, j * 12 * L + spyAngle + k * 4 * L);
+                        speed = transTo(speed, speed, j * 12 * L + spyRad + k * 4 * L);
                         entities.push(Jade("bill", "red", card.entity.X, card.entity.Y, speed[0], speed[1], undefined, false));
                     }
                 }
@@ -96,12 +96,12 @@ export default function dreamSealLoose(edit) {
             if (card.entity.X !== card.entity.target.X || card.entity.Y !== card.entity.target.Y) {
                 return
             }
-            const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
+            const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
             if (frame === 0) {
                 for (let j = 0; j < 30; j++) {
                     for (let k = 0; k < 4; k++) {
                         let speed = (0.4 + 0.8 * Math.pow(1.09, k * 4));
-                        speed = transTo(speed, speed, j * 12 * L + spyAngle);
+                        speed = transTo(speed, speed, j * 12 * L + spyRad);
                         const spawnPoint = [speed[0] * 10, speed[1] * 10];
                         entities.push(Jade("bill", "dimgray", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false))
                     }

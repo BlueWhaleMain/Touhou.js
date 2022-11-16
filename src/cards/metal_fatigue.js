@@ -7,19 +7,19 @@ import {resources} from "../resources/manager";
 let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 
-function signalOrb(card, spyAngle) {
+function signalOrb(card, spyRad) {
     for (let j = 0; j < 8; j++) {
-        const speed = transTo(0, 3, spyAngle + 45 * j * L);
+        const speed = transTo(0, 3, spyRad + 45 * j * L);
         entities.push(Jade("orb", "gold", card.entity.X, card.entity.Y, speed[0], speed[1], undefined, false));
     }
     soundOfBombShoot.currentTime = 0;
     _ = soundOfBombShoot.play()
 }
 
-function sliceOrb(card, spyAngle) {
+function sliceOrb(card, spyRad) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            const speed = transTo(0, 3, spyAngle + 45 * j * L);
+            const speed = transTo(0, 3, spyRad + 45 * j * L);
             const spawnPoint = transTo(100, 0, 45 * i * L);
             entities.push(Jade("orb", "gold", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false));
         }
@@ -40,25 +40,25 @@ export default function metalFatigue(edit) {
         time: 3200,
         bonus: 1000000,
         card: function (card) {
-            const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
+            const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
             // 第一波角度和后面不一致
             if (frame === 0) {
-                signalOrb(card, spyAngle)
+                signalOrb(card, spyRad)
             }
             if (frame === 30) {
-                sliceOrb(card, spyAngle)
+                sliceOrb(card, spyRad)
             }
-            let staticAngle = 0;
+            let staticRad = 0;
             if (frame === 31) {
-                staticAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y)
+                staticRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y)
             }
             // 后面来上 5 波即可，此时角度是固定的
             for (let k = 0; k < 5; k++) {
                 if (frame === 20 * (k + 1)) {
-                    signalOrb(card, staticAngle)
+                    signalOrb(card, staticRad)
                 }
                 if (frame === 30 + 20 * (k + 1)) {
-                    sliceOrb(card, staticAngle)
+                    sliceOrb(card, staticRad)
                 }
             }
             frame++;

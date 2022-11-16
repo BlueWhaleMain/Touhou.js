@@ -80,7 +80,7 @@ export default function Debug() {
             draw = graph.getRectangle(box.xs, box.ys, color);
             layerDebug.save();
             layerDebug.translate(inst.X + (inst.DX || 0), inst.Y + (inst.DY || 0));
-            layerDebug.rotate(box.angle);
+            layerDebug.rotate(box.rotation);
             layerDebug.drawImage(draw, -box.xs / 2, -box.ys / 2)
             layerDebug.restore()
         }

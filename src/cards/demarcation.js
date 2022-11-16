@@ -71,10 +71,10 @@ export default function demarcation(edit) {
         }
     }
 
-    function ring(card, j, spyAngle) {
+    function ring(card, j, spyRad) {
         for (let k = 0; k < 5; k++) {
             let speed = (1 + 4 * Math.pow(1.09, (12 - j) / 12 + k / 2));
-            speed = transTo(speed, 0, 6 * j * L + spyAngle);
+            speed = transTo(speed, 0, 6 * j * L + spyRad);
             entities.push(Jade("ring", "blue", card.entity.X, card.entity.Y, speed[0], speed[1], undefined, false).addTag("Spy" + meta))
         }
         soundOfBombShoot.currentTime = 0;

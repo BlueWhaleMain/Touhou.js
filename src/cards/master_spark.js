@@ -25,7 +25,7 @@ export default function masterSpark(edit) {
     let bombed = false;
     let colorIndex = 0;
     const meta = Math.random();
-    let yaw = 360;
+    let rotationAngle = 360;
     let yp = 1;
 
     function spawnStarMaster(card, bit) {
@@ -33,24 +33,24 @@ export default function masterSpark(edit) {
             inst.tags.add(meta);
             inst.bit = bit;
             inst.addComponent("masterSpark", function () {
-                let angle, ys, xs, ry, r;
+                let rotationRad, ys, xs, ry, r;
                 this.tick = function (inst) {
                     r = Math.min((frame - 60) * 2, 120);
-                    ry = (yaw + 72 * angleMapping[bit]) * L;
+                    ry = (rotationAngle + 72 * angleMapping[bit]) * L;
                     xs = r * Math.cos(ry);
                     ys = r * Math.sin(ry);
                     inst.X = card.entity.X + xs;
                     inst.Y = card.entity.Y + ys;
-                    angle = Math.atan2(ys, xs);
+                    rotationRad = Math.atan2(ys, xs);
                     if (frame > 180 && frame % 6 === 0) {
-                        entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y, Math.sin(angle + r90),
-                            -Math.cos(angle + r90)).rotate(0.1));
+                        entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y, Math.sin(rotationRad + r90),
+                            -Math.cos(rotationRad + r90)).rotate(0.1));
                         entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y,
-                            Math.sin(angle + 5 * L + r90), -Math.cos(angle + 5 * L + r90)).rotate(0.1));
+                            Math.sin(rotationRad + 5 * L + r90), -Math.cos(rotationRad + 5 * L + r90)).rotate(0.1));
                         entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y,
-                            Math.sin(angle + 25 * L + r90), -Math.cos(angle + 25 * L + r90)).rotate(0.1));
+                            Math.sin(rotationRad + 25 * L + r90), -Math.cos(rotationRad + 25 * L + r90)).rotate(0.1));
                         entities.push(Jade("star", bitColorMapping[bit], inst.X, inst.Y,
-                            Math.sin(angle + 30 * L + r90), -Math.cos(angle + 30 * L + r90)).rotate(0.1));
+                            Math.sin(rotationRad + 30 * L + r90), -Math.cos(rotationRad + 30 * L + r90)).rotate(0.1));
                         soundOfBombShoot.currentTime = 0;
                         _ = soundOfBombShoot.play()
                     }
@@ -100,10 +100,10 @@ export default function masterSpark(edit) {
                         spawnStarMaster(card, 16)
                     }
                 }
-                yaw -= yp;
+                rotationAngle -= yp;
                 yp += 0.1;
-                if (yaw < 0) {
-                    yaw += 360
+                if (rotationAngle < 0) {
+                    rotationAngle += 360
                 }
                 if (yp > 360) {
                     yp -= 360
@@ -133,7 +133,7 @@ export default function masterSpark(edit) {
                 }
                 frame++
             }
-            const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
+            const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
             if (bombed && frame % 40 === 0) {
                 const color = colorMapping[colorIndex];
                 colorIndex++;
@@ -141,7 +141,7 @@ export default function masterSpark(edit) {
                     colorIndex = 0
                 }
                 for (let j = 0; j < 20; j++) {
-                    const speed = transTo(0, 1, spyAngle + (18 * j + frame) * L);
+                    const speed = transTo(0, 1, spyRad + (18 * j + frame) * L);
                     if (j % 2 === 0) {
                         entities.push(Jade("bigStar", color, card.entity.X, card.entity.Y, speed[0] * 2, speed[1] * 2, undefined, false).rotate(0.02))
                     } else {

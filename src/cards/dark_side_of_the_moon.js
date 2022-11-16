@@ -35,7 +35,7 @@ export default function darkSideOfTheMoon(edit) {
         }
     }
 
-    let frame = 60, delay = 20, c = 0, spyAngle;
+    let frame = 60, delay = 20, c = 0, spyRad;
     const cardData = {
         // 暗符「月的阴暗面」 rtl的bug
         name: "「暗符「月的阴暗面",
@@ -75,9 +75,9 @@ export default function darkSideOfTheMoon(edit) {
             if (frame === 200) {
                 card.entity.target.X = card.entity.X;
                 card.entity.target.Y = card.entity.Y;
-                spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
+                spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
                 for (let i = 0; i <= 360; i += 22.5) {
-                    let speed = transTo(2, 2, i * L + spyAngle);
+                    let speed = transTo(2, 2, i * L + spyRad);
                     entities.push(Jade("orb", "gold", card.entity.X, card.entity.Y, speed[0], speed[1],
                         undefined));
                 }

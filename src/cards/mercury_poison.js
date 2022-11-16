@@ -19,14 +19,14 @@ export default function mercuryPoison(edit) {
         time: 3800,
         bonus: 1000000,
         card: function (card) {
-            const spyAngle = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y) + (frame / 20) * L;
+            const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y) + (frame / 20) * L;
             for (let k = 0; k < 5; k++) {
                 if (frame === 20 * k) {
                     for (let j = 0; j < 29; j++) {
-                        let speed = transTo(0, 0.5, spyAngle + 12.4 * j * L);
+                        let speed = transTo(0, 0.5, spyRad + 12.4 * j * L);
                         let spawnPoint = [speed[0] * 20, speed[1] * 20];
                         entities.push(makeMovableRotate(Jade("small", "gold", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false), 0.05));
-                        speed = transTo(0, 0.7, spyAngle + (12.4 * j + 6.2) * L);
+                        speed = transTo(0, 0.7, spyRad + (12.4 * j + 6.2) * L);
                         spawnPoint = [speed[0] * 10, speed[1] * 10];
                         entities.push(makeMovableRotate(Jade("small", "gold", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false), 0.05))
                     }
@@ -35,10 +35,10 @@ export default function mercuryPoison(edit) {
                 }
                 if (frame === 20 * k + 2) {
                     for (let j = 0; j < 29; j++) {
-                        let speed = transTo(0, 0.5, spyAngle + 12.4 * j * L);
+                        let speed = transTo(0, 0.5, spyRad + 12.4 * j * L);
                         let spawnPoint = [speed[0] * 20, speed[1] * 20];
                         entities.push(makeMovableRotate(Jade("small", "aqua", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false), 0.05, -45, -1));
-                        speed = transTo(0, 0.7, spyAngle + (12.4 * j + 6.2) * L);
+                        speed = transTo(0, 0.7, spyRad + (12.4 * j + 6.2) * L);
                         spawnPoint = [speed[0] * 10, speed[1] * 10];
                         entities.push(makeMovableRotate(Jade("small", "aqua", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1], undefined, false), 0.05, -45, -1));
                     }
@@ -49,10 +49,10 @@ export default function mercuryPoison(edit) {
             // for (let k = 0; k < 5; k++) {
             //     if (frame === 20 * k) {
             //         for (let j = 0; j < 29; j++) {
-            //             let speed = transTo(2, 0, spyAngle + 12.4 * j * L);
+            //             let speed = transTo(2, 0, spyRad + 12.4 * j * L);
             //             let spawnPoint = [speed[0] * 20, speed[1] * 20];
             //             entities.push(makeMovableArc(Jade("small", "gold", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1]), 0.1, 0, 1, -0.01));
-            //             speed = transTo(2.01, 0, spyAngle + (12.4 * j + 6.2) * L);
+            //             speed = transTo(2.01, 0, spyRad + (12.4 * j + 6.2) * L);
             //             spawnPoint = [speed[0] * 10, speed[1] * 10];
             //             entities.push(makeMovableArc(Jade("small", "gold", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1]), 0.1, 0, 1, -0.01))
             //         }
@@ -61,10 +61,10 @@ export default function mercuryPoison(edit) {
             //     }
             //     if (frame === 20 * k + 2) {
             //         for (let j = 0; j < 29; j++) {
-            //             let speed = transTo(2.01, 0, spyAngle + 12.4 * j * L);
+            //             let speed = transTo(2.01, 0, spyRad + 12.4 * j * L);
             //             let spawnPoint = [speed[0] * 20, speed[1] * 20];
             //             entities.push(makeMovableArc(Jade("small", "aqua", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1]), 0.1, 180, 1, -0.01));
-            //             speed = transTo(2, 0, spyAngle + (12.4 * j + 6.2) * L);
+            //             speed = transTo(2, 0, spyRad + (12.4 * j + 6.2) * L);
             //             spawnPoint = [speed[0] * 10, speed[1] * 10];
             //             entities.push(makeMovableArc(Jade("small", "aqua", card.entity.X + spawnPoint[0], card.entity.Y + spawnPoint[1], speed[0], speed[1]), 0.1, 180, 1, -0.01));
             //         }

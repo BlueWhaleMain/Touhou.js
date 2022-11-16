@@ -76,14 +76,14 @@ export function rgbToHsl(r, g, b) {
 }
 
 /**
- * L = Math.PI / 180
- * @param x 速度
- * @param y 速度
- * @param angle 角度（弧度制：angle * L）
+ * 将速度转向
+ * @param mx 速度
+ * @param my 速度
+ * @param rotationRad 弧度
  * @returns {number[]}
  */
-export function transTo(x, y, angle) {
-    return [x * Math.cos(angle) + y * Math.sin(angle), y * Math.cos(angle) - x * Math.sin(angle)]
+export function transTo(mx, my, rotationRad) {
+    return [mx * Math.cos(rotationRad) + my * Math.sin(rotationRad), my * Math.cos(rotationRad) - mx * Math.sin(rotationRad)]
 }
 
 export function arrowTo(x, y, x1, y1, speed) {
@@ -91,15 +91,16 @@ export function arrowTo(x, y, x1, y1, speed) {
     return [(x1 - x) / s * speed, (y1 - y) / s * speed]
 }
 
-export function RBox(xs, ys, angle = 0) {
+export function RBox(xs, ys, rotation = 0) {
     this.name = "RBox";
     this.xs = xs;
     this.ys = ys;
-    this.angle = angle;
+    // 单位：Rad
+    this.rotation = rotation;
     this.isHit = function (x1, y1, x2, y2, hitBox) {
-        if (!isNaN(this.angle)) {
-            x2 = x1 + (x2 - x1) * Math.cos(-this.angle) - (y2 - y1) * Math.sin(-this.angle);
-            y2 = y1 + (x2 - x1) * Math.sin(-this.angle) + (y2 - y1) * Math.cos(-this.angle)
+        if (!isNaN(this.rotation)) {
+            x2 = x1 + (x2 - x1) * Math.cos(-this.rotation) - (y2 - y1) * Math.sin(-this.rotation);
+            y2 = y1 + (x2 - x1) * Math.sin(-this.rotation) + (y2 - y1) * Math.cos(-this.rotation)
         }
         if (hitBox.name === "ABox") {
             const xx = x2 - x1, yy = y2 - y1, minX = Math.min(xx, this.xs / 2),
@@ -115,13 +116,13 @@ export function RBox(xs, ys, angle = 0) {
         }
     };
     this.isOutX = function (x, mx, xMax, xMin) {
-        return mx < 0 && x < xMin -this.xs / 2 || mx > 0 && x > xMax + this.xs / 2
+        return mx < 0 && x < xMin - this.xs / 2 || mx > 0 && x > xMax + this.xs / 2
     };
     this.isOutedX = function (x, xMax, xMin) {
         return x < -this.xs / 2 - xMin || x > xMax + this.xs / 2
     }
     this.isOutY = function (y, my, yMax, yMin) {
-        return my < 0 && y < yMin -this.ys / 2 || my > 0 && y > yMax + this.ys / 2
+        return my < 0 && y < yMin - this.ys / 2 || my > 0 && y > yMax + this.ys / 2
     };
     this.isOutedY = function (y, yMax, yMin) {
         return y < -this.ys / 2 - yMin || y > yMax + this.ys / 2
@@ -172,13 +173,13 @@ export function ABox(r) {
         }
     };
     this.isOutX = function (x, mx, xMax, xMin) {
-        return mx < 0 && x < xMin -this.r || mx > 0 && x > xMax + this.r
+        return mx < 0 && x < xMin - this.r || mx > 0 && x > xMax + this.r
     };
     this.isOutedX = function (x, xMax, xMin) {
         return x < -this.r - xMin || x > xMax + this.r
     };
     this.isOutY = function (y, my, yMax, yMin) {
-        return my < 0 && y < yMin -this.r || my > 0 && y > yMax + this.r
+        return my < 0 && y < yMin - this.r || my > 0 && y > yMax + this.r
     };
     this.isOutedY = function (y, yMax, yMin) {
         return y < -this.r - yMin || y > yMax + this.r
