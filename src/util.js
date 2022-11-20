@@ -216,8 +216,14 @@ export function ABox(r) {
     }
 }
 
-export function randomPos(x = 0, y = 0, width = 0, height = 0) {
-    return [GUI_SCREEN.X + x + Math.nextSeed() * (GUI_SCREEN.WIDTH + width), GUI_SCREEN.Y + y + Math.nextSeed() * (GUI_SCREEN.HEIGHT + height)]
+export function randomPos(x = 0, y = 0, width = 0, height = 0, seed = undefined) {
+    let X = GUI_SCREEN.X + x + Math.nextSeed(seed) * (GUI_SCREEN.WIDTH + width),
+        Y = GUI_SCREEN.Y + y + Math.nextSeed(seed) * (GUI_SCREEN.HEIGHT + height)
+    if (seed === undefined) {
+        return [X, Y]
+    } else {
+        return [X, Y, Math.nextSeed(seed)]
+    }
 }
 
 export function editImage(px, callback, ignoreColor) {
@@ -584,6 +590,16 @@ export function delayExecute(f, delay) {
             return f(...arg)
         }
         step++
+    }
+}
+
+export function onceExecute(f) {
+    let executed = false
+    return (...arg) => {
+        if (!executed) {
+            executed = true
+            return f(...arg)
+        }
     }
 }
 

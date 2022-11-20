@@ -31,6 +31,15 @@ import test from "../../cards/test";
 import voidDeath from "../../cards/void_death";
 import rumiaThink from "../../cards/rumia_think";
 import {getLayer, LAYER_MAPPING} from "../../layers/manager";
+import {testStage6} from "./stage6";
+import bossWriggleNightBug from "../../prefabs/boss/wriggle_nightbug";
+import cometsOnTheGround from "../../cards/comets_on_the_ground";
+import {testStage5} from "./stage5";
+import {testStage3} from "./stage3";
+import {testStage4} from "./stage4";
+import bossCirno from "../../prefabs/boss/cirno";
+import icicleFall from "../../cards/icicle_fall";
+import bossYakumoRan from "../../prefabs/boss/yakumo_ran";
 
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const transRumia = document.createElement("canvas");
@@ -134,6 +143,11 @@ export function testStage(fn) {
                     })
                 )
             }]])),
+            testStage3(),
+            bossCirno(400, -60, 499, [
+                icicleFall()
+            ]),
+            testStage4(),
             bossHakureiReimu(480, -60, 1000, [
                 dreamSealLoose(),
                 dreamSealSilence()
@@ -207,6 +221,11 @@ export function testStage(fn) {
                     })
                 )
             }]])),
+            testStage5(),
+            bossWriggleNightBug(100, -30, 500, [
+                cometsOnTheGround()
+            ], null),
+            testStage6(),
             bossKirisameMarisa(500, 125, 1200, [
                 milkyWay(),
                 asteroidBelt(),
@@ -335,7 +354,7 @@ export function testStage(fn) {
                 }))
             }]])),
             testStage9(),
-            bossYukariYakumo(480, -60, 1000, [
+            bossYakumoRan(480, -60, 800, [
                 test1(),
                 test2(),
             ], null),

@@ -62,6 +62,11 @@ import {
 import {loadingScreenCache, resources, saveDelay} from "./resources/manager";
 import {clearScreen, getLayer, HEIGHT, LAYER_MAPPING, takeScreenShot, WIDTH} from "./layers/manager";
 import {testStage} from "./stages/test/manager";
+import bossCirno from "./prefabs/boss/cirno";
+import icicleFall from "./cards/icicle_fall";
+import bossYakumoRan from "./prefabs/boss/yakumo_ran";
+import cometsOnTheGround from "./cards/comets_on_the_ground";
+import bossWriggleNightBug from "./prefabs/boss/wriggle_nightbug";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -101,16 +106,21 @@ function addToMusicRoom(bgm) {
     musics.push(bgm)
 }
 
-addToMusicRoom(ASSETS.SOUND.aSoulAsScarletAsAgroundCherry);
-addToMusicRoom(ASSETS.SOUND.spiritualDominationWhoDoneIt);
 addToMusicRoom(ASSETS.SOUND.easternNight);
-addToMusicRoom(ASSETS.SOUND.th10_01);
-addToMusicRoom(ASSETS.SOUND.easternNightPractice);
+addToMusicRoom(ASSETS.SOUND.aSoulAsScarletAsAgroundCherry);
 addToMusicRoom(ASSETS.SOUND.rumia);
+addToMusicRoom(ASSETS.SOUND.tomboyishLoveGirlInAdventure)
+addToMusicRoom(ASSETS.SOUND.tomboyishGirlInLove)
+addToMusicRoom(ASSETS.SOUND.illusionaryNightGhostlyEyes)
+addToMusicRoom(ASSETS.SOUND.stirringAnAutumnMoonMoonedInsect)
 addToMusicRoom(ASSETS.SOUND.hakureiReimu);
 addToMusicRoom(ASSETS.SOUND.kirisameMarisa);
 addToMusicRoom(ASSETS.SOUND.patchouliKnowledge);
+addToMusicRoom(ASSETS.SOUND.aMaidensIllusionaryFuneralNecroFantasy);
+addToMusicRoom(ASSETS.SOUND.spiritualDominationWhoDoneIt);
 addToMusicRoom(ASSETS.SOUND.yukariYakumo);
+addToMusicRoom(ASSETS.SOUND.easternNightPractice);
+addToMusicRoom(ASSETS.SOUND.th10_01);
 addToMusicRoom(ASSETS.SOUND.th095_02);
 addToMusicRoom(ASSETS.SOUND.th095_04);
 addToMusicRoom(ASSETS.SOUND.failure);
@@ -519,26 +529,23 @@ function spellPracticeFactory(selectedIndex, replayOption) {
 }
 
 addSpellCard("Test1", function () {
-    const boss = bossYukariYakumo(480, -60, 1000, [test1(function (card) {
+    const boss = bossYakumoRan(480, -60, 1000, [test1(function (card) {
         card.practice = true
     })]);
-    boss.playBGM();
     return [boss]
-}, true);
+}, false);
 addSpellCard("Test2", function () {
-    const boss = bossYukariYakumo(480, -60, 1000, [test2(function (card) {
+    const boss = bossYakumoRan(480, -60, 1000, [test2(function (card) {
         card.practice = true
     })]);
-    boss.playBGM();
     return [boss]
-}, true);
+}, false);
 addSpellCard("Test3", function () {
     const boss = bossYukariYakumo(480, -60, 1000, [test3(function (card) {
         card.practice = true
     })]);
-    boss.playBGM();
     return [boss]
-}, true);
+}, false);
 addSpellCard("境符「波与粒的境界」", function () {
     const boss = bossYukariYakumo(480, -60, 1000, [
         boundaryBetweenWaveAndParticle(function (cd) {
@@ -675,6 +682,23 @@ addSpellCard("RUMIA「THINK」", function () {
             cd.practice = true
         })
     ]);
+    return [boss]
+}, false);
+addSpellCard("冰符「Icicle Fall」", function () {
+    const boss = bossCirno(-80, -60, 1000, [
+        icicleFall(function (cd) {
+            cd.practice = true
+        })
+    ], null);
+    boss.playBGM()
+    return [boss]
+}, true);
+addSpellCard("萤符「地上的彗星」", function () {
+    const boss = bossWriggleNightBug(100, -30, 1000, [
+        cometsOnTheGround(function (cd) {
+            cd.practice = true
+        })
+    ], null);
     return [boss]
 }, false);
 const spm = [];

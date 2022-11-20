@@ -5,12 +5,15 @@
 export default function DI() {
     /**
      * 生成下一个种子值，主要实现回放，若随机值影响回放结果务必调用
-     * @returns {number}
+     * @param val {number} 使用规定的种子值迭代，用于固定随机序列
+     * @returns {number} 随机值
      */
-    Math.nextSeed = function () {
-        let seed = Math.seed || new Date().valueOf();
+    Math.nextSeed = function (val = undefined) {
+        let seed = (val > 0 && val < 1 ? val * 233280 : val) || Math.seed || new Date().valueOf();
         seed = (seed * 9301 + 49297) % 233280;
-        Math.seed = seed;
+        if (val === undefined) {
+            Math.seed = seed;
+        }
         return seed / 233280
     };
     /**

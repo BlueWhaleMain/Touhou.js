@@ -32,6 +32,9 @@
         "eBullet6": "ebullet_6.png",
         "bossAll": "boss_all_01.png",
         "bossRumia": "boss_01_11.png",
+        "bossCirno": "boss_01_21.png",
+        "bossWriggleNightBug": "boss_03_11.png",
+        "bossYakumoRan": "boss_02_71.png",
         "bossPatchouliKnowledge": "boss_01_41.png",
         "bossHakureiReimu": "boss_03_41.png",
         "bossKirisameMarisa": "boss_03_42.png",
@@ -44,7 +47,38 @@
             "head": "th01_02_head.wav",
             "loop": "th01_02_loop.wav",
             "name": "如鬼灯般的红色之魂",
-            "description": "th01_02.lst"
+            "description": "th01_02.lst",
+            "loopLoopDelay": 0.11
+        },
+        "tomboyishLoveGirlInAdventure": {
+            "head": "th05_07_head.wav",
+            "loop": "th05_07_loop.wav",
+            "name": "活泼纯情小姑娘的冒险",
+            "description": "th05_07.lst"
+        },
+        "tomboyishGirlInLove": {
+            "head": "th01_05_head.wav",
+            "loop": "th01_05_loop.wav",
+            "name": "活泼的纯情小姑娘",
+            "description": "th01_05.lst"
+        },
+        "illusionaryNightGhostlyEyes": {
+            "head": "th03_02_head.wav",
+            "loop": "th03_02_loop.wav",
+            "name": "幻视之夜 ～ Ghostly Eyes",
+            "description": "th03_02.lst"
+        },
+        "stirringAnAutumnMoonMoonedInsect": {
+            "head": "th03_03_head.wav",
+            "loop": "th03_03_loop.wav",
+            "name": "蠢蠢的秋月 ～ Mooned Insect",
+            "description": "th03_03.lst"
+        },
+        "aMaidensIllusionaryFuneralNecroFantasy": {
+            "head": "th02_16_head.wav",
+            "loop": "th02_16_loop.wav",
+            "name": "少女幻葬 ～ Necro-Fantasy",
+            "description": "th02_16.lst"
         },
         "spiritualDominationWhoDoneIt": {
             "head": "th02_17_head.wav",
@@ -80,7 +114,9 @@
             "head": "th06_03_head.wav",
             "loop": "th06_03_loop.wav",
             "name": "妖魔夜行",
-            "description": "th06_03.lst"
+            "description": "th06_03.lst",
+            "loopStartDelay": 0.1,
+            "loopLoopDelay": 0.08
         },
         "patchouliKnowledge": {
             "head": "th06_09_head.wav",
@@ -142,6 +178,7 @@
         "bonus": "bonus.wav",
         "cat0": "cat_0.wav",
         "power0": "power0.wav",
+        "power1": "power1.wav",
         "en_ep_0": "en_ep_0.wav",
         "en_ep_1": "en_ep_1.wav",
         "en_ep_2": "en_ep_2.wav",

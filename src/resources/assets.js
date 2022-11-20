@@ -21,6 +21,36 @@ export const ASSETS = {
             name: resources.Sounds.aSoulAsScarletAsAgroundCherry.name,
             description: newText(DESCRIPTION_PREFIX + resources.Sounds.aSoulAsScarletAsAgroundCherry.description)
         },
+        tomboyishLoveGirlInAdventure: {
+            head: newAudio(resources.Sounds.tomboyishLoveGirlInAdventure.head, VOLUME_MAX, AUDIO_TYPE.BGM),
+            loop: newAudio(resources.Sounds.tomboyishLoveGirlInAdventure.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
+            name: resources.Sounds.tomboyishLoveGirlInAdventure.name,
+            description: newText(DESCRIPTION_PREFIX + resources.Sounds.tomboyishLoveGirlInAdventure.description)
+        },
+        tomboyishGirlInLove: {
+            head: newAudio(resources.Sounds.tomboyishGirlInLove.head, VOLUME_MAX, AUDIO_TYPE.BGM),
+            loop: newAudio(resources.Sounds.tomboyishGirlInLove.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
+            name: resources.Sounds.tomboyishGirlInLove.name,
+            description: newText(DESCRIPTION_PREFIX + resources.Sounds.tomboyishGirlInLove.description)
+        },
+        illusionaryNightGhostlyEyes: {
+            head: newAudio(resources.Sounds.illusionaryNightGhostlyEyes.head, VOLUME_MAX, AUDIO_TYPE.BGM),
+            loop: newAudio(resources.Sounds.illusionaryNightGhostlyEyes.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
+            name: resources.Sounds.illusionaryNightGhostlyEyes.name,
+            description: newText(DESCRIPTION_PREFIX + resources.Sounds.illusionaryNightGhostlyEyes.description)
+        },
+        stirringAnAutumnMoonMoonedInsect: {
+            head: newAudio(resources.Sounds.stirringAnAutumnMoonMoonedInsect.head, VOLUME_MAX, AUDIO_TYPE.BGM),
+            loop: newAudio(resources.Sounds.stirringAnAutumnMoonMoonedInsect.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
+            name: resources.Sounds.stirringAnAutumnMoonMoonedInsect.name,
+            description: newText(DESCRIPTION_PREFIX + resources.Sounds.stirringAnAutumnMoonMoonedInsect.description)
+        },
+        aMaidensIllusionaryFuneralNecroFantasy: {
+            head: newAudio(resources.Sounds.aMaidensIllusionaryFuneralNecroFantasy.head, VOLUME_MAX, AUDIO_TYPE.BGM),
+            loop: newAudio(resources.Sounds.aMaidensIllusionaryFuneralNecroFantasy.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
+            name: resources.Sounds.aMaidensIllusionaryFuneralNecroFantasy.name,
+            description: newText(DESCRIPTION_PREFIX + resources.Sounds.aMaidensIllusionaryFuneralNecroFantasy.description)
+        },
         spiritualDominationWhoDoneIt: {
             head: newAudio(resources.Sounds.spiritualDominationWhoDoneIt.head, VOLUME_MAX, AUDIO_TYPE.BGM),
             loop: newAudio(resources.Sounds.spiritualDominationWhoDoneIt.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
@@ -97,7 +127,7 @@ export const ASSETS = {
         ok: newAudio(resources.Sounds.ok)
     }
 };
-for(const o in ASSETS.SOUND) {
+for (const o in ASSETS.SOUND) {
     if (ASSETS.SOUND.hasOwnProperty(o) && ASSETS.SOUND[o].head && resources.Sounds[o]) {
         ASSETS.SOUND[o].loopStartDelay = resources.Sounds[o].loopStartDelay;
         ASSETS.SOUND[o].loopLoopDelay = resources.Sounds[o].loopLoopDelay;

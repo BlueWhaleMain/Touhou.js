@@ -177,6 +177,9 @@ export default function Yousei(/* string */type,/* string */color,/* number */x,
             layerStage.restore()
         }
     })
+    inst.getStayTime = function () {
+        return stayTime
+    }
     inst.leave = function () {
         layout = -0.02
         leaving = true
@@ -194,6 +197,10 @@ export default function Yousei(/* string */type,/* string */color,/* number */x,
             moveFrame++
         }
     }
+    inst.edit = function (f) {
+        f(inst);
+        return inst
+    };
     inst.init()
     return inst
 }
