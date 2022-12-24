@@ -1249,11 +1249,12 @@ function run() {
             // idea 挨打
             session.keys.delete("f11");
             win["toggleFullscreen"]()
-        }
-        if (win["isFullscreen"]) {
-            document.body.style.cursor = "none"
-        } else if (document.body.style) {
-            document.body.style = null
+            // 该位置为切换，判断时逻辑正好相反
+            if (win["isFullscreen"]) {
+                document.body.style = null
+            } else if (document.body.style) {
+                document.body.style.cursor = "none"
+            }
         }
         handler();
         if (entities.length > entityCountSecMax) {
@@ -1550,6 +1551,7 @@ function main() {
             // 仅用于启动
             if (options.FullScreen === true) {
                 win["enterFullscreen"]()
+                document.body.style.cursor = "none"
             }
             nextFrame(run)
         } else {
