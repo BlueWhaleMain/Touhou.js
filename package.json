@@ -5,8 +5,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "node dev.js && webpack --mode development && cd dist && run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-        "build": "node build.js && webpack --mode production && cd dist && build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-        "prepublish": "npm run build"
+        "build": "node build.js && webpack --mode production && cd dist && build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
     },
     "keywords": [
         "touhou",
