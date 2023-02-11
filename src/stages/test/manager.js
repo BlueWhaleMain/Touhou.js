@@ -240,7 +240,7 @@ export function testStage(fn) {
                 SimpleDialogue([{
                     text: "哈~", fillStyle: "gold", X: 200
                 }], [{
-                    image: ASSETS.IMAGE.kirisameMarisa,
+                    image: ASSETS.IMAGE.bossKirisameMarisa,
                     X: 190
                 }], function (inst) {
                     inst.target.X = 220;
@@ -263,13 +263,13 @@ export function testStage(fn) {
                 SimpleDialogue([{
                     text: "啊 是魔理沙"
                 }], [{image: transRumia}, {
-                    image: ASSETS.IMAGE.kirisameMarisa,
+                    image: ASSETS.IMAGE.bossKirisameMarisa,
                     X: 200, globalAlpha: 0.4
                 }]),
                 SimpleDialogue([{
                     text: "~抓到你了", fillStyle: "gold", X: 200, direction: "rtl"
                 }], [{image: transRumia, globalAlpha: 0.4, X: 5}, {
-                    image: ASSETS.IMAGE.kirisameMarisa,
+                    image: ASSETS.IMAGE.bossKirisameMarisa,
                     X: 190
                 }], function (inst) {
                     cancelAllSound();
@@ -479,10 +479,10 @@ export function testStage(fn) {
     } else if (fn.getName() === "HakureiReimu") {
         return [
             testStage9(),
-            bossYukariYakumo(480, -60, 1000, [
+            bossYakumoRan(480, -60, 800, [
                 test1(),
                 test2(),
-            ]),
+            ], null),
             testStage10(),
             bossYukariYakumo(480, -60, 1000, [
                 test3(),
@@ -721,6 +721,32 @@ export function testStage(fn) {
                     inst.playBGM()
                 })
             ])
+        ]
+    } else if (fn.getName() === "KirisameMarisa") {
+        return [
+            testStage1(),
+            bossRumia(-50, 125, 300, [
+                moonlightRay()
+            ], null),
+            testStage2(),
+            testStage3(),
+            bossCirno(400, -60, 499, [
+                icicleFall()
+            ]),
+            testStage4(),
+            testStage5(),
+            bossWriggleNightBug(100, -30, 500, [
+                cometsOnTheGround()
+            ], null),
+            testStage6(),
+            // testStage7(),
+            // testStage8(),
+            testStage9(),
+            bossYakumoRan(480, -60, 800, [
+                test1(),
+                test2(),
+            ], null),
+            testStage10(),
         ]
     }
 }

@@ -10,7 +10,8 @@ export const ASSETS = {
         rumia: newImage(resources.Images.bossRumia),
         hakureiReimu: newImage(resources.Images.player.hakureiReimu),
         bossHakureiReimu: newImage(resources.Images.bossHakureiReimu),
-        kirisameMarisa: newImage(resources.Images.bossKirisameMarisa),
+        kirisameMarisa: newImage(resources.Images.player.kirisameMarisa),
+        bossKirisameMarisa: newImage(resources.Images.bossKirisameMarisa),
         patchouliKnowledge: newImage(resources.Images.bossPatchouliKnowledge),
         yukariYakumo: newImage(resources.Images.bossYukariYakumo)
     },

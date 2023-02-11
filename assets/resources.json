@@ -12,7 +12,9 @@
         "player": {
             "rumiaShot": "player/rumia_shot.png",
             "hakureiReimuShot": "player/hakurei_reimu_shot.png",
-            "hakureiReimu": "player/hakurei_reimu.png"
+            "hakureiReimu": "player/hakurei_reimu.png",
+            "kirisameMarisaShot": "player/kirisame_marisa_shot.png",
+            "kirisameMarisa": "player/kirisame_marisa.png"
         },
         "error": "error.jpg",
         "borderLine": "border_line.png",

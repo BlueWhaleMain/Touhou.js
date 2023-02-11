@@ -67,6 +67,7 @@ import icicleFall from "./cards/icicle_fall";
 import bossYakumoRan from "./prefabs/boss/yakumo_ran";
 import cometsOnTheGround from "./cards/comets_on_the_ground";
 import bossWriggleNightBug from "./prefabs/boss/wriggle_nightbug";
+import KirisameMarisa from "./prefabs/player/kirisame_marisa";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -346,6 +347,8 @@ const practiceStartMenu = new Menu([
         session.keys.delete("ArrowLeft".toLowerCase());
         if (session.selectedPlayer === Rumia) {
             session.selectedPlayer = HakureiReimu
+        } else if (session.selectedPlayer === HakureiReimu) {
+            session.selectedPlayer = KirisameMarisa
         } else {
             session.selectedPlayer = Rumia
         }
@@ -356,6 +359,8 @@ const practiceStartMenu = new Menu([
         session.keys.delete("ArrowRight".toLowerCase());
         if (session.selectedPlayer === Rumia) {
             session.selectedPlayer = HakureiReimu
+        } else if (session.selectedPlayer === HakureiReimu) {
+            session.selectedPlayer = KirisameMarisa
         } else {
             session.selectedPlayer = Rumia
         }
@@ -366,9 +371,10 @@ const practiceStartMenu = new Menu([
     layerStage.globalAlpha = 0.5;
     if (session.selectedPlayer === Rumia) {
         layerStage.drawImage(ASSETS.IMAGE.rumia, 10, 10, ASSETS.IMAGE.rumia.width * 2, ASSETS.IMAGE.rumia.height * 2);
-    }
-    if (session.selectedPlayer === HakureiReimu) {
+    } else if (session.selectedPlayer === HakureiReimu) {
         layerStage.drawImage(ASSETS.IMAGE.hakureiReimu, 10, 10, ASSETS.IMAGE.hakureiReimu.width * 2, ASSETS.IMAGE.hakureiReimu.height * 2);
+    } else if (session.selectedPlayer === KirisameMarisa) {
+        layerStage.drawImage(ASSETS.IMAGE.kirisameMarisa, 10, 10, ASSETS.IMAGE.kirisameMarisa.width * 2, ASSETS.IMAGE.kirisameMarisa.height * 2)
     }
     layerStage.restore();
     rendererEntity()
@@ -385,6 +391,8 @@ function getPlayer(player) {
         return HakureiReimu
     } else if (player === "Rumia") {
         return Rumia
+    } else if (player === "KirisameMarisa") {
+        return KirisameMarisa
     } else {
         throw new Error("PlayerType:" + player + " is not exists!")
     }
@@ -716,6 +724,8 @@ const spellPracticeMenu = new Menu(spm, function (selectedIndex) {
         session.keys.delete("ArrowLeft".toLowerCase());
         if (session.selectedPlayer === Rumia) {
             session.selectedPlayer = HakureiReimu
+        } else if (session.selectedPlayer === HakureiReimu) {
+            session.selectedPlayer = KirisameMarisa
         } else {
             session.selectedPlayer = Rumia
         }
@@ -726,6 +736,8 @@ const spellPracticeMenu = new Menu(spm, function (selectedIndex) {
         session.keys.delete("ArrowRight".toLowerCase());
         if (session.selectedPlayer === Rumia) {
             session.selectedPlayer = HakureiReimu
+        } else if (session.selectedPlayer === HakureiReimu) {
+            session.selectedPlayer = KirisameMarisa
         } else {
             session.selectedPlayer = Rumia
         }
@@ -736,9 +748,10 @@ const spellPracticeMenu = new Menu(spm, function (selectedIndex) {
     layerStage.globalAlpha = 0.5;
     if (session.selectedPlayer === Rumia) {
         layerStage.drawImage(ASSETS.IMAGE.rumia, 10, 10, ASSETS.IMAGE.rumia.width * 2, ASSETS.IMAGE.rumia.height * 2);
-    }
-    if (session.selectedPlayer === HakureiReimu) {
+    } else if (session.selectedPlayer === HakureiReimu) {
         layerStage.drawImage(ASSETS.IMAGE.hakureiReimu, 10, 10, ASSETS.IMAGE.hakureiReimu.width * 2, ASSETS.IMAGE.hakureiReimu.height * 2);
+    } else if (session.selectedPlayer === KirisameMarisa) {
+        layerStage.drawImage(ASSETS.IMAGE.kirisameMarisa, 10, 10, ASSETS.IMAGE.kirisameMarisa.width * 2, ASSETS.IMAGE.kirisameMarisa.height * 2)
     }
     layerStage.restore();
     layerTitle.save();
