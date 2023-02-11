@@ -475,6 +475,7 @@ export default function SpellPractice(menu, selectedIndex, player, stageMap, sta
                 layerEffect.fillRect(0, 0, WIDTH, HEIGHT);
                 layerEffect.restore()
             }
+            rendererEntity(true);
             session.player.draw();
             for (let i = 0; i < inst.boss.length; i++) {
                 const boss = inst.boss[i];

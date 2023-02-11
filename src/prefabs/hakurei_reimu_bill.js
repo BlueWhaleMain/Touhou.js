@@ -30,6 +30,7 @@ export default function HakureiReimuBill(x, y, mx, my, spy = false) {
     const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
     inst.tags.add(TAGS.player);
+    inst.tags.add(TAGS.underPlayer);
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     if (spy) {

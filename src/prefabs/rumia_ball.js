@@ -34,6 +34,7 @@ export default function RumiaBall(x, y, mx, my) {
     const ht = Math.random();
     inst.addComponent("movable", movable);
     inst.tags.add(TAGS.player);
+    inst.tags.add(TAGS.underPlayer);
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.sizeBox = new ABox(5);

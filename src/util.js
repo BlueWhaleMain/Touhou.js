@@ -307,11 +307,19 @@ export function saveOrDownload(dataURL, path, name, callback) {
     }
 }
 
-export function rendererEntity() {
+export function rendererEntity(underPlayer = false) {
     const length = entities.length;
     for (let i = 0; i < length; i++) {
         try {
-            entities[i].draw(entities[i])
+            if (underPlayer) {
+                if (entities[i].tags.has(TAGS.underPlayer)) {
+                    entities[i].draw(entities[i])
+                }
+            } else {
+                if (!entities[i].tags.has(TAGS.underPlayer)) {
+                    entities[i].draw(entities[i])
+                }
+            }
         } catch (e) {
             console.error(entities[i]);
             throw e
@@ -470,6 +478,7 @@ export const TAGS = {
     envoy: "Envoy",
     monster: "Monster",
     human: "Human",
+    underPlayer: "UnderPlayer"
 };
 export const EVENT_MAPPING = {
     load: "Load",

@@ -23,6 +23,7 @@ export default function SealingNeedle(x, y, mx, my) {
     const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
     inst.tags.add(TAGS.player);
+    inst.tags.add(TAGS.underPlayer);
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
     inst.sizeBox = new ABox(6);
