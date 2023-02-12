@@ -98,11 +98,6 @@ export default function demarcation(edit) {
         noCard: (function () {
             let frame = 0;
             return function (card) {
-                if (frame === 0) {
-                    card.entity.maxMovementSpeed = 2;
-                    card.entity.target.X = GUI_SCREEN.X + GUI_SCREEN.WIDTH / 3 + 50
-                    card.entity.target.Y = GUI_SCREEN.Y + 100
-                }
                 if (frame === 10) {
                     const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y) + r135;
                     for (let i = 0; i < 35; i += 5) {
@@ -115,10 +110,15 @@ export default function demarcation(edit) {
                     soundOfBombShoot1.currentTime = 0
                     _ = soundOfBombShoot1.play()
                 }
+                if (frame === 16) {
+                    card.entity.maxMovementSpeed = 2;
+                    card.entity.target.X = GUI_SCREEN.X + GUI_SCREEN.WIDTH / 3 + 100
+                    card.entity.target.Y = GUI_SCREEN.Y + 100
+                }
                 if (frame > 10 && frame < 64 && frame % 8 === 0) {
-                    const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
-                    entities.push(Laser("laser", "blue", card.entity.X + 256 * Math.sin(spyRad), card.entity.Y - 256 * Math.cos(spyRad), 0, 0, spyRad, {
-                        startTime: 25,
+                    const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - 16 - session.player.Y);
+                    entities.push(Laser("laser", "blue", card.entity.X, card.entity.Y - 16, 0, 0, -spyRad, {
+                        startTime: 35,
                         delayTime: 60,
                         outTime: 8
                     }))

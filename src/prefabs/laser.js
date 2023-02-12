@@ -197,12 +197,12 @@ export default function Laser(type, color, x, y, mx, my, rotation, time, canDrop
             _ = soundOfLaser.play()
         }
     };
-    inst.rotate = function (b, a, l = 256) {
-        inst.X = b.X + l * Math.sin(a);
-        inst.Y = b.Y - l * Math.cos(a);
-        inst.sizeBox.rotation = a;
-        inst.atkBox.rotation = a;
-        inst.rotation = a;
+    inst.rotate = function (b, rad, l = 256) {
+        inst.X = b.X + l * Math.sin(rad);
+        inst.Y = b.Y - l * Math.cos(rad);
+        inst.sizeBox.rotation = rad;
+        inst.atkBox.rotation = rad;
+        inst.rotation = rad;
         return inst
     };
     inst.edit = function (f) {
