@@ -728,12 +728,155 @@ export function testStage(fn) {
             bossRumia(-50, 125, 300, [
                 moonlightRay()
             ], null),
+            new StageItem(new Map([[-1, function () {
+            }], [1, function (self) {
+                session.keys.delete('z')
+                session.stage.dialogueScript.push(
+                    SimpleDialogue([{
+                        text: "好像被食人妖怪发现了呢"
+                    }], [{
+                        image: ASSETS.IMAGE.kirisameMarisa
+                    }], function () {
+                        entities.push(title(function () {
+                            const self = {};
+                            self.draw = function (self) {
+                                layerEffect.save();
+                                layerEffect.globalAlpha = self.opacity;
+                                layerEffect.font = "14px sans-serif";
+                                layerEffect.fillStyle = "rgb(255,212,53)";
+                                layerEffect.shadowColor = "white";
+                                layerEffect.shadowBlur = 2;
+                                layerEffect.fillText("普通的魔法使 雾雨·魔理沙", 50, 360);
+                                layerEffect.restore()
+                            };
+                            return self
+                        }))
+                    }, () => {
+                        self.setStep(-1)
+                    })
+                )
+            }]])),
             testStage2(),
+            bossRumia(-50, 125, 900, [
+                nightBird(),
+                demarcation()
+            ], [
+                SimpleDialogue([{
+                    text: "妖怪什么的总是很棘手呢"
+                }], [{
+                    image: ASSETS.IMAGE.kirisameMarisa
+                }]),
+                SimpleDialogue([{
+                    text: "...", fillStyle: "red", X: 300
+                }], [{
+                    image: ASSETS.IMAGE.rumia,
+                    X: 190
+                }], function (inst) {
+                    inst.target.X = 220;
+                    inst.target.Y = 125
+                    entities.push(title(function () {
+                        const self = {};
+                        self.draw = function (self) {
+                            layerEffect.save();
+                            layerEffect.globalAlpha = self.opacity;
+                            layerEffect.font = "14px sans-serif";
+                            layerEffect.fillStyle = "white";
+                            layerEffect.shadowColor = "black";
+                            layerEffect.shadowBlur = 2;
+                            layerEffect.fillText("???", 250, 360);
+                            layerEffect.restore()
+                        };
+                        return self
+                    }))
+                }),
+                SimpleDialogue([{
+                    text: "今天也没有吃饱么", fillStyle: "yellow", X: 300
+                }], [{image: ASSETS.IMAGE.kirisameMarisa, globalAlpha: 0.4, X: 5}, {
+                    image: ASSETS.IMAGE.rumia,
+                    X: 190
+                }], function (inst) {
+                    cancelAllSound();
+                    inst.playBGM()
+                })
+            ]),
+            new StageItem(new Map([[-1, function () {
+            }], [1, function (self) {
+                session.keys.delete('z')
+                session.stage.dialogueScript.push(
+                    SimpleDialogue([{
+                        text: "看来是吃饱了"
+                    }], [{
+                        image: ASSETS.IMAGE.kirisameMarisa
+                    }], null, () => {
+                        self.setStep(-1)
+                    })
+                )
+            }]])),
             testStage3(),
             bossCirno(400, -60, 499, [
                 icicleFall()
             ]),
             testStage4(),
+            bossHakureiReimu(480, -60, 1000, [
+                dreamSealLoose(),
+                dreamSealSilence()
+            ], [
+                SimpleDialogue([{
+                    text: "再动一下我就开火了"
+                }], [{
+                    image: ASSETS.IMAGE.kirisameMarisa, X: 5
+                }]),
+                SimpleDialogue([{
+                    text: "？", fillStyle: "rgb(255,10,17)", X: 250
+                }], [{
+                    image: ASSETS.IMAGE.hakureiReimu,
+                    X: 190
+                }], function (inst) {
+                    inst.target.X = 220;
+                    inst.target.Y = 125;
+                    entities.push(title(function () {
+                        const self = {};
+                        self.draw = function (self) {
+                            layerEffect.save();
+                            layerEffect.globalAlpha = self.opacity;
+                            layerEffect.font = "14px sans-serif";
+                            layerEffect.fillStyle = "rgb(255,10,17)";
+                            layerEffect.shadowColor = "white";
+                            layerEffect.shadowBlur = 2;
+                            layerEffect.direction = "rtl";
+                            layerEffect.fillText("乐园的巫女 博丽灵梦", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                            layerEffect.restore()
+                        };
+                        return self
+                    }))
+                }),
+                SimpleDialogue([{
+                    text: "今天不稍微惩罚一下\n" +
+                        "看来是不行了吧。", fillStyle: "rgb(255,10,17)", X: 250
+                }, {
+                    text: "难得来比试一场"
+                }], [{image: ASSETS.IMAGE.kirisameMarisa, X: 5}, {
+                    image: ASSETS.IMAGE.bossHakureiReimu,
+                    X: 190
+                }], function (inst) {
+                    cancelAllSound();
+                    inst.playBGM()
+                })
+            ]),
+            new StageItem(new Map([[-1, function () {
+            }], [1, function (self) {
+                session.keys.delete('z')
+                session.stage.dialogueScript.push(
+                    SimpleDialogue([{
+                        text: "灵梦，永远轮不到你的回合了。\n" +
+                            "再见了。"
+                    }], [{
+                        image: ASSETS.IMAGE.kirisameMarisa
+                    }], null, () => {
+                        self.setStep(-1)
+                    })
+                )
+            }]])),
             testStage5(),
             bossWriggleNightBug(100, -30, 500, [
                 cometsOnTheGround()
@@ -747,6 +890,124 @@ export function testStage(fn) {
                 test2(),
             ], null),
             testStage10(),
+            bossYukariYakumo(480, -60, 1000, [
+                test3(),
+                boundaryBetweenWaveAndParticle(function (cd) {
+                    cd.practice = true
+                }),
+                test()
+            ], [
+                SimpleDialogue([{
+                    text: "敢射击就要动了，马上就动。", fillStyle: "rgb(255,212,53)"
+                }], [{
+                    image: ASSETS.IMAGE.kirisameMarisa, X: 5
+                }]),
+                SimpleDialogue([{
+                    text: "我说你啊，后面是不是没有眼睛？", fillStyle: "purple"
+                }], [{
+                    image: ASSETS.IMAGE.yukariYakumo,
+                    X: 190
+                }], function (inst) {
+                    inst.target.X = 220;
+                    inst.target.Y = 125;
+                    entities.push(title(function () {
+                        const self = {};
+                        self.draw = function (self) {
+                            layerEffect.save();
+                            layerEffect.globalAlpha = self.opacity;
+                            layerEffect.font = "14px sans-serif";
+                            layerEffect.fillStyle = "rgb(168,13,255)";
+                            layerEffect.shadowColor = "black";
+                            layerEffect.shadowBlur = 2;
+                            layerEffect.fillText("妖怪的贤者 八云·紫", 250, 360);
+                            layerEffect.restore()
+                        };
+                        return self
+                    }))
+                }),
+                SimpleDialogue([{
+                    text: "终于出现了，幕后主使者。", fillStyle: "rgb(255,10,17)"
+                }], [{image: ASSETS.IMAGE.kirisameMarisa, X: 5}, {
+                    image: ASSETS.IMAGE.yukariYakumo,
+                    X: 200, globalAlpha: 0.4
+                }]),
+                SimpleDialogue([{
+                    text: "对。", fillStyle: "purple", X: 300
+                }], [{image: ASSETS.IMAGE.kirisameMarisa, globalAlpha: 0.4, X: 0}, {
+                    image: ASSETS.IMAGE.yukariYakumo,
+                    X: 190
+                }], function (inst) {
+                    cancelAllSound();
+                    inst.playBGM()
+                })
+            ]),
+            new StageItem(new Map([[-1, function () {
+            }], [1, function (self) {
+                session.keys.delete('z')
+                session.stage.dialogueScript.push(
+                    SimpleDialogue([{
+                        text: "刚从冬眠中醒来所以体力不足而已", fillStyle: "purple", X: 200
+                    }], [{image: ASSETS.IMAGE.kirisameMarisa, globalAlpha: 0.4, X: 5}, {
+                        image: ASSETS.IMAGE.yukariYakumo,
+                        X: 190
+                    }])
+                )
+                session.stage.dialogueScript.push(SimpleDialogue([{
+                    text: "是吗"
+                }], [{
+                    image: ASSETS.IMAGE.kirisameMarisa
+                }]))
+                session.stage.dialogueScript.push(SimpleDialogue([{
+                    text: "啊，好像看到真的了"
+                }], [{
+                    image: ASSETS.IMAGE.kirisameMarisa
+                }], null, () => {
+                    self.setStep(-1)
+                }))
+            }]])),
+            bossRumia(-50, 125, 1000, [
+                voidDeath(function (cd) {
+                    cd.practice = true
+                }),
+                rumiaThink(function (cd) {
+                    cd.practice = true
+                })
+            ], [
+                SimpleDialogue([{
+                    text: "我tm来了", fillStyle: "skyblue", X: 200
+                }], [{
+                    image: ASSETS.IMAGE.rumia,
+                    X: 190
+                }], function (inst) {
+                    inst.target.X = 220;
+                    inst.target.Y = 125
+                    entities.push(title(function () {
+                        const self = {};
+                        self.draw = function (self) {
+                            layerEffect.save();
+                            layerEffect.globalAlpha = self.opacity;
+                            layerEffect.font = "14px sans-serif";
+                            layerEffect.fillStyle = "blue";
+                            layerEffect.shadowColor = "black";
+                            layerEffect.shadowBlur = 2;
+                            layerEffect.fillText("BlueWhaleMain", 250, 360);
+                            layerEffect.restore()
+                        };
+                        return self
+                    }))
+                }),
+                SimpleDialogue([{
+                    text: "说日语啊。", fillStyle: "yellow", X: 300, direction: "rtl"
+                }, {
+                    text: "这里可是幻想乡。", fillStyle: "yellow", X: 300, Y: 420, direction: "rtl"
+                }], [{image: ASSETS.IMAGE.kirisameMarisa, globalAlpha: 0.4, X: 5}, {
+                    image: ASSETS.IMAGE.rumia,
+                    X: 190
+                }], function (inst) {
+                    cancelAllSound();
+                    inst.playBGM()
+                })
+            ])
         ]
     }
 }
