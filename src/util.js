@@ -478,7 +478,8 @@ export const TAGS = {
     envoy: "Envoy",
     monster: "Monster",
     human: "Human",
-    underPlayer: "UnderPlayer"
+    underPlayer: "UnderPlayer",
+    theWorld: "theWorld"
 };
 export const EVENT_MAPPING = {
     load: "Load",

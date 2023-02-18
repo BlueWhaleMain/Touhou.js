@@ -68,6 +68,8 @@ import bossYakumoRan from "./prefabs/boss/yakumo_ran";
 import cometsOnTheGround from "./cards/comets_on_the_ground";
 import bossWriggleNightBug from "./prefabs/boss/wriggle_nightbug";
 import KirisameMarisa from "./prefabs/player/kirisame_marisa";
+import jackTheLudoBile from "./cards/jack_the_ludo_bile";
+import bossIzayoiSakuya from "./prefabs/boss/izayoi_sakuya";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -110,6 +112,7 @@ function addToMusicRoom(bgm) {
 addToMusicRoom(ASSETS.SOUND.easternNight);
 addToMusicRoom(ASSETS.SOUND.aSoulAsScarletAsAgroundCherry);
 addToMusicRoom(ASSETS.SOUND.rumia);
+addToMusicRoom(ASSETS.SOUND.lunarClockLunaDial);
 addToMusicRoom(ASSETS.SOUND.tomboyishLoveGirlInAdventure)
 addToMusicRoom(ASSETS.SOUND.tomboyishGirlInLove)
 addToMusicRoom(ASSETS.SOUND.illusionaryNightGhostlyEyes)
@@ -709,6 +712,15 @@ addSpellCard("萤符「地上的彗星」", function () {
     ], null);
     return [boss]
 }, false);
+addSpellCard("幻幽「迷幻的杰克」", function () {
+    const boss = bossIzayoiSakuya(100, -30, 1000, [
+        jackTheLudoBile(function (cd) {
+            cd.practice = true
+        })
+    ], null);
+    boss.playBGM()
+    return [boss]
+}, true)
 const spm = [];
 const spl = sps.length;
 for (let i = 0; i < spl; i++) {

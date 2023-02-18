@@ -42,6 +42,7 @@ const sidebarLife = newImage(resources.Images.sidebar.life);
 const spellPractice = newImage(resources.Images.spellPractice);
 export default function StageUtil() {
     const inst = new Prefab(GUI_SCREEN.X + GUI_SCREEN.WIDTH / 2, GUI_SCREEN.Y + GUI_SCREEN.HEIGHT / 2);
+    inst.tags.add(TAGS.misc);
     inst.event = new Observer();
     inst.callback = {};
     inst.paused = false;

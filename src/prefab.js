@@ -8,6 +8,11 @@ export default function Prefab(x, y) {
     this.componentsShadow = new Set();
     this.components = {};
     this.tick = function () {
+        if (session.stopTheWorld) {
+            if (!this.tags.has(TAGS.theWorld) && !(this.tags.has(TAGS.misc) || this.tags.has(TAGS.title))) {
+                return true
+            }
+        }
         for (let componentsShadow of this.componentsShadow) {
             this.components[componentsShadow].tick(this)
         }

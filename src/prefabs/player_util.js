@@ -258,6 +258,11 @@ export default function PlayerUtil() {
         }
     });
     ob.addEventListener(EVENT_MAPPING.left, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -267,6 +272,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.right, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -276,6 +286,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.up, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -285,6 +300,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.down, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -294,6 +314,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.upperLeft, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -303,6 +328,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.lowerLeft, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -312,6 +342,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.upperRight, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -321,6 +356,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.lowerRight, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -330,6 +370,11 @@ export default function PlayerUtil() {
         inst.inScreen()
     });
     ob.addEventListener(EVENT_MAPPING.shoot, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.miss) {
             return
         }
@@ -338,6 +383,11 @@ export default function PlayerUtil() {
         }
     });
     ob.addEventListener(EVENT_MAPPING.bomb, function () {
+        if (session.stopTheWorld) {
+            if (!inst.tags.has(TAGS.theWorld)) {
+                return
+            }
+        }
         if (inst.hideTime > 0 || inst.bombUsed || session.practice) {
             return
         }
