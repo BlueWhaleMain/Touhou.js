@@ -54,7 +54,7 @@ export default function MagicRing(/* number */x, /* number */y, brain,/* number 
             }
         }
     })
-    inst.addLayer("Yousei", function () {
+    inst.addLayer("MagicRing", function () {
         this.draw = function () {
             layerStage.save();
             layerStage.globalAlpha = textureOpacity;
