@@ -13,6 +13,7 @@ export const ASSETS = {
         kirisameMarisa: newImage(resources.Images.player.kirisameMarisa),
         bossKirisameMarisa: newImage(resources.Images.bossKirisameMarisa),
         patchouliKnowledge: newImage(resources.Images.bossPatchouliKnowledge),
+        bossIzayoiSakuya: newImage(resources.Images.bossIzayoiSakuya),
         yukariYakumo: newImage(resources.Images.bossYukariYakumo)
     },
     SOUND: {
@@ -21,6 +22,12 @@ export const ASSETS = {
             loop: newAudio(resources.Sounds.aSoulAsScarletAsAgroundCherry.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
             name: resources.Sounds.aSoulAsScarletAsAgroundCherry.name,
             description: newText(DESCRIPTION_PREFIX + resources.Sounds.aSoulAsScarletAsAgroundCherry.description)
+        },
+        lunarClockLunaDial: {
+            head: newAudio(resources.Sounds.lunarClockLunaDial.head, VOLUME_MAX, AUDIO_TYPE.BGM),
+            loop: newAudio(resources.Sounds.lunarClockLunaDial.loop, VOLUME_MAX, AUDIO_TYPE.BGM),
+            name: resources.Sounds.lunarClockLunaDial.name,
+            description: newText(DESCRIPTION_PREFIX + resources.Sounds.lunarClockLunaDial.description)
         },
         tomboyishLoveGirlInAdventure: {
             head: newAudio(resources.Sounds.tomboyishLoveGirlInAdventure.head, VOLUME_MAX, AUDIO_TYPE.BGM),
