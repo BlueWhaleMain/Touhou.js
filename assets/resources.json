@@ -38,6 +38,7 @@
         "bossWriggleNightBug": "boss_03_11.png",
         "bossYakumoRan": "boss_02_71.png",
         "bossPatchouliKnowledge": "boss_01_41.png",
+        "bossIzayoiSakuya": "boss_01_51.png",
         "bossHakureiReimu": "boss_03_41.png",
         "bossKirisameMarisa": "boss_03_42.png",
         "bossYukariYakumo": "boss_02_81.png",
@@ -51,6 +52,12 @@
             "name": "如鬼灯般的红色之魂",
             "description": "th01_02.lst",
             "loopLoopDelay": 0.11
+        },
+        "lunarClockLunaDial": {
+            "head": "th06_11_head.wav",
+            "loop": "th06_11_loop.wav",
+            "name": "月时计 ～ Luna Dial",
+            "description": "th06_11.lst"
         },
         "tomboyishLoveGirlInAdventure": {
             "head": "th05_07_head.wav",
