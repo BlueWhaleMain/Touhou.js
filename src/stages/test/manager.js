@@ -40,6 +40,10 @@ import {testStage4} from "./stage4";
 import bossCirno from "../../prefabs/boss/cirno";
 import icicleFall from "../../cards/icicle_fall";
 import bossYakumoRan from "../../prefabs/boss/yakumo_ran";
+import bossIzayoiSakuya from "../../prefabs/boss/izayoi_sakuya";
+import jackTheLudoBile from "../../cards/jack_the_ludo_bile";
+import theWorld from "../../cards/the_world";
+import murderDolls from "../../cards/murder_dolls";
 
 const layerEffect = getLayer(LAYER_MAPPING.EFFECT);
 const transRumia = document.createElement("canvas");
@@ -882,6 +886,71 @@ export function testStage(fn) {
                 cometsOnTheGround()
             ], null),
             testStage6(),
+            bossIzayoiSakuya(480, -60, 800, [
+                jackTheLudoBile(), theWorld(), murderDolls()
+            ], [
+                SimpleDialogue([{
+                    text: "...", fillStyle: "yellow"
+                }], [{
+                    image: ASSETS.IMAGE.kirisameMarisa, X: 5
+                }]),
+                SimpleDialogue([{
+                    text: "偷书贼让我碰上了呢", fillStyle: "blue", X: 300
+                }], [{image: ASSETS.IMAGE.kirisameMarisa, globalAlpha: 0.4, X: 0}, {
+                    image: ASSETS.IMAGE.bossIzayoiSakuya,
+                    X: 190
+                }], function (inst) {
+                    inst.target.X = 220;
+                    inst.target.Y = 125;
+                    entities.push(title(function () {
+                        const self = {};
+                        self.draw = function (self) {
+                            layerEffect.save();
+                            layerEffect.globalAlpha = self.opacity;
+                            layerEffect.font = "14px sans-serif";
+                            layerEffect.fillStyle = "blue";
+                            layerEffect.shadowColor = "white";
+                            layerEffect.shadowBlur = 2;
+                            layerEffect.direction = "rtl";
+                            layerEffect.fillText("红魔馆的女仆 十六夜咲夜", GUI_SCREEN.WIDTH - GUI_SCREEN.X, 360);
+                            layerEffect.restore()
+                        };
+                        return self
+                    }))
+                }),
+                SimpleDialogue([{
+                    text: "这不叫偷，这是借", fillStyle: "yellow", X: 250
+                }, {
+                    text: "那么，该还了"
+                }], [{image: ASSETS.IMAGE.kirisameMarisa, X: 5}, {
+                    image: ASSETS.IMAGE.bossIzayoiSakuya,
+                    X: 190
+                }], function (inst) {
+                    cancelAllSound();
+                    inst.playBGM()
+                })
+            ]),
+            new StageItem(new Map([[-1, function () {
+            }], [1, function (self) {
+                session.keys.delete('z')
+                session.stage.dialogueScript.push(
+                    SimpleDialogue([{
+                        text: "好像我最近也没有拿过"
+                    }], [{
+                        image: ASSETS.IMAGE.kirisameMarisa
+                    }])
+                )
+                session.stage.dialogueScript.push(
+                    SimpleDialogue([{
+                        text: "那么，再会", fillStyle: "blue", X: 200
+                    }], [{image: ASSETS.IMAGE.kirisameMarisa, globalAlpha: 0.4, X: 5}, {
+                        image: ASSETS.IMAGE.bossIzayoiSakuya,
+                        X: 190
+                    }], null, () => {
+                        self.setStep(-1)
+                    })
+                )
+            }]])),
             // testStage7(),
             // testStage8(),
             testStage9(),
