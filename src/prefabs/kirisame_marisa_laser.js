@@ -148,7 +148,6 @@ export default function kirisameMarisaLaser(x, y) {
                                 if (entity.components["health"] && !entity.components["health"].indestructible) {
                                     entity.components["health"].doDelta(-damage)
                                 }
-                                return true
                             }
                         }
                     });
@@ -162,7 +161,6 @@ export default function kirisameMarisaLaser(x, y) {
                                 if (b.components["health"] && !b.components["health"].indestructible) {
                                     b.components["health"].doDelta(-damage)
                                 }
-                                return
                             }
                         }
                     }
