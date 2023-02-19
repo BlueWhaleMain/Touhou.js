@@ -1,15 +1,7 @@
 import Prefab from "../prefab.js";
 import movable from "../components/movable.js";
 import bullet from "../components/bullet.js";
-import {
-    ABox,
-    arrowTo,
-    entities,
-    EVENT_MAPPING,
-    L,
-    session,
-    TAGS
-} from "../util.js";
+import {ABox, arrowTo, entities, EVENT_MAPPING, L, session, TAGS} from "../util.js";
 import GreenOrb from "./green_orb.js";
 import {ob} from "../observer.js"
 import {drawSticker} from "../resources/sticker";
@@ -22,7 +14,7 @@ const soundOfChangeTrack = newAudio(resources.Sounds.changeTrack);
 const layerStage = getLayer(LAYER_MAPPING.STAGE);
 const r90 = 90 * L;
 const r360 = 360 * L;
-export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true) {
+export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true, reflex = 0) {
     const inst = new Prefab(x, y);
     inst.addComponent("movable", movable);
     inst.addComponent("bullet", bullet);
@@ -35,6 +27,10 @@ export default function Jade(type, color, x, y, mx, my, rotation, canDrop = true
     inst.color = color;
     inst.components["movable"].MX = mx;
     inst.components["movable"].MY = my;
+    if (reflex > 0) {
+        inst.components["movable"].reflex.enabled = true
+        inst.components["movable"].reflex.count = reflex
+    }
     inst.rotation = rotation;
     inst.init = function () {
         let symmetric = false;

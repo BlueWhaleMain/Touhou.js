@@ -70,6 +70,7 @@ import bossWriggleNightBug from "./prefabs/boss/wriggle_nightbug";
 import KirisameMarisa from "./prefabs/player/kirisame_marisa";
 import jackTheLudoBile from "./cards/jack_the_ludo_bile";
 import bossIzayoiSakuya from "./prefabs/boss/izayoi_sakuya";
+import theWorld from "./cards/the_world";
 
 const gui = require("nw" + ".gui");
 //idea划线
@@ -715,6 +716,15 @@ addSpellCard("萤符「地上的彗星」", function () {
 addSpellCard("幻幽「迷幻的杰克」", function () {
     const boss = bossIzayoiSakuya(100, -30, 1000, [
         jackTheLudoBile(function (cd) {
+            cd.practice = true
+        })
+    ], null);
+    boss.playBGM()
+    return [boss]
+}, true)
+addSpellCard("幻世「The World」", function () {
+    const boss = bossIzayoiSakuya(100, -30, 1000, [
+        theWorld(function (cd) {
             cd.practice = true
         })
     ], null);
