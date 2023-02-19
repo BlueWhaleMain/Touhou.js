@@ -40,6 +40,7 @@ options.Style = "random"
 options.PauseOnBlur = true
 options.FrameMax = 60
 fs.writeFileSync('dist/options.json', JSON.stringify(options, null, 4))
+fs.writeFileSync('dist/README.md', fs.readFileSync('README.md'));
 
 function delDirectory(dir) {
     let files = [];
