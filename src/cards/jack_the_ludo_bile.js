@@ -1,4 +1,4 @@
-import {arrowTo, batchExecute, entities, GUI_SCREEN, L, session, TAGS, transTo} from "../util.js";
+import {arrowTo, batchExecute, entities, L, session, TAGS, transTo} from "../util.js";
 import Jade from "../prefabs/jade.js";
 import CardUtil from "../card_util.js";
 import {newAudio} from "../resources/sounds";
@@ -11,6 +11,24 @@ let _;
 const soundOfBombShoot = newAudio(resources.Sounds.bombShoot);
 const soundOfPower0 = newAudio(resources.Sounds.power0);
 export default function jackTheLudoBile(edit) {
+    function knifeWing(card, a) {
+        // 0 度 6 点
+        // 90 度 3 点
+        // 180 度 0 点
+        // 270 度 9 点
+        for (let c = 2; c < 10; c++) {
+            let xs, ys
+            xs = Math.sin(a * 4 * L) * c * 0.5
+            ys = Math.cos(a * 4 * L) * c * 0.5
+            entities.push(Jade("knife", "purple", card.entity.X, card.entity.Y, xs,
+                ys, undefined, false))
+            xs = Math.sin(-a * 4 * L) * c * 0.5
+            ys = Math.cos(-a * 4 * L) * c * 0.5
+            entities.push(Jade("knife", "purple", card.entity.X, card.entity.Y, xs,
+                ys, undefined, false))
+        }
+    }
+
     const cardData = {
         // 幻幽「迷幻的杰克」 rtl的bug
         name: "「幻幽「迷幻的杰克",
@@ -79,32 +97,35 @@ export default function jackTheLudoBile(edit) {
                             -10, 30, false, 'rice', 'blue', 0, 0, 1.5, 1.5)]), 300))
                 }
                 if (frame > 180 && frame < 360 && frame % 20 === 0) {
-                    const rand = Math.nextSeed();
-                    if (card.entity.X === card.entity.target.X && card.entity.Y === card.entity.target.Y) {
-                        if (rand > 0.5) {
-                            card.entity.target.X += 40
-                        } else {
-                            card.entity.target.X -= 40
+                    if (Math.nextSeed() > 0.5) {
+                        if (card.entity.X < 316) {
+                            card.entity.target.X += 25
+                        }
+                    } else {
+                        if (card.entity.X > 150) {
+                            card.entity.target.X -= 25
                         }
                     }
-                    if (card.entity.X === card.entity.target.X && card.entity.Y === card.entity.target.Y) {
-                        if (rand > 0.6) {
-                            if (card.entity.Y < 100) {
-                                card.entity.target.Y += 20
-                            }
-                        } else {
-                            if (card.entity.Y > 80) {
-                                card.entity.target.Y -= 20
-                            }
+                    if (Math.nextSeed() > 0.5) {
+                        if (card.entity.Y < 90) {
+                            card.entity.target.Y += 15
+                        }
+                    } else {
+                        if (card.entity.Y > 100) {
+                            card.entity.target.Y -= 15
                         }
                     }
-                    if (card.entity.X > GUI_SCREEN.WIDTH + GUI_SCREEN.X) {
-                        card.entity.X = GUI_SCREEN.X;
-                        card.entity.target.X = GUI_SCREEN.X + 40
+                    if (card.entity.X > 316) {
+                        card.entity.target.X -= 0.2
                     }
-                    if (card.entity.X < GUI_SCREEN.X) {
-                        card.entity.X = GUI_SCREEN.WIDTH + GUI_SCREEN.X;
-                        card.entity.target.X = GUI_SCREEN.WIDTH + GUI_SCREEN.X - 40
+                    if (card.entity.X < 150) {
+                        card.entity.target.X += 0.2
+                    }
+                    if (card.entity.Y > 90) {
+                        card.entity.target.Y -= 0.2
+                    }
+                    if (card.entity.Y < 100) {
+                        card.entity.target.Y += 0.2
                     }
                     const spyRad = Math.atan2(card.entity.X - session.player.X, card.entity.Y - session.player.Y);
                     for (let i = 0; i < 30; i++) {
@@ -128,7 +149,7 @@ export default function jackTheLudoBile(edit) {
                     // 180 度 0 点
                     // 270 度 9 点
                     for (let a = 0; a < 4; a++) {
-                        for (let c = 1; c < 9; c++) {
+                        for (let c = 2; c < 10; c++) {
                             let xs, ys
                             xs = Math.sin((a - 2) * 4 * L) * c * 0.5
                             ys = Math.cos((a - 2) * 4 * L) * c * 0.5
@@ -136,6 +157,67 @@ export default function jackTheLudoBile(edit) {
                                 ys, undefined, false))
                         }
                     }
+                    knifeWing(card, 10)
+                    knifeWing(card, 15)
+                    knifeWing(card, 20)
+                    knifeWing(card, 25)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 365) {
+                    knifeWing(card, 4)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 370) {
+                    knifeWing(card, 7)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 375) {
+                    knifeWing(card, 10)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 380) {
+                    knifeWing(card, 13)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 385) {
+                    knifeWing(card, 16)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 390) {
+                    knifeWing(card, 19)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 395) {
+                    knifeWing(card, 21)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 400) {
+                    knifeWing(card, 24)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 405) {
+                    knifeWing(card, 27)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 410) {
+                    knifeWing(card, 30)
+                    soundOfBombShoot.currentTime = 0
+                    _ = soundOfBombShoot.play()
+                }
+                if (frame === 415) {
+                    knifeWing(card, 20)
+                    knifeWing(card, 10)
+                    soundOfBombShoot.currentTime = 0
                     _ = soundOfBombShoot.play()
                 }
                 frame++
